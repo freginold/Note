@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<head>
+<title>Note</title>
+<style type='text/css'>
+  body {
+    background: lightgray;
+    font-size: 1em;
+  }
+  #noteList {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 5px;
+    padding: 2px;
+  }
+  #noteBody {
+    border: 1px solid black;
+    padding: 5px;
+  }
+  #upperRightBox {
+    border-left: 1px solid black;
+    border-bottom: 1px solid black;
+    display: flex;
+    position: relative;
+    float: right;
+    width: 110px;
+    padding-bottom: 4px;
+  }
+  .upperRightButton {
+    position: relative;
+    float: left;
+    margin-left: 10px;
+  }
+  .noteButton {
+    padding: 8px;
+    margin: 2px;
+    font-size: 1.2em;
+    border-radius: 8px;
+  }
+  #inputDiv {
+    display: none;
+  }
+  #newNoteDiv {
+    display: none;
+  }
+  #noteTitle {
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div id='upperRightBox'>
+<button id='closeButton' class='upperRightButton' onclick='window.close();'>Close</button>
+<button id='optionsButton' class='upperRightButton' onclick='showOptions();'>Options</button>
+<button id='newButton' class='upperRightButton' onclick='showNewNoteBox();'>New Note</button>
+</div>
+
+<div id='noteList'></div>
+
+<hr>
+
+<h3 id='noteTitle'></h3>
+<div id='noteBody'></div>
+
+<div id='newNoteDiv'>
+  <form name='newNoteForm' onsubmit='createNewNote(newNoteInputBox.value);' action='#' >
+    <input type='text' size=20 id='newNoteInputBox' />
+    <input type='submit' value='Create' />
+  </form>
+</div>
+
+
+<div id='inputDiv'>
+  <form name='inputForm' onsubmit='onSubmitted(inputBox.value, currentNote);' action='#' >
+    <input type='text' size=100 id='inputBox' />
+    <input type='submit' value='Add' />
+  </form>
+</div>
+
+
+
+
+<script language='vbscript' src='vbs-note-hta.vbs'></script>
+<script language='javascript' src='js-note-hta.js'></script>
+
+
+<script language='vbscript'>
+  GetFileList()
+</script>
+
+
+<script language='javascript'>
+  applyOptions();
+</script>
+
+
+</body>
+</html>
