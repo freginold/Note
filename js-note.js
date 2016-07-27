@@ -7,6 +7,7 @@ var inputDiv = document.getElementById('inputDiv');
 var inputBox = document.getElementById('inputBox');
 var newNoteDiv = document.getElementById('newNoteDiv');
 var noteTitle = document.getElementById('noteTitle');
+var optionsDiv = document.getElementById('optionsDiv');
 var newNoteInputBox = document.getElementById('newNoteInputBox');
 var noteText, currentNote, dummyVar, showTimeStamp, bgColor;
 
@@ -33,6 +34,7 @@ function showNotes(thisVar) {
   noteTitle.innerText = currentNote;
   noteBody.innerText = noteText;
   newNoteDiv.style.display = 'none';
+  optionsDiv.style.display='none';
   inputDiv.style.display='block';
   inputBox.value='';
   inputBox.focus();
@@ -42,6 +44,7 @@ function hideNotes() {
   noteBody.innerText = '';
   noteTitle.innerText = '';
   inputDiv.style.display = 'none';
+  optionsDiv.style.display='none';
 }
 
 function onSubmitted(tempVar, thisNote) {
@@ -59,14 +62,20 @@ function showOptions() {
   noteTitle.innerText = 'Options:';
   inputDiv.style.display = 'none';
   newNoteDiv.style.display = 'none';
-  var optTxt = LoadOptions(dummyVar)
-  noteBody.innerText = optTxt;
+  showTimeStamp = GetOption(1).toLowerCase();
+  bgColor = GetOption(2).toLowerCase();
+  optionsDiv.style.display='block';
+
+
+//  var optTxt = LoadOptions(dummyVar)
+//  noteBody.innerText = optTxt;
 }
 
 function showNewNoteBox() {
   noteTitle.innerText = 'Name for new note:';
   noteBody.innerText = '';
   inputDiv.style.display = 'none';
+  optionsDiv.style.display='none';
   newNoteDiv.style.display = 'block';
   newNoteInputBox.value = '';
   newNoteInputBox.focus();
@@ -76,6 +85,7 @@ function createNewNote(newNoteName) {
   // create a new note file
   event.returnValue = false;
   newNoteDiv.style.display = 'none';
+  optionsDiv.style.display='none';
   CreateNewFile(newNoteName)
   showNotes(newNoteName);
 }

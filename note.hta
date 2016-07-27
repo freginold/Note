@@ -45,6 +45,15 @@
   #noteTitle {
     text-align: center;
   }
+  #optionsDiv {
+    display: none;
+  }
+  .optionInput {
+    margin-left: 25px;
+  }
+  h4 {
+    margin-bottom: 2px;
+  }
 </style>
 </head>
 <body>
@@ -69,7 +78,6 @@
   </form>
 </div>
 
-
 <div id='inputDiv'>
   <form name='inputForm' onsubmit='onSubmitted(inputBox.value, currentNote);' action='#' >
     <input type='text' size=100 id='inputBox' />
@@ -77,11 +85,24 @@
   </form>
 </div>
 
+<div id='optionsDiv'>
+  <br />
+  <h4>Time Stamp:</h4>
+  <label><input type='radio' name='timeStamp' class='optionInput' value='Show' /> Show</label><br />
+  <label><input type='radio' name='timeStamp' class='optionInput' value='Hide' /> Hide</label>
+  <br /><br />
+  <h4>Background Color:</h4>
+  <label><input type='radio' name='bg' class='optionInput' value='lightgray' /> Light Gray</label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='lightyellow' /> Light Yellow</label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='white' /> White</label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='pink' /> Pink</label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='light green' /> Light Green</label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='lightblue' /> Light Blue</label>
+</div>
 
 
-
-<script language='vbscript' src='vbs-note-hta.vbs'></script>
-<script language='javascript' src='js-note-hta.js'></script>
+<script language='vbscript' src='vbs-note.vbs'></script>
+<script language='javascript' src='js-note.js'></script>
 
 
 <script language='vbscript'>
