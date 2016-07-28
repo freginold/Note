@@ -6,4 +6,10 @@ Note relies on a "notes" subfolder in the same directory.  It uses the "options.
 ![screen shot]
 (https://github.com/freginold/Note/blob/master/note_ss.PNG)
 
+### Limitations:
+- Placing any files other than .txt files in the "notes" subfolder will cause those files to show up in the note list.  If they are clicked on, a script error will be thrown.
+- Note files must be kept in the "notes" subfolder.
+- The options file ("options.txt") must be kept in the main folder with the program files.
+
+
 *Side note:* .HTA files run as "trusted" programs in Windows.  They are good for sysadmin work and local scripting, but be aware of the security concerns before making use of an .HTA file, especially one downloaded from an unfamiliar source.
