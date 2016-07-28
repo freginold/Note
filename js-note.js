@@ -9,42 +9,62 @@ var newNoteDiv = document.getElementById('newNoteDiv');
 var noteTitle = document.getElementById('noteTitle');
 var optionsDiv = document.getElementById('optionsDiv');
 var newNoteInputBox = document.getElementById('newNoteInputBox');
-var noteText, currentNote, dummyVar, showTimeStamp, bgColor;
+var noteText, currentNote, dummyVar, showTimeStamp, bgColor, bgColorNum;
+inputs = [];
 
 
 // ------- declare functions ----------
 
 function applyOptions() {
-  // apply options on load
+  // apply options on load & on change
   GetOptions(dummyVar)
   showTimeStamp = GetOption(1).toLowerCase();
   bgColor = GetOption(2).toLowerCase();
   if (bgColor.slice(0,6) == "light ") {
     bgColor = "light" + bgColor.slice(6);
   }
-  // maybe later make a function to remove spaces
+  // maybe later add in function to remove spaces
   document.body.style.backgroundColor=bgColor;
 }
 
+function saveOptions() {
+  // save options to disk on change
+  // embed in a timeout; while saving, disable buttons & make them .2 opaque
+  if (document.getElementsByName('timeStamp')[1].checked) { showTimeStamp='Show'; }
+  else { showTimeStamp = 'Hide'; }
+  if (document.getElementsByName('bg')[0].checked) { bgColorNum=1; }
+  else if (document.getElementsByName('bg')[1].checked) { bgColorNum=2; }
+  else if (document.getElementsByName('bg')[2].checked) { bgColorNum=3; }
+  else if (document.getElementsByName('bg')[3].checked) { bgColorNum=4; }
+  else if (document.getElementsByName('bg')[4].checked) { bgColorNum=5; }
+  else if (document.getElementsByName('bg')[5].checked) { bgColorNum=6; }
+  WriteOptions(showTimeStamp, bgColorNum)
+  applyOptions();
+}
+
+function clearAll() {
+  // clear all text/fields
+  GetFileList()
+  newNoteDiv.style.display = 'none';
+  optionsDiv.style.display='none';
+  inputDiv.style.display = 'none';
+  noteBody.innerText = '';
+  noteTitle.innerText = '';
+  newNoteInputBox.value = '';
+  inputBox.value='';
+}
+
 function showNotes(thisVar) {
+  clearAll();
+  window[thisVar].className='noteButton activeNote';
   noteText='';
   currentNote = thisVar;
   thisVar=".\\notes\\"+thisVar+".txt";
   noteText = LoadFile(thisVar)
   noteTitle.innerText = currentNote;
   noteBody.innerText = noteText;
-  newNoteDiv.style.display = 'none';
-  optionsDiv.style.display='none';
   inputDiv.style.display='block';
-  inputBox.value='';
   inputBox.focus();
-}
-
-function hideNotes() {
-  noteBody.innerText = '';
-  noteTitle.innerText = '';
-  inputDiv.style.display = 'none';
-  optionsDiv.style.display='none';
 }
 
 function onSubmitted(tempVar, thisNote) {
@@ -59,36 +79,58 @@ function addX() {
 
 function showOptions() {
   // show options, save changes
+  clearAll();
   noteTitle.innerText = 'Options:';
-  inputDiv.style.display = 'none';
-  newNoteDiv.style.display = 'none';
   showTimeStamp = GetOption(1).toLowerCase();
   bgColor = GetOption(2).toLowerCase();
   optionsDiv.style.display='block';
-
-
-//  var optTxt = LoadOptions(dummyVar)
-//  noteBody.innerText = optTxt;
+  if (showTimeStamp == 'show') { document.getElementsByName('timeStamp')[1].checked=true; }
+  else { document.getElementsByName('timeStamp')[0].checked=true; }
+  switch (bgColor) {
+    case "light gray":
+      document.getElementsByName('bg')[0].checked=true;
+      break;
+    case "light yellow":
+      document.getElementsByName('bg')[1].checked=true;
+      break;
+    case "white":
+      document.getElementsByName('bg')[2].checked=true;
+      break;
+    case "pink":
+      document.getElementsByName('bg')[3].checked=true;
+      break;
+    case "light green":
+      document.getElementsByName('bg')[4].checked=true;
+      break;
+    case "light blue":
+      document.getElementsByName('bg')[5].checked=true;
+      break;
+  }
 }
 
 function showNewNoteBox() {
+  clearAll();
   noteTitle.innerText = 'Name for new note:';
-  noteBody.innerText = '';
-  inputDiv.style.display = 'none';
-  optionsDiv.style.display='none';
   newNoteDiv.style.display = 'block';
-  newNoteInputBox.value = '';
   newNoteInputBox.focus();
 }
 
 function createNewNote(newNoteName) {
   // create a new note file
   event.returnValue = false;
-  newNoteDiv.style.display = 'none';
-  optionsDiv.style.display='none';
   CreateNewFile(newNoteName)
   showNotes(newNoteName);
 }
 
 
+// ----------- declare event handlers ----------
 
+// for option <input> elements, attach click handler to call saveOptions()
+
+inputs = document.getElementsByTagName('input');
+
+for (var i=0; i<inputs.length; i++) {
+  if (inputs[i].className == "optionInput") {
+    inputs[i].attachEvent('onclick', saveOptions);
+  }
+}

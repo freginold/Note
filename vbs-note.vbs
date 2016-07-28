@@ -15,12 +15,15 @@
 Set fs = CreateObject("Scripting.FileSystemObject")
 allData = ""
 const NotesDir = ".\notes\"
-' fileName=notesDir + fileName + ".txt"
-Const Default1 = "Show"
+Const Default1 = "Hide"
 Const Default2 = "Light Gray"
+Const OptionsFile = "options.txt"
+Const OptionsComment = "1- time stamp: Hide/Show, 2- bg color 1:LiGra/2:LiY/3:Wh/4:Pi/5:LiGre/6:LiBlu. Def: 1-Hide, 2-1."
 Opt1 = Default1
 Opt2 = Default2
 NewFileWithPath = ""
+TempFileName = ""
+TempFile = ""
 
 
 
@@ -82,9 +85,8 @@ End Sub
 Function LoadOptions(dummyVar)
   ' open option file, return formatted text string (for now, till enable changes)
   ' once can enable changes, just use GetOptions to get current settings, show/change w/ JS
-  FileName = "options.txt"
   AllData = ""
-  set rofile=fs.opentextfile(FileName, 1)
+  set rofile=fs.opentextfile(OptionsFile, 1)
   ' check for rofile.AtEndOfStream -- if premature, "options file corrupted" (offer to rebuild?)
   if rofile.AtEndOfStream then 
     OptionsCorrupted
@@ -111,8 +113,7 @@ End Function
 
 Sub GetOptions(dummyVar)
   ' open options file, load options into memory
-  FileName = "options.txt"
-  set rofile = fs.opentextfile(FileName, 1)
+  set rofile = fs.opentextfile(OptionsFile, 1)
   ' check for rofile.AtEndOfStream -- if premature, use default values
   if rofile.AtEndOfStream then Exit Sub
   line = rofile.Readline
@@ -132,7 +133,6 @@ Sub GetOptions(dummyVar)
     Case "6" Opt2 = "light blue"
     Case Else Opt2 = Default2
   End Select
-'  if (line <> "Light Gray") and (line <> "Light Yellow") and (line <> "White") and (line <> "Pink") then line = Default2
   rofile.close
 End Sub
 
@@ -149,4 +149,23 @@ Sub OptionsCorrupted
   ' recreate options file?
 End Sub
 
+
+Sub WriteOptions(Opt1, Opt2)
+  ' write options to disk
+  ' write to temp file, save temp file, del options.txt, ren temp file to options.txt
+  ' open temp file for output
+  ' write to temp
+  ' close temp
+  ' del options
+  ' ren temp
+  TempFileName = fs.GetTempName
+  TempFile = TempFileName + ".txt"
+  set tfile = fs.OpenTextFile(TempFile, 2, True)
+  tfile.WriteLine(OptionsComment)
+  tfile.WriteLine(Opt1)
+  tfile.WriteLine(Opt2)
+  tfile.close
+  fs.DeleteFile(OptionsFile)
+  fs.MoveFile TempFile, OptionsFile  
+End Sub
 

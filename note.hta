@@ -31,7 +31,7 @@
     margin-left: 10px;
   }
   .noteButton {
-    padding: 8px;
+    padding: 6px;
     margin: 2px;
     font-size: 1.2em;
     border-radius: 8px;
@@ -53,6 +53,15 @@
   }
   h4 {
     margin-bottom: 2px;
+  }
+  .goItalic {
+    font-style: italic;
+    font-size: .8em;
+  }
+  .activeNote {
+    font-weight: bold;
+    border: 2px solid black;
+    backgroundColor: gray;
   }
 </style>
 </head>
@@ -88,11 +97,11 @@
 <div id='optionsDiv'>
   <br />
   <h4>Time Stamp:</h4>
-  <label><input type='radio' name='timeStamp' class='optionInput' value='Show' /> Show</label><br />
-  <label><input type='radio' name='timeStamp' class='optionInput' value='Hide' /> Hide</label>
+  <label><input type='radio' name='timeStamp' class='optionInput' value='Hide' /> Hide <span class='goItalic'>(default)</span></label><br />
+  <label><input type='radio' name='timeStamp' class='optionInput' value='Show' /> Show</label>
   <br /><br />
   <h4>Background Color:</h4>
-  <label><input type='radio' name='bg' class='optionInput' value='lightgray' /> Light Gray</label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='lightgray' /> Light Gray <span class='goItalic'>(default)</span></label><br />
   <label><input type='radio' name='bg' class='optionInput' value='lightyellow' /> Light Yellow</label><br />
   <label><input type='radio' name='bg' class='optionInput' value='white' /> White</label><br />
   <label><input type='radio' name='bg' class='optionInput' value='pink' /> Pink</label><br />
