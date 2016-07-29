@@ -42,6 +42,7 @@ End Sub
 
 Function LoadFile(FileName)
   'load notes from a text file to display
+  FileName = NotesDir + FileName + ".txt"
   allData = ""
   set rfile=fs.opentextfile(FileName, 1)
   do until rfile.AtEndOfStream
@@ -53,6 +54,7 @@ Function LoadFile(FileName)
       line = ""
       for each x in segments
         i = i + 1
+        if i > 2 then x = ">" + x
         if i > 1 then line = line + x
       next
     end if
@@ -83,6 +85,7 @@ End Sub
 
 
 Function LoadOptions(dummyVar)
+  ' *** this function is obsolete, will delete once make sure i don't need any of the code ***
   ' open option file, return formatted text string (for now, till enable changes)
   ' once can enable changes, just use GetOptions to get current settings, show/change w/ JS
   AllData = ""
@@ -113,27 +116,30 @@ End Function
 
 Sub GetOptions(dummyVar)
   ' open options file, load options into memory
-  set rofile = fs.opentextfile(OptionsFile, 1)
-  ' check for rofile.AtEndOfStream -- if premature, use default values
-  if rofile.AtEndOfStream then Exit Sub
-  line = rofile.Readline
-  ' ignore first line of options file
-  if rofile.AtEndOfStream then Exit Sub
-  line = LCase(rofile.Readline)
-  if (line <> "show") and (line <> "hide") then line = Default1
-  Opt1 = line
-  if rofile.AtEndOfStream then Exit Sub
-  line = rofile.Readline
-  Select Case line
-    Case "1" Opt2 = "light gray"
-    Case "2" Opt2 = "light yellow"
-    Case "3" Opt2 = "white"
-    Case "4" Opt2 = "pink"
-    Case "5" Opt2 = "light green"
-    Case "6" Opt2 = "light blue"
-    Case Else Opt2 = Default2
-  End Select
-  rofile.close
+  if fs.FileExists(OptionsFile) then 
+    set rofile = fs.opentextfile(OptionsFile, 1)
+    ' check for rofile.AtEndOfStream -- if premature, use default values
+    if rofile.AtEndOfStream then Exit Sub
+    line = rofile.Readline
+    ' ignore first line of options file
+    if rofile.AtEndOfStream then Exit Sub
+    line = LCase(rofile.Readline)
+    if (line <> "show") and (line <> "hide") then line = Default1
+    Opt1 = line
+    if rofile.AtEndOfStream then Exit Sub
+    line = rofile.Readline
+    Select Case line
+      Case "1" Opt2 = "light gray"
+      Case "2" Opt2 = "light yellow"
+      Case "3" Opt2 = "white"
+      Case "4" Opt2 = "pink"
+      Case "5" Opt2 = "light green"
+      Case "6" Opt2 = "light blue"
+      Case Else Opt2 = Default2
+    End Select
+    rofile.close
+  End If
+  if NOT fs.FileExists(OptionsFile) then OptionsCorrupted
 End Sub
 
 
@@ -145,8 +151,10 @@ End Function
 
 
 Sub OptionsCorrupted
-  AllData = "Options file has been corrupted."
-  ' recreate options file?
+  ' if options file not present or not formatted correctly, pass in the default values & recreate it
+  Opt1 = Default1
+  Opt2 = Default2
+  WriteOptions Opt1, Opt2
 End Sub
 
 
@@ -165,7 +173,11 @@ Sub WriteOptions(Opt1, Opt2)
   tfile.WriteLine(Opt1)
   tfile.WriteLine(Opt2)
   tfile.close
-  fs.DeleteFile(OptionsFile)
+  if fs.FileExists(OptionsFile) then fs.DeleteFile(OptionsFile)
   fs.MoveFile TempFile, OptionsFile  
 End Sub
 
+
+' ---------- execution --------------
+
+GetFileList()

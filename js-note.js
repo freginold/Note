@@ -9,8 +9,8 @@ var newNoteDiv = document.getElementById('newNoteDiv');
 var noteTitle = document.getElementById('noteTitle');
 var optionsDiv = document.getElementById('optionsDiv');
 var newNoteInputBox = document.getElementById('newNoteInputBox');
+var inputs = [];
 var noteText, currentNote, dummyVar, showTimeStamp, bgColor, bgColorNum;
-inputs = [];
 
 
 // ------- declare functions ----------
@@ -54,17 +54,30 @@ function clearAll() {
   inputBox.value='';
 }
 
-function showNotes(thisVar) {
+function showNotes(cNote) {
   clearAll();
-  window[thisVar].className='noteButton activeNote';
+  currentNote = cNote;
+  window[currentNote].className='noteButton activeNote';
   noteText='';
-  currentNote = thisVar;
-  thisVar=".\\notes\\"+thisVar+".txt";
-  noteText = LoadFile(thisVar)
+// noteText = getLines(currentNote);
+  noteText = LoadFile(currentNote)
   noteTitle.innerText = currentNote;
   noteBody.innerText = noteText;
   inputDiv.style.display='block';
   inputBox.focus();
+}
+
+function getLines(thisNote) {
+  // loop through file, get each line from note and add X to it, return HTML as noteText
+  var notesHTML='<div>';
+  var currentLine = '';
+  var fileEnd = false;
+  while (!fileEnd) {
+    // currentLine = GetLine
+  
+  }
+  notesHTML=notesHTML + "</div>";
+  return notesHTML;
 }
 
 function onSubmitted(tempVar, thisNote) {
@@ -125,8 +138,6 @@ function createNewNote(newNoteName) {
 
 // ----------- declare event handlers ----------
 
-// for option <input> elements, attach click handler to call saveOptions()
-
 inputs = document.getElementsByTagName('input');
 
 for (var i=0; i<inputs.length; i++) {
@@ -134,3 +145,9 @@ for (var i=0; i<inputs.length; i++) {
     inputs[i].attachEvent('onclick', saveOptions);
   }
 }
+
+
+// --------- execution -----------------
+
+applyOptions();
+
