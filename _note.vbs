@@ -7,6 +7,9 @@
 ' able to delete specific notes
 
 
+' ** del all msgbox commands
+
+
 ' be sure to close text files as soon as done with them!
 
 
@@ -35,13 +38,12 @@ Dim rfile
 Sub GetFileList
   NoteList.innerHtml = ""
   for each file in fs.GetFolder(notesDir).Files
-'    fs.GetBaseName(file)
     NoteList.innerHtml = NoteList.innerHTML + "<button class='noteButton' id='" + fs.GetBaseName(file) + "' onclick='showNotes(this.id)'>" + fs.GetBaseName(file) + "</button>"
   next
 End Sub  
 
-
 Function LoadFile(FileName)
+  ' *** obsolete, to be deleted ***
   'load notes from a text file to display
   FileName = NotesDir + FileName + ".txt"
   allData = ""
@@ -73,7 +75,8 @@ End Function
 
 Sub OpenRFile(FileName)
   FileName = NotesDir + FileName + ".txt"
-  set rfile=fs.opentextfile(FileName, 1)
+  if fs.FileExists(FileName) then set rfile=fs.opentextfile(FileName, 1)
+  if NOT fs.FileExists(FileName) then msgbox FileName & " not there"
 End Sub
 
 
@@ -117,7 +120,7 @@ End Sub
 
 
 Function LoadOptions(dummyVar)
-  ' *** this function is obsolete, will delete once make sure i don't need any of the code ***
+  ' *** this function is obsolete, to be deleted ***
   ' open option file, return formatted text string (for now, till enable changes)
   ' once can enable changes, just use GetOptions to get current settings, show/change w/ JS
   AllData = ""
@@ -215,6 +218,29 @@ Sub WriteOptions(Opt1, Opt2)
   if fs.FileExists(OptionsFile) then fs.DeleteFile(OptionsFile)
   fs.MoveFile TempFile, OptionsFile  
 End Sub
+
+
+Sub DelLine(ThisLine)
+  segments = Split(ThisLine.id, "X")
+  LineNum = CInt(segments(1))
+  OpenRFile(currentNote)
+  TempFileName = fs.GetTempName
+  TempFile = NotesDir + TempFileName + ".txt"
+  set tfile = fs.OpenTextFile(TempFile, 2, True)
+  count = 0
+  do until rfile.AtEndOfStream
+    line=rfile.Readline
+    if count <> LineNum then tfile.WriteLine(line)
+    if line <> "" then count = count + 1
+  loop
+  tfile.close
+  CloseRFile(currentNote)
+  currentNoteFile = NotesDir + currentNote + ".txt"
+  if fs.FileExists(CurrentNoteFile) then fs.DeleteFile(CurrentNoteFile)
+  fs.MoveFile TempFile, CurrentNoteFile
+  showNotes(CurrentNote)  
+End Sub
+
 
 
 ' ---------- execution --------------

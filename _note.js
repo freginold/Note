@@ -11,7 +11,7 @@ var optionsDiv = document.getElementById('optionsDiv');
 var newNoteInputBox = document.getElementById('newNoteInputBox');
 var inputs = [];
 var items = [];
-var xElBeg = "<div class='x' onclick='delItem(this)' id='X";
+var xElBeg = "<div class='x' onclick='DelLine(this)' id='X";
 var xElEnd = "'>X</div>";
 var noteText, currentNote, dummyVar, showTimeStamp, bgColor, bgColorNum;
 
@@ -32,7 +32,6 @@ function applyOptions() {
 
 function saveOptions() {
   // save options to disk on change
-  // embed in a timeout; while saving, disable buttons & make them .2 opaque
   if (document.getElementsByName('timeStamp')[1].checked) { showTimeStamp='Show'; }
   else { showTimeStamp = 'Hide'; }
   if (document.getElementsByName('bg')[0].checked) { bgColorNum=1; }
@@ -67,7 +66,6 @@ function showNotes(cNote) {
   window[currentNote].className='noteButton activeNote';
   noteText='';
   noteText = getLines(currentNote);
-//  noteText = LoadFile(currentNote)
   noteTitle.innerText = currentNote;
   noteBody.innerHTML = noteText;
   inputDiv.style.display='block';
@@ -104,18 +102,12 @@ function showX(self) {
   // show X to right of each item, on mouseover
   thisX = "X"+self.id.slice(4);
   document.getElementById(thisX).style.display='inline';
-  
 }
 
 function hideX(self) {
   // hide X on mouseout
   thisX = "X"+self.id.slice(4);
   document.getElementById(thisX).style.display='none';
-}
-
-function delItem(thisItem) {
-  // delete the current item, save the note file, and reopen it
-
 }
 
 function showOptions() {
