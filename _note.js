@@ -10,6 +10,9 @@ var noteTitle = document.getElementById('noteTitle');
 var optionsDiv = document.getElementById('optionsDiv');
 var newNoteInputBox = document.getElementById('newNoteInputBox');
 var inputs = [];
+var items = [];
+var xElBeg = "<div class='x' onclick='delItem(this)' id='X";
+var xElEnd = "'>X</div>";
 var noteText, currentNote, dummyVar, showTimeStamp, bgColor, bgColorNum;
 
 
@@ -52,6 +55,10 @@ function clearAll() {
   noteTitle.innerText = '';
   newNoteInputBox.value = '';
   inputBox.value='';
+  items[0] = 'clear';
+  for (var i in items) {
+    items[i] = '';
+  }
 }
 
 function showNotes(cNote) {
@@ -59,10 +66,10 @@ function showNotes(cNote) {
   currentNote = cNote;
   window[currentNote].className='noteButton activeNote';
   noteText='';
-// noteText = getLines(currentNote);
-  noteText = LoadFile(currentNote)
+  noteText = getLines(currentNote);
+//  noteText = LoadFile(currentNote)
   noteTitle.innerText = currentNote;
-  noteBody.innerText = noteText;
+  noteBody.innerHTML = noteText;
   inputDiv.style.display='block';
   inputBox.focus();
 }
@@ -70,12 +77,19 @@ function showNotes(cNote) {
 function getLines(thisNote) {
   // loop through file, get each line from note and add X to it, return HTML as noteText
   var notesHTML='<div>';
-  var currentLine = '';
-  var fileEnd = false;
-  while (!fileEnd) {
-    // currentLine = GetLine
-  
+  var currentLine;
+  var noteNum = 0;
+  var FileEnd = false;
+  OpenRFile(thisNote)
+  while (!FileEnd) {
+    currentLine = GetLine(dummyVar)
+    if (currentLine == EOFConst) { FileEnd = true; }
+    else if (currentLine != "") {
+      notesHTML = notesHTML + "<li class='item' id='item" + noteNum + "' onmouseover='showX(this);' onmouseout='hideX(this);'>" + currentLine +"&nbsp;&nbsp;"+ xElBeg + noteNum + xElEnd + "</li>";
+      noteNum++;
+    }
   }
+  CloseRFile(currentNote);
   notesHTML=notesHTML + "</div>";
   return notesHTML;
 }
@@ -86,8 +100,22 @@ function onSubmitted(tempVar, thisNote) {
   // -- vbscript: AddNote inputBox.value, currentNote
 }
 
-function addX() {
-  // add X next to each note so it can be deleted; will be called from VBScript
+function showX(self) {
+  // show X to right of each item, on mouseover
+  thisX = "X"+self.id.slice(4);
+  document.getElementById(thisX).style.display='inline';
+  
+}
+
+function hideX(self) {
+  // hide X on mouseout
+  thisX = "X"+self.id.slice(4);
+  document.getElementById(thisX).style.display='none';
+}
+
+function delItem(thisItem) {
+  // delete the current item, save the note file, and reopen it
+
 }
 
 function showOptions() {
@@ -138,6 +166,8 @@ function createNewNote(newNoteName) {
 
 // ----------- declare event handlers ----------
 
+// option button handlers
+
 inputs = document.getElementsByTagName('input');
 
 for (var i=0; i<inputs.length; i++) {
@@ -145,6 +175,14 @@ for (var i=0; i<inputs.length; i++) {
     inputs[i].attachEvent('onclick', saveOptions);
   }
 }
+
+// item hover handlers - in function, after items are created
+
+
+
+// X click handlers
+
+
 
 
 // --------- execution -----------------

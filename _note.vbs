@@ -4,7 +4,7 @@
 ' want it to:
 ' show all notes at top
 ' you can pick one, it shows current notes, w/ input box to add note, add it w/ date & time
-' able to delete specific notes?
+' able to delete specific notes
 
 
 ' be sure to close text files as soon as done with them!
@@ -19,12 +19,13 @@ Const Default1 = "Hide"
 Const Default2 = "Light Gray"
 Const OptionsFile = "options.txt"
 Const OptionsComment = "1- time stamp: Hide/Show, 2- bg color 1:LiGra/2:LiY/3:Wh/4:Pi/5:LiGre/6:LiBlu. Def: 1-Hide, 2-1."
+Const EOFConst = "<<<EOF>>>"
 Opt1 = Default1
 Opt2 = Default2
 NewFileWithPath = ""
 TempFileName = ""
 TempFile = ""
-
+Dim rfile
 
 
 
@@ -47,21 +48,52 @@ Function LoadFile(FileName)
   set rfile=fs.opentextfile(FileName, 1)
   do until rfile.AtEndOfStream
     line=rfile.Readline
-    if LCase(Opt1) = "hide" then
-      ' get line after >
-      segments = Split(line, ">")
-      i = 0
-      line = ""
-      for each x in segments
-        i = i + 1
-        if i > 2 then x = ">" + x
-        if i > 1 then line = line + x
-      next
-    end if
+    if LCase(Opt1) = "hide" then line = HideStamp(line)
     if line <> "" then allData=allData+" "+line+VbCrLf
   loop
   rfile.close
   LoadFile = allData
+End Function
+
+
+Function HideStamp(line)
+  ' hide time stamp, if configured
+  ' get line after >
+  segments = Split(line, ">")
+  i = 0
+  line = ""
+  for each x in segments
+    i = i + 1
+    if i > 2 then x = ">" + x
+    if i > 1 then line = line + x
+  next
+  HideStamp = line
+End Function
+
+
+Sub OpenRFile(FileName)
+  FileName = NotesDir + FileName + ".txt"
+  set rfile=fs.opentextfile(FileName, 1)
+End Sub
+
+
+Sub CloseRFile(FileName)
+  FileName = NotesDir + FileName + ".txt"
+  rfile.close
+End Sub
+
+
+Function GetLine(dummyVar)
+  line = ""
+  ' pull each line out of the note file, return it
+  Select Case rfile.AtEndOfStream
+    Case false
+      line = rfile.Readline
+      if LCase(Opt1) = "hide" then line = HideStamp(line)
+    Case Else
+      line = EOFConst
+  End Select
+  GetLine = line
 End Function
 
 
@@ -119,24 +151,17 @@ Sub GetOptions(dummyVar)
   if fs.FileExists(OptionsFile) then 
     set rofile = fs.opentextfile(OptionsFile, 1)
     ' check for rofile.AtEndOfStream -- if premature, use default values
-    if rofile.AtEndOfStream then Exit Sub
+    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted : Exit Sub
     line = rofile.Readline
     ' ignore first line of options file
-    if rofile.AtEndOfStream then Exit Sub
+    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted : Exit Sub
     line = LCase(rofile.Readline)
     if (line <> "show") and (line <> "hide") then line = Default1
     Opt1 = line
-    if rofile.AtEndOfStream then Exit Sub
+    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted : Exit Sub
     line = rofile.Readline
-    Select Case line
-      Case "1" Opt2 = "light gray"
-      Case "2" Opt2 = "light yellow"
-      Case "3" Opt2 = "white"
-      Case "4" Opt2 = "pink"
-      Case "5" Opt2 = "light green"
-      Case "6" Opt2 = "light blue"
-      Case Else Opt2 = Default2
-    End Select
+    Opt2 = line
+    GetOpt2Text(Opt2)
     rofile.close
   End If
   if NOT fs.FileExists(OptionsFile) then OptionsCorrupted
@@ -146,7 +171,21 @@ End Sub
 Function GetOption(ThisOption)
   'return options one at a time to be applied by JS
   if ThisOption = "1" then GetOption = Opt1
-  if ThisOption = "2" then GetOption = Opt2
+  if ThisOption = "2" then GetOption = GetOpt2Text(Opt2)
+End Function
+
+
+Function GetOpt2Text(Opt2)
+  Select Case Opt2
+    Case "1" Opt2Text = "light gray"
+    Case "2" Opt2Text = "light yellow"
+    Case "3" Opt2Text = "white"
+    Case "4" Opt2Text = "pink"
+    Case "5" Opt2Text = "light green"
+    Case "6" Opt2Text = "light blue"
+    Case Else Opt2Text = Default2 : Opt2 = 1
+  End Select
+  GetOpt2Text = Opt2Text
 End Function
 
 

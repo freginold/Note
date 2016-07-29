@@ -1,0 +1,80 @@
+body {
+  background: lightgray;
+  font-size: 1em;
+  font-family: serif;
+  color: black;
+}
+#noteList {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 5px;
+  padding: 2px;
+}
+#noteBody {
+  border: 1px solid black;
+  padding: 5px;
+  font-family: serif;
+  font-size: 1em;
+}
+#upperRightBox {
+  border-left: 1px solid black;
+  border-bottom: 1px solid black;
+  display: flex;
+  position: relative;
+  float: right;
+  width: 110px;
+  padding-bottom: 4px;
+}
+.upperRightButton {
+  position: relative;
+  float: left;
+  margin-left: 10px;
+}
+.noteButton {
+  padding: 6px;
+  margin: 2px;
+  font-size: 1.2em;
+  border-radius: 8px;
+}
+#inputDiv {
+  display: none;
+}
+#newNoteDiv {
+  display: none;
+}
+#noteTitle {
+  text-align: center;
+}
+#optionsDiv {
+  display: none;
+  font-family: serif;
+}
+.optionInput {
+  margin-left: 25px;
+}
+h4 {
+  margin-bottom: 2px;
+}
+.goItalic {
+  font-style: italic;
+  font-size: .8em;
+}
+.activeNote {
+  font-weight: bold;
+  border: 2px solid black;
+  backgroundColor: gray;
+}
+.item {
+  list-style-type: circle;
+  padding-bottom: 4px;
+}
+.item:hover {
+  list-style-type: disc;
+}
+.x {
+  display: none;
+  position: relative;
+  border: 2px solid red;
+  color: red;
+  font-size: 1em;
+}
