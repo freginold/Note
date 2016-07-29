@@ -3,6 +3,8 @@ Note is a very basic Windows GUI note app.  It is free, open source, and in the 
 
 Note relies on a `notes` subfolder in the same directory.  It uses the `options.txt` file to store configuration settings -- currently whether time stamp display is on or off, and what the background color is set to.
 
+You can create note files to group notes, and add individual lines to each one.  Lines can be deleted individually.
+
 ![screen shot]
 (https://github.com/freginold/Note/blob/master/note_ss.png)
 
