@@ -1,17 +1,3 @@
-' note app, HTA version VBScript source
-
-
-' want it to:
-' show all notes at top
-' you can pick one, it shows current notes, w/ input box to add note, add it w/ date & time
-' able to delete specific notes
-
-
-' ** del all msgbox commands
-
-
-' be sure to close text files as soon as done with them!
-
 
 ' ----- set up variables, constants, & objects ------
 

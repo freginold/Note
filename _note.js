@@ -1,4 +1,3 @@
-// JavaScript file for note app
 
 // ------- declare variables ----------
 
