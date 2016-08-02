@@ -38,7 +38,9 @@ Dim rfile
 Sub GetFileList
   NoteList.innerHtml = ""
   for each file in fs.GetFolder(notesDir).Files
-    NoteList.innerHtml = NoteList.innerHTML + "<button class='noteButton' id='" + fs.GetBaseName(file) + "' onclick='showNotes(this.id)'>" + fs.GetBaseName(file) + "</button>"
+    if fs.GetExtensionName(file) = "txt" then
+      NoteList.innerHtml = NoteList.innerHTML + "<button class='noteButton' id='" + fs.GetBaseName(file) + "' onclick='showNotes(this.id)'>" + fs.GetBaseName(file) + "</button>"
+    end if
   next
 End Sub  
 
