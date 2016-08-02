@@ -15,7 +15,6 @@ On a Windows computer with Internet Explorer installed:
   - Double-click the `note.hta` file to run the program
 
 ### Limitations:
-- Placing any files other than `.txt` files in the "notes" subfolder will cause those files to show up in the note list.  If they are clicked on, a script error will be thrown. (This will be fixed in the future.)
 - Note files must be kept in the `notes` subfolder.  When you create a new note, it is automatically saved there.
 - The options file (`options.txt`) must be kept in the main folder with the program files.  (If it's missing or corrupted, a default options file will be created on launch.)
 
