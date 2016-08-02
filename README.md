@@ -16,8 +16,8 @@ On a Windows computer with Internet Explorer installed:
 
 ### Limitations:
 - Note files must be kept in the `notes` subfolder.  When you create a new note, it is automatically saved there.
-- The options file (`options.txt`) must be kept in the main folder with the program files.  (If it's missing or corrupted, a default options file will be created on launch.)
-- May not run right on Windows Vista or older operating systems
+- The options file (`options.txt`) must be kept in the main folder with the program files.  (If it's missing or corrupted, a default options file will be created on program launch.)
+- May not run correctly on Windows Vista or older operating systems
 
 
 *Side note:* HTA files run as "trusted" programs in Windows.  They are good for sysadmin work and local scripting, but be aware of the security concerns before making use of an HTA file, especially one downloaded from an unfamiliar source.
