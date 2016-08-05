@@ -15,7 +15,7 @@ On a Windows computer with Internet Explorer installed:
   - Double-click the `note.hta` file to run the program
 
 ### Limitations:
-- Note files must be kept in the `notes` subfolder.  When you create a new note, it is automatically saved there.
+- Note files must be kept in the `notes` subfolder, with a `.txt` file extension.  When a new note is created, it is automatically saved there.
 - The program does not run correctly on Windows Vista systems
 
 
