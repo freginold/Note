@@ -1,3 +1,9 @@
+' Options:
+' 1. Time Stamp: Hide/Show
+' 2. Background Color: 1-gray/2-yellow/3-white/4-pink/5-green/6-blue
+' 3. Note Font: georgia/calibri/hoefler/chiller/sans/serif
+' 4. Note Font Size: small/medium/large
+
 
 ' ----- set up variables, constants, & objects ------
 
@@ -5,12 +11,15 @@ Set fs = CreateObject("Scripting.FileSystemObject")
 allData = ""
 const NotesDir = ".\notes\"
 Const Default1 = "Hide"
-Const Default2 = "Light Gray"
+Const Default2 = "1"
+Const Default3 = "serif"
+Const Default4 = "medium"
 Const OptionsFile = "options.txt"
-Const OptionsComment = "1- time stamp: Hide/Show, 2- bg color 1:LiGra/2:LiY/3:Wh/4:Pi/5:LiGre/6:LiBlu. Def: 1-Hide, 2-1."
 Const EOFConst = "<<<EOF>>>"
 Opt1 = Default1
 Opt2 = Default2
+Opt3 = Default3
+Opt4 = Default4
 NewFileWithPath = ""
 TempFileName = ""
 TempFile = ""
@@ -28,22 +37,7 @@ Sub GetFileList
       NoteList.innerHtml = NoteList.innerHTML + "<button class='noteButton' id='" + fs.GetBaseName(file) + "' onclick='showNotes(this.id)'>" + fs.GetBaseName(file) + "</button>"
     end if
   next
-End Sub  
-
-Function LoadFile(FileName)
-  ' *** obsolete, to be deleted ***
-  'load notes from a text file to display
-  FileName = NotesDir + FileName + ".txt"
-  allData = ""
-  set rfile=fs.opentextfile(FileName, 1)
-  do until rfile.AtEndOfStream
-    line=rfile.Readline
-    if LCase(Opt1) = "hide" then line = HideStamp(line)
-    if line <> "" then allData=allData+" "+line+VbCrLf
-  loop
-  rfile.close
-  LoadFile = allData
-End Function
+End Sub
 
 
 Function HideStamp(line)
@@ -107,52 +101,30 @@ Sub CreateNewFile(FileName)
 End Sub
 
 
-Function LoadOptions(dummyVar)
-  ' *** this function is obsolete, to be deleted ***
-  ' open option file, return formatted text string (for now, till enable changes)
-  ' once can enable changes, just use GetOptions to get current settings, show/change w/ JS
-  AllData = ""
-  set rofile=fs.opentextfile(OptionsFile, 1)
-  ' check for rofile.AtEndOfStream -- if premature, "options file corrupted" (offer to rebuild?)
-  if rofile.AtEndOfStream then 
-    OptionsCorrupted
-    Exit Function
-  End If
-  line = rofile.Readline
-  ' ignore first line of options file
-  if rofile.AtEndOfStream then 
-    OptionsCorrupted
-    Exit Function
-  End If
-  line = rofile.Readline
-  AllData = "Time Stamp:   " + line + VbCrLf
-  if rofile.AtEndOfStream then 
-    OptionsCorrupted
-    Exit Function
-  End If
-  line = rofile.Readline
-  AllData = AllData + "Background Color:   " + line + VbCrLf
-  rofile.close
-  LoadOptions = AllData
-End Function
-
-
 Sub GetOptions(dummyVar)
   ' open options file, load options into memory
   if fs.FileExists(OptionsFile) then 
     set rofile = fs.opentextfile(OptionsFile, 1)
+    ' get option 1 = time stamp
     ' check for rofile.AtEndOfStream -- if premature, use default values
-    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted : Exit Sub
-    line = rofile.Readline
-    ' ignore first line of options file
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted : Exit Sub
     line = LCase(rofile.Readline)
     if (line <> "show") and (line <> "hide") then line = Default1
     Opt1 = line
+    ' get option 2 = background color
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted : Exit Sub
     line = rofile.Readline
     Opt2 = line
     GetOpt2Text(Opt2)
+    ' get option 3 - font
+    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted : Exit Sub
+    line = rofile.Readline
+    Opt3 = line
+    ' get option 4 - font size
+    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted : Exit Sub
+    line = rofile.Readline
+    Opt4 = line
+    ' close file
     rofile.close
   End If
   if NOT fs.FileExists(OptionsFile) then OptionsCorrupted
@@ -163,17 +135,19 @@ Function GetOption(ThisOption)
   'return options one at a time to be applied by JS
   if ThisOption = "1" then GetOption = Opt1
   if ThisOption = "2" then GetOption = GetOpt2Text(Opt2)
+  if ThisOption = "3" then GetOption = Opt3
+  if ThisOption = "4" then GetOption = Opt4
 End Function
 
 
 Function GetOpt2Text(Opt2)
   Select Case Opt2
-    Case "1" Opt2Text = "light gray"
-    Case "2" Opt2Text = "light yellow"
+    Case "1" Opt2Text = "gray"
+    Case "2" Opt2Text = "yellow"
     Case "3" Opt2Text = "white"
     Case "4" Opt2Text = "pink"
-    Case "5" Opt2Text = "light green"
-    Case "6" Opt2Text = "light blue"
+    Case "5" Opt2Text = "green"
+    Case "6" Opt2Text = "blue"
     Case Else Opt2Text = Default2 : Opt2 = 1
   End Select
   GetOpt2Text = Opt2Text
@@ -184,11 +158,13 @@ Sub OptionsCorrupted
   ' if options file not present or not formatted correctly, pass in the default values & recreate it
   Opt1 = Default1
   Opt2 = Default2
-  WriteOptions Opt1, Opt2
+  Opt3 = Default3
+  Opt4 = Default4
+  WriteOptions Opt1, Opt2, Opt3, Opt4
 End Sub
 
 
-Sub WriteOptions(Opt1, Opt2)
+Sub WriteOptions(Opt1, Opt2, Opt3, Opt4)
   ' write options to disk
   ' write to temp file, save temp file, del options.txt, ren temp file to options.txt
   ' open temp file for output
@@ -199,9 +175,10 @@ Sub WriteOptions(Opt1, Opt2)
   TempFileName = fs.GetTempName
   TempFile = TempFileName + ".txt"
   set tfile = fs.OpenTextFile(TempFile, 2, True)
-  tfile.WriteLine(OptionsComment)
   tfile.WriteLine(Opt1)
   tfile.WriteLine(Opt2)
+  tfile.WriteLine(Opt3)
+  tfile.WriteLine(Opt4)
   tfile.close
   if fs.FileExists(OptionsFile) then fs.DeleteFile(OptionsFile)
   fs.MoveFile TempFile, OptionsFile  
@@ -233,4 +210,6 @@ End Sub
 
 ' ---------- execution --------------
 
+window.resizeTo screen.availWidth/1.75, screen.availHeight/1.7
+window.moveTo 200,200
 GetFileList()

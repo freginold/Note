@@ -12,7 +12,8 @@ var inputs = [];
 var items = [];
 var xElBeg = "<div class='x' onclick='DelLine(this)' id='X";
 var xElEnd = "'>X</div>";
-var noteText, currentNote, dummyVar, showTimeStamp, bgColor, bgColorNum;
+var noteFont = 'serif';
+var noteText, currentNote, dummyVar, showTimeStamp, bgColor, bgColorNum, textSize;
 
 
 // ------- declare functions ----------
@@ -21,25 +22,56 @@ function applyOptions() {
   // apply options on load & on change
   GetOptions(dummyVar)
   showTimeStamp = GetOption(1).toLowerCase();
-  bgColor = GetOption(2).toLowerCase();
-  if (bgColor.slice(0,6) == "light ") {
-    bgColor = "light" + bgColor.slice(6);
-  }
-  // maybe later add in function to remove spaces
+  var bgColorText = GetOption(2).toLowerCase();
+  switch (bgColorText) {
+    case "yellow":
+      bgColor = "#f0f0b3";
+      break;
+    case "white":
+      bgColor = "fefefe";
+      break;
+    case "pink":
+      bgColor = "#ff90aa";
+      break;
+    case "green":
+      bgColor = "#bfe9bf";
+      break;
+    case "blue":
+      bgColor = "#a9d6df";
+      break;
+    default:
+      bgColor = "lightgray";
+      break;
+}
   document.body.style.backgroundColor=bgColor;
+  noteFont = GetOption(3).toLowerCase();
+  textSize = GetOption(4).toLowerCase();
 }
 
 function saveOptions() {
   // save options to disk on change
+  // option 1 - time stamp
   if (document.getElementsByName('timeStamp')[1].checked) { showTimeStamp='Show'; }
   else { showTimeStamp = 'Hide'; }
+  // option 2 - background color
   if (document.getElementsByName('bg')[0].checked) { bgColorNum=1; }
   else if (document.getElementsByName('bg')[1].checked) { bgColorNum=2; }
   else if (document.getElementsByName('bg')[2].checked) { bgColorNum=3; }
   else if (document.getElementsByName('bg')[3].checked) { bgColorNum=4; }
   else if (document.getElementsByName('bg')[4].checked) { bgColorNum=5; }
   else if (document.getElementsByName('bg')[5].checked) { bgColorNum=6; }
-  WriteOptions(showTimeStamp, bgColorNum)
+  // option 3 - font
+  if (document.getElementsByName('font')[0].checked) { noteFont='georgia'; }
+  else if (document.getElementsByName('font')[1].checked) { noteFont='calibri'; }
+  else if (document.getElementsByName('font')[2].checked) { noteFont='hoefler'; }
+  else if (document.getElementsByName('font')[3].checked) { noteFont='chiller'; }
+  else if (document.getElementsByName('font')[4].checked) { noteFont='sans'; }
+  else if (document.getElementsByName('font')[5].checked) { noteFont='serif'; }
+  // option 4 - font size
+  if (document.getElementsByName('textSize')[0].checked) { textSize='small'; }
+  else if (document.getElementsByName('textSize')[1].checked) { textSize='medium'; }
+  else if (document.getElementsByName('textSize')[2].checked) { textSize='large'; }
+  WriteOptions(showTimeStamp, bgColorNum, noteFont, textSize)
   applyOptions();
 }
 
@@ -49,6 +81,7 @@ function clearAll() {
   newNoteDiv.style.display = 'none';
   optionsDiv.style.display='none';
   inputDiv.style.display = 'none';
+  noteBody.style.display='block';
   noteBody.innerText = '';
   noteTitle.innerText = '';
   newNoteInputBox.value = '';
@@ -77,12 +110,13 @@ function getLines(thisNote) {
   var currentLine;
   var noteNum = 0;
   var FileEnd = false;
+  var currentClasses = 'item ' + noteFont + ' ' + textSize + 'Font';
   OpenRFile(thisNote)
   while (!FileEnd) {
     currentLine = GetLine(dummyVar)
     if (currentLine == EOFConst) { FileEnd = true; }
     else if (currentLine != "") {
-      notesHTML = notesHTML + "<li class='item' id='item" + noteNum + "' onmouseover='showX(this);' onmouseout='hideX(this);'>" + currentLine +"&nbsp;&nbsp;"+ xElBeg + noteNum + xElEnd + "</li>";
+      notesHTML = notesHTML + "<li class='" + currentClasses + "' id='item" + noteNum + "' onmouseover='showX(this);' onmouseout='hideX(this);'>" + currentLine +"&nbsp;&nbsp;"+ xElBeg + noteNum + xElEnd + "</li>";
       noteNum++;
     }
   }
@@ -112,17 +146,18 @@ function hideX(self) {
 function showOptions() {
   // show options, save changes
   clearAll();
+  noteBody.style.display='none';
   noteTitle.innerText = 'Options:';
   showTimeStamp = GetOption(1).toLowerCase();
-  bgColor = GetOption(2).toLowerCase();
+  var bgColorText = GetOption(2).toLowerCase();
   optionsDiv.style.display='block';
   if (showTimeStamp == 'show') { document.getElementsByName('timeStamp')[1].checked=true; }
   else { document.getElementsByName('timeStamp')[0].checked=true; }
-  switch (bgColor) {
-    case "light gray":
+  switch (bgColorText) {
+    case "gray":
       document.getElementsByName('bg')[0].checked=true;
       break;
-    case "light yellow":
+    case "yellow":
       document.getElementsByName('bg')[1].checked=true;
       break;
     case "white":
@@ -131,17 +166,28 @@ function showOptions() {
     case "pink":
       document.getElementsByName('bg')[3].checked=true;
       break;
-    case "light green":
+    case "green":
       document.getElementsByName('bg')[4].checked=true;
       break;
-    case "light blue":
+    case "blue":
       document.getElementsByName('bg')[5].checked=true;
       break;
+  }
+  // ---- use this method for other options too ----
+  var fonts = document.getElementsByName('font');
+  for (i = 0; i < fonts.length; i++) {
+    if (fonts[i].value == noteFont) { fonts[i].checked=true; }
+  }
+  var sizes = document.getElementsByName('textSize');
+  // ---- use this method for other options too ----
+  for (i = 0; i < sizes.length; i++) {
+    if (sizes[i].value == textSize) { sizes[i].checked=true; }
   }
 }
 
 function showNewNoteBox() {
   clearAll();
+  noteBody.style.display='none';
   noteTitle.innerText = 'Name for new note:';
   newNoteDiv.style.display = 'block';
   newNoteInputBox.focus();

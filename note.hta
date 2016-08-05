@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <head>
+<HTA:Application
+  ApplicationName = Note
+  Border = Thick
+  SingleInstance = yes
+  Scroll = no
+>
 <title>Note</title>
 <link href='_note.css' rel='stylesheet' type='text/css'>
 </head>
@@ -34,17 +40,36 @@
 
 <div id='optionsDiv'>
   <br />
+  <table><tr>
+  <td class='optionsColumn'>
   <h4>Time Stamp:</h4>
   <label><input type='radio' name='timeStamp' class='optionInput' value='Hide' /> Hide&nbsp;<span class='goItalic'>(default)</span></label><br />
   <label><input type='radio' name='timeStamp' class='optionInput' value='Show' /> Show</label>
   <br /><br />
   <h4>Background Color:</h4>
-  <label><input type='radio' name='bg' class='optionInput' value='lightgray' /> Light Gray &nbsp;<span class='goItalic'>(default)</span></label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='lightyellow' /> Light Yellow</label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='gray' /> Gray &nbsp;<span class='goItalic'>(default)</span></label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='yellow' /> Yellow</label><br />
   <label><input type='radio' name='bg' class='optionInput' value='white' /> White</label><br />
   <label><input type='radio' name='bg' class='optionInput' value='pink' /> Pink</label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='light green' /> Light Green</label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='lightblue' /> Light Blue</label>
+  <label><input type='radio' name='bg' class='optionInput' value='green' /> Green</label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='blue' /> Blue</label>
+  </td>
+  <td class='optionsColumn'>
+  <h4>Note Font:</h4>
+  <label class='georgia'><input type='radio' name='font' class='optionInput' value='georgia' /> Georgia</label><br />
+  <label class='calibri'><input type='radio' name='font' class='optionInput' value='calibri' /> Calibri</label><br />
+  <label class='hoefler'><input type='radio' name='font' class='optionInput' value='hoefler' /> Hoefler Text</label><br />
+  <label class='chiller'><input type='radio' name='font' class='optionInput' value='chiller' /> Chiller</label><br />
+  <label class='sans'><input type='radio' name='font' class='optionInput' value='sans' /> Sans Serif</label><br />
+  <label class='serif'><input type='radio' name='font' class='optionInput' value='serif' /> Serif &nbsp;<span class='goItalic'>(default)</span></label><br />
+  </td>
+  <td class='optionsColumn'>
+  <h4>Note Font Size:</h4>
+  <label class='smallFont'><input type='radio' name='textSize' class='optionInput' value='small'> Small</label><br />
+  <label class='mediumFont'><input type='radio' name='textSize' class='optionInput' value='medium'> Medium &nbsp;<span class='goItalic'>(default)</span></label><br />
+  <label class='largeFont'><input type='radio' name='textSize' class='optionInput' value='large'> Large</label>
+  </td>
+  </tr></table>
 </div>
 
 <script language='vbscript' src='_note.vbs'></script>

@@ -5,13 +5,16 @@ body {
   color: black;
 }
 #noteList {
-  display: flex;
-  flex-wrap: wrap;
+  display: block;
   margin: 5px;
   padding: 2px;
+  height: 80px;
+  overflow: auto;
+  white-space: pre;
 }
 #noteBody {
-  border: 1px solid black;
+  height: 280px;
+  overflow: auto;
   padding: 5px;
   font-family: serif;
   font-size: 1em;
@@ -34,7 +37,6 @@ body {
   padding: 6px;
   margin: 2px;
   font-size: 1.2em;
-  border-radius: 8px;
 }
 #inputDiv {
   display: none;
@@ -48,9 +50,11 @@ body {
 #optionsDiv {
   display: none;
   font-family: serif;
+  font-size: 1em;
 }
 .optionInput {
-  margin-left: 25px;
+  margin-left: 10px;
+  margin-top: 4px;
 }
 h4 {
   margin-bottom: 2px;
@@ -66,7 +70,9 @@ h4 {
 }
 .item {
   list-style-type: circle;
+  line-height: 1.1em;
   padding-bottom: 4px;
+  font-family: serif;
 }
 .item:hover {
   list-style-type: disc;
@@ -77,4 +83,39 @@ h4 {
   border: 2px solid red;
   color: red;
   font-size: 1em;
+}
+.optionsColumn {
+  margin-left: 1px;
+  margin-right: 45px;
+  vertical-align: top;
+  text-align: left;
+  padding-right: 90px;
+  padding-left: 40px;
+}
+.smallFont {
+  font-size: 0.8em;
+}
+.mediumFont {
+  font-size: 1em;
+}
+.largeFont {
+  font-size: 1.3em;
+}
+.serif {
+  font-family: serif;
+}
+.sans {
+  font-family: sans-serif;
+}
+.georgia {
+  font-family: Georgia, serif;
+}
+.calibri {
+  font-family: Calibri, sans-serif;
+}
+.hoefler {
+  font-family: "Hoefler Text", serif;
+}
+.chiller {
+  font-family: Chiller, sans-serif;
 }
