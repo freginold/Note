@@ -1,9 +1,9 @@
 # Note
 Note is a very basic Windows GUI note app.  It is free and open source.  It uses VBScript and JavaScript/JScript with an .HTA interface.
 
-Note relies on a `notes` subfolder in the same directory.  It uses the `options.txt` file to store configuration settings -- currently whether time stamp display is on or off, and what the background color is set to.
+Note relies on a `notes` subfolder in the same directory.  It uses the `options.txt` file to store configuration settings -- time stamp display (on or off), background color, font, and text size.  If no options file is present, Note will create a default options file on launch.
 
-You can create note files to group notes, and add individual lines to each one.  Lines can be deleted individually.
+You can create new note files to group individual note items, and add individual lines to each note/file.  Line items can be deleted individually.
 
 ![screen shot]
 (https://github.com/freginold/Note/blob/master/note_ss.png)
@@ -16,8 +16,7 @@ On a Windows computer with Internet Explorer installed:
 
 ### Limitations:
 - Note files must be kept in the `notes` subfolder.  When you create a new note, it is automatically saved there.
-- The options file (`options.txt`) must be kept in the main folder with the program files.  (If it's missing or corrupted, a default options file will be created on program launch.)
-- Does not seem to run correctly under Windows Vista
+- The program does not run correctly on Windows Vista systems
 
 
 *Side note:* HTA files run as "trusted" programs in Windows.  They are good for sysadmin work and local scripting, but be aware of the security concerns before making use of an HTA file, especially one downloaded from an unfamiliar source.
