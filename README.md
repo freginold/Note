@@ -1,5 +1,5 @@
 # Note
-Note is a very basic Windows GUI note app.  It is free and open source.  It uses VBScript and JavaScript/JScript with an .HTA interface.
+Note is a very basic Windows GUI note/task app.  It is free, open source, and in the public domain.  It uses VBScript and JavaScript/JScript with an .HTA interface.
 
 Note relies on a `notes` subfolder in the same directory.  It uses the `options.txt` file to store configuration settings -- time stamp display (on or off), background color, font, and text size.  If no options file is present, Note will create a default options file on launch.
 
