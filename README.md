@@ -16,7 +16,7 @@ On a Windows computer with Internet Explorer installed:
 
 ### Limitations:
 - Note files must be kept in the `notes` subfolder, with a `.txt` file extension.  When a new note is created, it is automatically saved there.
-- The program does not run correctly on Windows Vista systems
+- The program does not run correctly on Windows Vista systems.  (Seems to be an issue with something in the VBScript code.)
 
 
 *Side note:* HTA files run as "trusted" programs in Windows.  They are good for sysadmin work and local scripting, but be aware of the security concerns before making use of an HTA file, especially one downloaded from an unfamiliar source.
