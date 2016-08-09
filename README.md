@@ -1,7 +1,7 @@
 # Note
 Note is a very basic Windows GUI note/task app.  It is free, open source, and in the public domain.  It uses VBScript and JavaScript/JScript with an .HTA interface.
 
-Note saves all note files in a `notes` subfolder in the same folder where Note is installed.  It will create the `notes` subfolder if it doesn't already exist.  It uses the `options.txt` file to store configuration settings -- time stamp display (on/off), background color, text font, and text size.  If no options file is present, Note will create a default options file on launch.
+Note saves all note files in a `notes` subfolder, located inside the folder where Note is installed.  It will create the `notes` subfolder if it doesn't already exist.  It uses the `options.txt` file to store configuration settings -- time stamp display (on/off), background color, text font, and text size.  If no options file is present, Note will create a default options file on launch.
 
 You can create new note groups (each one saved as a separate file) and add individual note items to each group/file.  Each item can be deleted individually.
 
