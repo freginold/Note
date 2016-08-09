@@ -1,7 +1,7 @@
 ' Options:
 ' 1. Time Stamp: Hide/Show
 ' 2. Background Color: 1-gray/2-yellow/3-white/4-pink/5-green/6-blue
-' 3. Note Font: georgia/calibri/hoefler/chiller/sans/serif
+' 3. Note Font: georgia/calibri/sans/serif/otherLocalFont
 ' 4. Note Font Size: small/medium/large
 
 
@@ -16,6 +16,8 @@ Const Default3 = "serif"
 Const Default4 = "medium"
 Const OptionsFile = "options.txt"
 Const EOFConst = "<<<EOF>>>"
+Const NotesFolderErrorMsg = "<br /><p style='vertical-align: middle; text-align: center;'>File System Access Error... can not create/access notes subfolder.</p>"
+Const OptionsFileErrorMsg = "<br /><p style='vertical-align: middle; text-align: center;'>File System Access Error... can not create/access configuration file.</p>"
 Opt1 = Default1
 Opt2 = Default2
 Opt3 = Default3
@@ -39,6 +41,30 @@ Sub GetFileList
   next
 End Sub
 
+
+Sub CheckForNotesFolder
+  ' see if notes subfolder exists; if not, create it
+  if fs.FolderExists(NotesDir) then exit sub
+  fs.CreateFolder(NotesDir)
+  ' verify folder was created; if not, may have access/permission issues
+  if fs.FolderExists(NotesDir) then exit sub
+  document.getElementById("noteBody").innerHTML = NotesFolderErrorMsg
+  document.getElementById("newButton").disabled = true
+End Sub
+
+Function CheckForOptionsFile
+  ' see if options.txt file exists; if not, create it
+  CheckForOptionsFile = true
+  if fs.FileExists(OptionsFile) then exit function
+  OptionsCorrupted
+  ' verify options file was created; if not, may have access/permission issues
+  if fs.FileExists(OptionsFile) then exit function
+  document.getElementById("noteBody").innerHTML = OptionsFileErrorMsg
+  document.getElementById("optionsDiv").innerHTML = OptionsFileErrorMsg
+  CheckForOptionsFile = false
+  ' disable options button?
+  document.getElementById("optionsButton").disabled = true
+End Function
 
 Function HideStamp(line)
   ' hide time stamp, if configured
@@ -210,6 +236,9 @@ End Sub
 
 ' ---------- execution --------------
 
-window.resizeTo screen.availWidth/1.75, screen.availHeight/1.7
+window.resizeTo screen.availWidth/1.75, screen.availHeight/1.65
 window.moveTo 200,200
+CheckForNotesFolder()
+CheckForOptionsFile()
 GetFileList()
+

@@ -8,11 +8,17 @@ var newNoteDiv = document.getElementById('newNoteDiv');
 var noteTitle = document.getElementById('noteTitle');
 var optionsDiv = document.getElementById('optionsDiv');
 var newNoteInputBox = document.getElementById('newNoteInputBox');
+var localFontCheckBox = document.getElementById('localFontCheckBox');
+var localFontForm = document.getElementById('localFontForm');
+var localFontBox = document.getElementById('localFontBox');
+var localFontShow = document.getElementById('localFontShow');
+var localFontShowP = document.getElementById('localFontShowP');
 var inputs = [];
 var items = [];
 var xElBeg = "<div class='x' onclick='DelLine(this)' id='X";
 var xElEnd = "'>X</div>";
 var noteFont = 'serif';
+var localFont = '';
 var noteText, currentNote, dummyVar, showTimeStamp, bgColor, bgColorNum, textSize;
 
 
@@ -20,7 +26,8 @@ var noteText, currentNote, dummyVar, showTimeStamp, bgColor, bgColorNum, textSiz
 
 function applyOptions() {
   // apply options on load & on change
-  GetOptions(dummyVar)
+  if (!!CheckForOptionsFile()) { GetOptions(dummyVar) }
+  else { return; }
   showTimeStamp = GetOption(1).toLowerCase();
   var bgColorText = GetOption(2).toLowerCase();
   switch (bgColorText) {
@@ -45,6 +52,7 @@ function applyOptions() {
 }
   document.body.style.backgroundColor=bgColor;
   noteFont = GetOption(3).toLowerCase();
+  if (noteFont.slice(-2)=='#l') { localFont=noteFont.slice(0,-2); }
   textSize = GetOption(4).toLowerCase();
 }
 
@@ -63,10 +71,9 @@ function saveOptions() {
   // option 3 - font
   if (document.getElementsByName('font')[0].checked) { noteFont='georgia'; }
   else if (document.getElementsByName('font')[1].checked) { noteFont='calibri'; }
-  else if (document.getElementsByName('font')[2].checked) { noteFont='hoefler'; }
-  else if (document.getElementsByName('font')[3].checked) { noteFont='chiller'; }
-  else if (document.getElementsByName('font')[4].checked) { noteFont='sans'; }
-  else if (document.getElementsByName('font')[5].checked) { noteFont='serif'; }
+  else if (document.getElementsByName('font')[2].checked) { noteFont='sans'; }
+  else if (document.getElementsByName('font')[3].checked) { noteFont='serif'; }
+  else if (document.getElementsByName('font')[4].checked) { noteFont=localFontBox.value+'#l'; }
   // option 4 - font size
   if (document.getElementsByName('textSize')[0].checked) { textSize='small'; }
   else if (document.getElementsByName('textSize')[1].checked) { textSize='medium'; }
@@ -90,6 +97,8 @@ function clearAll() {
   for (var i in items) {
     items[i] = '';
   }
+  localFontForm.disabled=true;
+  localFontBox.value='';
 }
 
 function showNotes(cNote) {
@@ -110,13 +119,22 @@ function getLines(thisNote) {
   var currentLine;
   var noteNum = 0;
   var FileEnd = false;
-  var currentClasses = 'item ' + noteFont + ' ' + textSize + 'Font';
+  var fontClass = noteFont;
+  var localFontHTML = '';
+  if (noteFont.slice(-2)=='#l') {
+    fontClass = '';
+    localFontHTML = " style='font-family: &#34;" + localFont + "&#34;, serif;'";
+  }
+  var currentClasses = 'item ' + fontClass + ' ' + textSize + 'Font';
   OpenRFile(thisNote)
   while (!FileEnd) {
     currentLine = GetLine(dummyVar)
     if (currentLine == EOFConst) { FileEnd = true; }
     else if (currentLine != "") {
-      notesHTML = notesHTML + "<li class='" + currentClasses + "' id='item" + noteNum + "' onmouseover='showX(this);' onmouseout='hideX(this);'>" + currentLine +"&nbsp;&nbsp;"+ xElBeg + noteNum + xElEnd + "</li>";
+      // check input string for < or >, repl w/ &gt; or &lt;
+      currentLine = currentLine.replace(/</g, "&lt;");
+      currentLine = currentLine.replace(/>/g, "&gt;");
+      notesHTML = notesHTML + "<li class='" + currentClasses + "' id='item" + noteNum + "' onmouseover='showX(this);' onmouseout='hideX(this);'" + localFontHTML + ">" + currentLine +"&nbsp;&nbsp;"+ xElBeg + noteNum + xElEnd + "</li>";
       noteNum++;
     }
   }
@@ -128,7 +146,6 @@ function getLines(thisNote) {
 function onSubmitted(tempVar, thisNote) {
   event.returnValue = false;
   AddNote(tempVar, thisNote)
-  // -- vbscript: AddNote inputBox.value, currentNote
 }
 
 function showX(self) {
@@ -175,9 +192,27 @@ function showOptions() {
   }
   // ---- use this method for other options too ----
   var fonts = document.getElementsByName('font');
+  var noFontYet = true;
   for (i = 0; i < fonts.length; i++) {
-    if (fonts[i].value == noteFont) { fonts[i].checked=true; }
+    if (fonts[i].value == noteFont) { fonts[i].checked=true; noFontYet = false; break; }
+    }
+  if (!!noFontYet) { document.getElementsByName('font')[4].checked=true; }
+  if (localFont=='') {
+    localFontShow.style.display='none';
+    localFontDiv.style.display='inline';
   }
+  else {
+    localFontDiv.style.display='none';
+    if (localFont.length>=14) { localFontShowP.innerText=localFont.slice(0,11)+"..."; }
+    else { localFontShowP.innerText=localFont; }
+    localFontShowP.style.fontFamily="'"+localFont+"', serif";
+  }
+
+
+// **** use these lines before showing local font:
+//       currentLine = currentLine.replace(/</g, "&lt;");
+//      currentLine = currentLine.replace(/>/g, "&gt;");
+
   var sizes = document.getElementsByName('textSize');
   // ---- use this method for other options too ----
   for (i = 0; i < sizes.length; i++) {
@@ -200,6 +235,33 @@ function createNewNote(newNoteName) {
   showNotes(newNoteName);
 }
 
+function getLocalFont() {
+  localFontShow.style.display='none';
+  localFontDiv.style.display='inline';
+  localFontForm.disabled=false;
+  localFontCheckBox.onclick='setLocalFont();';
+  localFontBox.value=localFont;
+  localFontBox.focus();
+}
+
+function setLocalFont() {
+  event.returnValue = false;
+  localFontBox.value = localFontBox.value.replace(/</g, "");
+  localFontBox.value = localFontBox.value.replace(/>/g, "");
+  localFontBox.value = localFontBox.value.replace(/'/g, "");
+  localFontBox.value = localFontBox.value.replace(/"/g, "");
+  localFontBox.value = localFontBox.value.replace(/!/g, "");
+  localFontBox.value = localFontBox.value.replace(/\\/g, "");
+  localFontBox.value = localFontBox.value.replace(/\//g, "");
+  localFontBox.value = localFontBox.value.replace(/%/g, "");
+  localFontShow.style.display='inline';
+  localFontDiv.style.display='none';
+  localFontForm.disabled=true;
+  saveOptions();
+  showOptions();
+}
+
+
 
 // ----------- declare event handlers ----------
 
@@ -208,17 +270,13 @@ function createNewNote(newNoteName) {
 inputs = document.getElementsByTagName('input');
 
 for (var i=0; i<inputs.length; i++) {
-  if (inputs[i].className == "optionInput") {
+  if (inputs[i].value=='local') {
+    inputs[i].attachEvent('onclick', getLocalFont);
+  }
+  else if (inputs[i].className == "optionInput") {
     inputs[i].attachEvent('onclick', saveOptions);
   }
 }
-
-// item hover handlers - in function, after items are created
-
-
-
-// X click handlers
-
 
 
 
