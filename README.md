@@ -15,10 +15,12 @@ On a Windows computer with Internet Explorer installed:
   - Unzip the files into the folder of your choice
   - Double-click the `note.hta` file to run the program
 
-The only necessary files are `note.hta`, `_note.js`, `_note.vbs`, `_note.css`.  The others can be deleted.
+The only necessary files are `note.hta`, `_note.js`, `_note.vbs`, and `_note.css`.  The others can be deleted if you want.  The icon file, `note_icon.ico`, will be used if it's there, but Note will run fine without it.
+
+You can use any local or system font you may have installed with Note; just specify it in the options.  Spelling counts but capitalization does not.
 
 ### Limitations:
-- Note files must be kept in the `notes` subfolder, with a `.txt` file extension.  When a new note is created, it is automatically saved there.
+- Note files must be kept in the `notes` subfolder, with a `.txt` file extension, to be recognized.  When a new note is created, it is automatically saved there.
 - Note may not run correctly on Windows Vista PCs.  (Seems to be an issue with something in the VBScript code.) It has been tested successfully on Windows 7 and Windows 10 PCs.
 
 
