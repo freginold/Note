@@ -19,7 +19,7 @@ The only necessary files are `note.hta`, `_note.js`, `_note.vbs`, `_note.css`.  
 
 ### Limitations:
 - Note files must be kept in the `notes` subfolder, with a `.txt` file extension.  When a new note is created, it is automatically saved there.
-- The program does not run correctly on Windows Vista systems.  (Seems to be an issue with something in the VBScript code.)
+- Note may not run correctly on Windows Vista PCs.  (Seems to be an issue with something in the VBScript code.) It has been tested successfully on Windows 7 and Windows 10 PCs.
 
 
 *Side note:* HTA files run as "trusted" programs in Windows.  They are good for sysadmin work and local scripting, but be aware of the security concerns before making use of an HTA file, especially one downloaded from an unfamiliar source.
