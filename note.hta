@@ -6,6 +6,7 @@
   Border = Thick
   SingleInstance = yes
   Scroll = no
+  Icon = "note_icon.ico"
 >
 <title>Note</title>
 <link href='_note.css' rel='stylesheet' type='text/css'>
@@ -58,14 +59,14 @@
   <td class='optionsColumn'>
   <h4>Note Font:</h4>
   <label class='georgia'><input type='radio' name='font' class='optionInput' value='georgia' /> Georgia</label><br />
-  <label class='calibri'><input type='radio' name='font' class='optionInput' value='calibri' /> Calibri</label><br />
+  <label class='tahoma'><input type='radio' name='font' class='optionInput' value='tahoma' /> Tahoma</label><br />
   <label class='sans'><input type='radio' name='font' class='optionInput' value='sans' /> Sans Serif</label><br />
   <label class='serif'><input type='radio' name='font' class='optionInput' value='serif' /> Serif &nbsp;<span class='goItalic'>(default)</span></label><br />
   <label><input type='radio' name='font' id='localFontCheckBox' class='optionInput' value='local' />
-    <div id='localFontDiv'> <span class='smallFont'>Choose a local font:</span>
-    <form name='localFontForm' id='localFontForm' disabled=true onsubmit='setLocalFont(localFontBox.value);' action='#' >
+    <div id='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
+    <form name='localFontForm' id='localFontForm' onsubmit='setLocalFont();' action='#' >
       <input type='text' size=10 id='localFontBox' />
-      <input class='optionChangeButton' type='submit' value='Set' />
+      <input id='localFontSetButton' disabled=true class='optionChangeButton' type='submit' value='Set' />
     </form>
     </div>
     <div id='localFontShow'>

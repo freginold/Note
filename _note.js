@@ -13,6 +13,7 @@ var localFontForm = document.getElementById('localFontForm');
 var localFontBox = document.getElementById('localFontBox');
 var localFontShow = document.getElementById('localFontShow');
 var localFontShowP = document.getElementById('localFontShowP');
+var localFontSetButton = document.getElementById('localFontSetButton');
 var inputs = [];
 var items = [];
 var xElBeg = "<div class='x' onclick='DelLine(this)' id='X";
@@ -70,16 +71,17 @@ function saveOptions() {
   else if (document.getElementsByName('bg')[5].checked) { bgColorNum=6; }
   // option 3 - font
   if (document.getElementsByName('font')[0].checked) { noteFont='georgia'; }
-  else if (document.getElementsByName('font')[1].checked) { noteFont='calibri'; }
+  else if (document.getElementsByName('font')[1].checked) { noteFont='tahoma'; }
   else if (document.getElementsByName('font')[2].checked) { noteFont='sans'; }
   else if (document.getElementsByName('font')[3].checked) { noteFont='serif'; }
-  else if (document.getElementsByName('font')[4].checked) { noteFont=localFontBox.value+'#l'; }
+  else if (document.getElementsByName('font')[4].checked) { noteFont=localFont + '#l'; }
   // option 4 - font size
   if (document.getElementsByName('textSize')[0].checked) { textSize='small'; }
   else if (document.getElementsByName('textSize')[1].checked) { textSize='medium'; }
   else if (document.getElementsByName('textSize')[2].checked) { textSize='large'; }
   WriteOptions(showTimeStamp, bgColorNum, noteFont, textSize)
   applyOptions();
+  showOptions();
 }
 
 function clearAll() {
@@ -97,8 +99,7 @@ function clearAll() {
   for (var i in items) {
     items[i] = '';
   }
-  localFontForm.disabled=true;
-  localFontBox.value='';
+  localFontBox.value=localFont;
 }
 
 function showNotes(cNote) {
@@ -197,22 +198,17 @@ function showOptions() {
     if (fonts[i].value == noteFont) { fonts[i].checked=true; noFontYet = false; break; }
     }
   if (!!noFontYet) { document.getElementsByName('font')[4].checked=true; }
-  if (localFont=='') {
-    localFontShow.style.display='none';
-    localFontDiv.style.display='inline';
-  }
-  else {
-    localFontDiv.style.display='none';
-    if (localFont.length>=14) { localFontShowP.innerText=localFont.slice(0,11)+"..."; }
-    else { localFontShowP.innerText=localFont; }
-    localFontShowP.style.fontFamily="'"+localFont+"', serif";
-  }
-
-
-// **** use these lines before showing local font:
-//       currentLine = currentLine.replace(/</g, "&lt;");
-//      currentLine = currentLine.replace(/>/g, "&gt;");
-
+    if (localFont=='') {
+      localFontShow.style.display='none';
+      localFontDiv.style.display='inline';
+    }
+    else {
+      localFontDiv.style.display='none';
+      localFontShow.style.display='inline';
+      if (localFont.length>=14) { localFontShowP.innerText=localFont.slice(0,11)+"..."; }
+      else { localFontShowP.innerText=localFont; }
+      localFontShowP.style.fontFamily="'"+localFont+"', serif";
+    }
   var sizes = document.getElementsByName('textSize');
   // ---- use this method for other options too ----
   for (i = 0; i < sizes.length; i++) {
@@ -238,10 +234,10 @@ function createNewNote(newNoteName) {
 function getLocalFont() {
   localFontShow.style.display='none';
   localFontDiv.style.display='inline';
-  localFontForm.disabled=false;
   localFontCheckBox.onclick='setLocalFont();';
   localFontBox.value=localFont;
   localFontBox.focus();
+  
 }
 
 function setLocalFont() {
@@ -254,11 +250,37 @@ function setLocalFont() {
   localFontBox.value = localFontBox.value.replace(/\\/g, "");
   localFontBox.value = localFontBox.value.replace(/\//g, "");
   localFontBox.value = localFontBox.value.replace(/%/g, "");
-  localFontShow.style.display='inline';
-  localFontDiv.style.display='none';
-  localFontForm.disabled=true;
-  saveOptions();
-  showOptions();
+  checkForFontSpaces();
+  while (localFontBox.value.slice(-1)==" ") {
+    // remove any spaces from after font name
+    if (localFontBox.value.length > 1) { localFontBox.value=localFontBox.value.slice(0,-1); }
+    else { localFontBox.value = ''; break; }
+  }
+  if (localFontBox.value != '') {
+    localFont=localFontBox.value;
+    document.getElementsByName('font')[4].checked=true;
+    saveOptions();
+  }
+}
+
+function checkForFontSpaces() {
+  while (localFontBox.value.slice(0,1)==" ") {
+    // remove any spaces from before font name
+    if (localFontBox.value.length > 1) { localFontBox.value=localFontBox.value.slice(1); }
+    else { localFontBox.value = ''; break; }
+  }
+}
+
+function checkLocal() {
+  if (localFont == '') { getLocalFont(); }
+  else { saveOptions(); }
+}
+
+function checkLocalFontInput() {
+  // check to see there is any value in local font text box; if not, Set button remains disabled
+  checkForFontSpaces();
+  if (localFontBox.value != '') { localFontSetButton.disabled = false; }
+  else { localFontSetButton.disabled = true; }
 }
 
 
@@ -271,13 +293,14 @@ inputs = document.getElementsByTagName('input');
 
 for (var i=0; i<inputs.length; i++) {
   if (inputs[i].value=='local') {
-    inputs[i].attachEvent('onclick', getLocalFont);
+    inputs[i].attachEvent('onclick', checkLocal);
   }
   else if (inputs[i].className == "optionInput") {
     inputs[i].attachEvent('onclick', saveOptions);
   }
 }
 
+localFontBox.attachEvent('onkeyup', checkLocalFontInput);
 
 
 // --------- execution -----------------
