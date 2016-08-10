@@ -14,6 +14,8 @@ On a Windows computer with Internet Explorer installed:
   - Unzip the files into the folder of your choice
   - Double-click the `note.hta` file to run the program
 
+(If you get the "Unknown Publisher" message, click *Run* to bypass it.  You can uncheck the box marked "Always ask before opening this file" so the message won't appear again.)
+
 The only necessary files are `note.hta`, `_note.js`, `_note.vbs`, and `_note.css`.  The others can be deleted if you want.  The icon file, `note_icon.ico`, will be used if it's there, but Note will run fine without it.
 
 You can use any local or system font you may have installed with Note; just specify it in the options.  Spelling counts but capitalization does not.
