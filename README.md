@@ -10,8 +10,7 @@ You can create new note groups (each one saved as a separate file) and add indiv
 
 ### Installation / Execution:
 On a Windows computer with Internet Explorer installed:
-  - Click the green *"Clone or download"* button above the file list
-  - Select *Download ZIP*
+  - Download the [Note master zip file] (https://github.com/freginold/Note/archive/master.zip)
   - Unzip the files into the folder of your choice
   - Double-click the `note.hta` file to run the program
 
