@@ -4,6 +4,10 @@ body {
   font-family: serif;
   color: black;
 }
+h4 {
+  margin-bottom: 2px;
+  text-decoration: underline;
+}
 #noteList {
   display: block;
   margin: 5px;
@@ -20,9 +24,7 @@ body {
   font-size: 1em;
 }
 #upperRightBox {
-  border-left: 1px solid black;
-  border-bottom: 1px solid black;
-  display: flex;
+  border-left-style: groove;
   position: relative;
   float: right;
   width: 110px;
@@ -46,6 +48,8 @@ body {
 }
 #noteTitle {
   text-align: center;
+  padding-bottom: 10px;
+  margin-top: 4px;
 }
 #optionsDiv {
   display: none;
@@ -55,10 +59,6 @@ body {
 .optionInput {
   margin-left: 10px;
   margin-top: 4px;
-}
-h4 {
-  margin-bottom: 2px;
-  text-decoration: underline;
 }
 .goItalic {
   font-style: italic;
@@ -137,4 +137,20 @@ h4 {
 }
 #localFontDiv {
   display: inline;
+}
+.deleteButton {
+  font-size: 0.7em;
+  position: relative;
+  float: right;
+  clear: right;
+  top: 0px;
+}
+#delBox {
+  position: relative;
+  float: right;
+  width: 110px;
+  padding-bottom: 4px;
+}
+#aboutDiv {
+  padding-left: 10px;
 }

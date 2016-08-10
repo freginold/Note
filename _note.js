@@ -14,12 +14,16 @@ var localFontBox = document.getElementById('localFontBox');
 var localFontShow = document.getElementById('localFontShow');
 var localFontShowP = document.getElementById('localFontShowP');
 var localFontSetButton = document.getElementById('localFontSetButton');
+var aboutDiv = document.getElementById('aboutDiv');
 var inputs = [];
 var items = [];
 var xElBeg = "<div class='x' onclick='DelLine(this)' id='X";
+var renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'>Rename</button>";
+var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'>Delete</button>";
 var xElEnd = "'>X</div>";
 var noteFont = 'serif';
 var localFont = '';
+var currentVer = 'Note v2.2.1\nPublic Domain';
 var noteText, currentNote, dummyVar, showTimeStamp, bgColor, bgColorNum, textSize;
 
 
@@ -90,6 +94,7 @@ function clearAll() {
   newNoteDiv.style.display = 'none';
   optionsDiv.style.display='none';
   inputDiv.style.display = 'none';
+  aboutDiv.style.display = 'none';
   noteBody.style.display='block';
   noteBody.innerText = '';
   noteTitle.innerText = '';
@@ -108,7 +113,7 @@ function showNotes(cNote) {
   window[currentNote].className='noteButton activeNote';
   noteText='';
   noteText = getLines(currentNote);
-  noteTitle.innerText = currentNote;
+  noteTitle.innerHTML = "<div id='delBox'>" + renButtonHTML + delButtonHTML + "</div>" + currentNote;
   noteBody.innerHTML = noteText;
   inputDiv.style.display='block';
   inputBox.focus();
@@ -227,6 +232,9 @@ function showNewNoteBox() {
 function createNewNote(newNoteName) {
   // create a new note file
   event.returnValue = false;
+  newNoteName = checkForLeadingSpaces(newNoteName);
+  newNoteName = checkForTrailingSpaces(newNoteName);
+  if (newNoteName == '') { clearAll(); return; }
   CreateNewFile(newNoteName)
   showNotes(newNoteName);
 }
@@ -236,7 +244,8 @@ function getLocalFont() {
   localFontDiv.style.display='inline';
   localFontCheckBox.onclick='setLocalFont();';
   localFontBox.value=localFont;
-  localFontBox.focus();
+  localFontBox.select();
+  checkLocalFontInput();
   
 }
 
@@ -250,12 +259,8 @@ function setLocalFont() {
   localFontBox.value = localFontBox.value.replace(/\\/g, "");
   localFontBox.value = localFontBox.value.replace(/\//g, "");
   localFontBox.value = localFontBox.value.replace(/%/g, "");
-  checkForFontSpaces();
-  while (localFontBox.value.slice(-1)==" ") {
-    // remove any spaces from after font name
-    if (localFontBox.value.length > 1) { localFontBox.value=localFontBox.value.slice(0,-1); }
-    else { localFontBox.value = ''; break; }
-  }
+  localFontBox.value = checkForLeadingSpaces(localFontBox.value);
+  localFontBox.value = checkForTrailingSpaces(localFontBox.value);
   if (localFontBox.value != '') {
     localFont=localFontBox.value;
     document.getElementsByName('font')[4].checked=true;
@@ -263,12 +268,22 @@ function setLocalFont() {
   }
 }
 
-function checkForFontSpaces() {
-  while (localFontBox.value.slice(0,1)==" ") {
-    // remove any spaces from before font name
-    if (localFontBox.value.length > 1) { localFontBox.value=localFontBox.value.slice(1); }
-    else { localFontBox.value = ''; break; }
+function checkForLeadingSpaces(str) {
+  while (str.slice(0,1)==" ") {
+    // remove any spaces from before text
+    if (str.length > 1) { str=str.slice(1); }
+    else { str = ''; break; }
   }
+  return str;
+}
+
+function checkForTrailingSpaces(str) {
+  while (str.slice(-1)==" ") {
+    // remove any spaces from after text
+    if (str.length > 1) { str=str.slice(0,-1); }
+    else { str = ''; break; }
+  }
+  return str;
 }
 
 function checkLocal() {
@@ -283,6 +298,21 @@ function checkLocalFontInput() {
   else { localFontSetButton.disabled = true; }
 }
 
+function deleteNote() {
+  // confirm, then call a sub in VBScript to delete currentNote
+  var conf='';  
+  if (confirm("Are you sure you want to delete\n" + currentNote + "?", conf)) { DeleteThisNote() }
+  else { return; }
+}
+
+function displayAbout() {
+  // display license info/help file
+  clearAll();
+  noteBody.style.display='none';
+  noteTitle.innerText = "About Note";
+  aboutDiv.style.display = 'block';
+  document.getElementById('versionInfo').innerText = currentVer;
+}
 
 
 // ----------- declare event handlers ----------
@@ -305,5 +335,5 @@ localFontBox.attachEvent('onkeyup', checkLocalFontInput);
 
 // --------- execution -----------------
 
+clearAll();
 applyOptions();
-

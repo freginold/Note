@@ -28,8 +28,6 @@ TempFile = ""
 Dim rfile
 
 
-
-
 ' ------ subroutines & functions -----------
 
 Sub GetFileList
@@ -40,7 +38,6 @@ Sub GetFileList
     end if
   next
 End Sub
-
 
 Sub CheckForNotesFolder
   ' see if notes subfolder exists; if not, create it
@@ -80,19 +77,16 @@ Function HideStamp(line)
   HideStamp = line
 End Function
 
-
 Sub OpenRFile(FileName)
   FileName = NotesDir + FileName + ".txt"
   if fs.FileExists(FileName) then set rfile=fs.opentextfile(FileName, 1)
   if NOT fs.FileExists(FileName) then msgbox FileName & " not there"
 End Sub
 
-
 Sub CloseRFile(FileName)
   FileName = NotesDir + FileName + ".txt"
   rfile.close
 End Sub
-
 
 Function GetLine(dummyVar)
   line = ""
@@ -107,7 +101,6 @@ Function GetLine(dummyVar)
   GetLine = line
 End Function
 
-
 Sub AddNote(TempText, NoteName)
   ' append TempText to note file
   FileName = NotesDir + NoteName + ".txt"
@@ -117,7 +110,6 @@ Sub AddNote(TempText, NoteName)
   showNotes(NoteName)
 End Sub
 
-
 Sub CreateNewFile(FileName)
   ' for now, just do "false" so won't overwrite, but later check to see if exists:
   '    open file for reading, if not EOF then it already has text/exists
@@ -125,7 +117,6 @@ Sub CreateNewFile(FileName)
   fs.CreateTextFile(NewFileWithPath)
   GetFileList
 End Sub
-
 
 Sub GetOptions(dummyVar)
   ' open options file, load options into memory
@@ -156,7 +147,6 @@ Sub GetOptions(dummyVar)
   if NOT fs.FileExists(OptionsFile) then OptionsCorrupted
 End Sub
 
-
 Function GetOption(ThisOption)
   'return options one at a time to be applied by JS
   if ThisOption = "1" then GetOption = Opt1
@@ -164,7 +154,6 @@ Function GetOption(ThisOption)
   if ThisOption = "3" then GetOption = Opt3
   if ThisOption = "4" then GetOption = Opt4
 End Function
-
 
 Function GetOpt2Text(Opt2)
   Select Case Opt2
@@ -179,7 +168,6 @@ Function GetOpt2Text(Opt2)
   GetOpt2Text = Opt2Text
 End Function
 
-
 Sub OptionsCorrupted
   ' if options file not present or not formatted correctly, pass in the default values & recreate it
   Opt1 = Default1
@@ -188,7 +176,6 @@ Sub OptionsCorrupted
   Opt4 = Default4
   WriteOptions Opt1, Opt2, Opt3, Opt4
 End Sub
-
 
 Sub WriteOptions(Opt1, Opt2, Opt3, Opt4)
   ' write options to disk
@@ -209,7 +196,6 @@ Sub WriteOptions(Opt1, Opt2, Opt3, Opt4)
   if fs.FileExists(OptionsFile) then fs.DeleteFile(OptionsFile)
   fs.MoveFile TempFile, OptionsFile  
 End Sub
-
 
 Sub DelLine(ThisLine)
   segments = Split(ThisLine.id, "X")
@@ -232,6 +218,38 @@ Sub DelLine(ThisLine)
   showNotes(CurrentNote)  
 End Sub
 
+Sub DeleteThisNote
+  CurrentNoteFile = NotesDir + currentNote + ".txt"
+  if fs.FileExists(CurrentNoteFile) then
+    fs.DeleteFile(CurrentNoteFile)
+  Else
+    msgbox "File Error: could not delete " & currentNote
+  End If
+  GetFileList()
+  clearAll()
+End Sub
+
+Sub RenameThisNote()
+  NewName = InputBox("New name for this note:", "Note", "", screen.availWidth/.45, screen.availWidth/.45)
+  if NewName = "" then exit sub
+  NewName = checkForLeadingSpaces(NewName)
+  NewName = checkForTrailingSpaces(NewName)
+  if NewName = "" then exit sub
+  if NewName = currentNote then exit sub
+  NewFileWithPath = NotesDir + NewName + ".txt"
+  if fs.FileExists(NewFileWithPath) then msgbox "A file with that name already exists.": exit sub
+  OpenRFile(currentNote)
+  set tfile = fs.OpenTextFile(NewFileWithPath, 2, True)
+  do until rfile.AtEndOfStream
+    line=rfile.Readline
+    tfile.WriteLine(line)
+  loop
+  CloseRFile(currentNote)
+  tfile.close
+  DeleteThisNote
+  currentNote = NewName
+  showNotes(currentNote)
+End Sub
 
 
 ' ---------- execution --------------
@@ -241,4 +259,3 @@ window.moveTo 200,200
 CheckForNotesFolder()
 CheckForOptionsFile()
 GetFileList()
-

@@ -14,7 +14,7 @@
 <body>
 
 <div id='upperRightBox'>
-<button id='closeButton' class='upperRightButton' onclick='window.close();'>Close</button>
+<button id='aboutButton' class='upperRightButton' onclick='displayAbout();'>About</button>
 <button id='optionsButton' class='upperRightButton' onclick='showOptions();'>Options</button>
 <button id='newButton' class='upperRightButton' onclick='showNewNoteBox();'>New Note</button>
 </div>
@@ -22,7 +22,6 @@
 <div id='noteList'></div>
 
 <hr>
-
 <h3 id='noteTitle'></h3>
 <div id='noteBody'></div>
 
@@ -81,6 +80,10 @@
   <label class='largeFont'><input type='radio' name='textSize' class='optionInput' value='large'> Large</label>
   </td>
   </tr></table>
+</div>
+
+<div id='aboutDiv'>
+  <p id='versionInfo'></p>
 </div>
 
 <script language='vbscript' src='_note.vbs'></script>
