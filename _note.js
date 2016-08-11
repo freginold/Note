@@ -24,7 +24,7 @@ var xElEnd = "'>X</div>";
 var noteFont = 'serif';
 var localFont = '';
 var selectedFlag = false;
-var currentVer = 'Note v2.2.1\nPublic Domain';
+var currentVer = 'Note v2.3\nPublic Domain';
 var noteText, currentNote, dummyVar, showTimeStamp, bgColor, bgColorNum, textSize;
 
 
