@@ -23,6 +23,7 @@ var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'>De
 var xElEnd = "'>X</div>";
 var noteFont = 'serif';
 var localFont = '';
+var selectedFlag = false;
 var currentVer = 'Note v2.2.1\nPublic Domain';
 var noteText, currentNote, dummyVar, showTimeStamp, bgColor, bgColorNum, textSize;
 
@@ -245,6 +246,7 @@ function getLocalFont() {
   localFontCheckBox.onclick='setLocalFont();';
   localFontBox.value=localFont;
   localFontBox.select();
+  selectedFlag = true;
   checkLocalFontInput();
   
 }
@@ -293,7 +295,8 @@ function checkLocal() {
 
 function checkLocalFontInput() {
   // check to see there is any value in local font text box; if not, Set button remains disabled
-  checkForFontSpaces();
+  if (!selectedFlag) { localFontBox.value = checkForLeadingSpaces(localFontBox.value); }
+  selectedFlag = false;
   if (localFontBox.value != '') { localFontSetButton.disabled = false; }
   else { localFontSetButton.disabled = true; }
 }
