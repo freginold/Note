@@ -3,7 +3,7 @@ Note is a very basic Windows GUI note/task app.  It is free, open source, and in
 
 Note saves all notes or task items in a `notes` subfolder, located inside the folder where Note is installed.  It will create the `notes` subfolder if it doesn't already exist.  It uses the `options.txt` file to store configuration settings -- time stamp display (on/off), background color, text font, and text size.  If no options file is present, Note will create a default options file on launch.
 
-You can create new note groups (each one saved as a separate file) and add individual note items to each group/file.  Each item can be deleted individually.
+You can create new note groups, each one saved as a separate text file, and add individual note items to each group/file.  Each note item can be deleted individually (ie. for a to-do list).  Note groups can be deleted or renamed.
 
 ![screen shot]
 (https://github.com/freginold/Note/blob/master/note_ss.png)
