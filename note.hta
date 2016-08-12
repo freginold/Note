@@ -57,32 +57,65 @@
   </td>
   <td class='optionsColumn'>
   <h4>Note Font:</h4>
-  <label class='georgia'><input type='radio' name='font' class='optionInput' value='georgia' /> Georgia</label><br />
-  <label class='tahoma'><input type='radio' name='font' class='optionInput' value='tahoma' /> Tahoma</label><br />
-  <label class='sans'><input type='radio' name='font' class='optionInput' value='sans' /> Sans Serif</label><br />
-  <label class='serif'><input type='radio' name='font' class='optionInput' value='serif' /> Serif &nbsp;<span class='goItalic'>(default)</span></label><br />
-  <label><input type='radio' name='font' id='localFontCheckBox' class='optionInput' value='local' />
-    <div id='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
-    <form name='localFontForm' id='localFontForm' onsubmit='setLocalFont();' action='#' >
-      <input type='text' size=10 id='localFontBox' />
-      <input id='localFontSetButton' disabled=true class='optionChangeButton' type='submit' value='Set' />
+  <label><input type='radio' name='font' id='localFontCheckBox0' class='optionInput' value='uf0' />
+    <div id='localFontDiv0' class='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
+    <form name='localFontForm0' class='localFontForm' id='localFontForm0' onsubmit='setLocalFont(0);' action='#' >
+      <input type='text' size=10 id='localFontBox0' class='localFontBox' />
+      <input id='localFontSetButton0' disabled=true class='optionChangeButton' type='submit' value='Set' />
     </form>
     </div>
-    <div id='localFontShow'>
-      <p id='localFontShowP'></p><button id='changeLocalFontButton' class='optionChangeButton' onclick='getLocalFont();'>Change</button>
+    <div id='localFontShow0' class='localFontShow'>
+      <p id='localFontShowP0' class='localFontShowP'></p><button id='changeLocalFontButton0' class='optionChangeButton' onclick='getLocalFont(0);'>Change</button><br />
     </div>
-  </label><br />
+  </label>
+  <label><input type='radio' name='font' id='localFontCheckBox1' class='optionInput' value='uf1' />
+    <div id='localFontDiv1' class='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
+    <form name='localFontForm1' class='localFontForm' id='localFontForm1' onsubmit='setLocalFont(1);' action='#' >
+      <input type='text' size=10 id='localFontBox1' class='localFontBox' />
+      <input id='localFontSetButton1' disabled=true class='optionChangeButton' type='submit' value='Set' />
+    </form>
+    </div>
+    <div id='localFontShow1' class='localFontShow'>
+      <p id='localFontShowP1' class='localFontShowP'></p><button id='changeLocalFontButton1' class='optionChangeButton' onclick='getLocalFont(1);'>Change</button><br />
+    </div>
+  </label>
+  <label><input type='radio' name='font' id='localFontCheckBox2' class='optionInput' value='uf2' />
+    <div id='localFontDiv2' class='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
+    <form name='localFontForm2' class='localFontForm' id='localFontForm2' onsubmit='setLocalFont(2);' action='#' >
+      <input type='text' size=10 id='localFontBox2' class='localFontBox' />
+      <input id='localFontSetButton2' disabled=true class='optionChangeButton' type='submit' value='Set' />
+    </form>
+    </div>
+    <div id='localFontShow2' class='localFontShow'>
+      <p id='localFontShowP2' class='localFontShowP'></p><button id='changeLocalFontButton2' class='optionChangeButton' onclick='getLocalFont(2);'>Change</button><br />
+    </div>
+  </label>
+  <label><input type='radio' name='font' id='localFontCheckBox3' class='optionInput' value='uf3' />
+    <div id='localFontDiv3' class='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
+    <form name='localFontForm3' class='localFontForm' id='localFontForm3' onsubmit='setLocalFont(3);' action='#' >
+      <input type='text' size=10 id='localFontBox3' class='localFontBox' />
+      <input id='localFontSetButton3' disabled=true class='optionChangeButton' type='submit' value='Set' />
+    </form>
+    </div>
+    <div id='localFontShow3' class='localFontShow'>
+      <p id='localFontShowP3' class='localFontShowP'></p><button id='changeLocalFontButton3' class='optionChangeButton' onclick='getLocalFont(3);'>Change</button><br />
+    </div>
+  </label>
+  <label class='sans'><input type='radio' name='font' class='optionInput' id='sansRadio' value='p1' /> Sans Serif</label><br />
+  <label class='serif'><input type='radio' name='font' class='optionInput' value='p2' /> Serif &nbsp;<span class='goItalic'>(default)</span></label><br />
   </td>
   <td class='optionsColumn'>
   <h4>Note Font Size:</h4>
   <label class='smallFont'><input type='radio' name='textSize' class='optionInput' value='small'> Small</label><br />
   <label class='mediumFont'><input type='radio' name='textSize' class='optionInput' value='medium'> Medium &nbsp;<span class='goItalic'>(default)</span></label><br />
   <label class='largeFont'><input type='radio' name='textSize' class='optionInput' value='large'> Large</label>
+  <button id='backupButton' onclick='Backup()'>Backup</button>
   </td>
   </tr></table>
 </div>
 
 <div id='aboutDiv'>
+  <br /><br />
   <p id='versionInfo'></p>
 </div>
 
