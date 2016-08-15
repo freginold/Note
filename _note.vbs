@@ -1,6 +1,6 @@
-' Options:
+' Settings (saved in config file):
 ' 1. Time Stamp: hide/show
-' 2. Background Color: 1-gray/2-yellow/3-white/4-pink/5-green/6-blue
+' 2. Background Color: gray/yellow/white/pink/green/blue/charcoal/black
 ' 3. Note Font: p1-serif/p2-sans serif/uf0/uf1/uf2/uf3
 ' 4. Note Font Size: small/medium/large
 ' 5. User Font 1
@@ -15,8 +15,9 @@
 Set fs = CreateObject("Scripting.FileSystemObject")
 allData = ""
 const NotesDir = ".\notes\"
+Const NotesDirWOBSlash = "\notes"
 Const Default1 = "hide"
-Const Default2 = "1"
+Const Default2 = "gray"
 Const Default3 = "p1"
 Const Default4 = "medium"
 Const Default5 = ""
@@ -158,9 +159,8 @@ Sub GetOptions(dummyVar)
     Opt1 = line
     ' get option 2 = background color
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(1) : Exit Sub
-    line = rofile.Readline
+    line = LCase(rofile.Readline)
     Opt2 = line
-    GetOpt2Text(Opt2)
     ' get option 3 - font name
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(2) : Exit Sub
     line = Lcase(rofile.Readline)
@@ -195,26 +195,13 @@ End Sub
 Function GetOption(ThisOption)
   'return options one at a time to be applied by JS
   if ThisOption = "1" then GetOption = Opt1
-  if ThisOption = "2" then GetOption = GetOpt2Text(Opt2)
+  if ThisOption = "2" then GetOption = Opt2
   if ThisOption = "3" then GetOption = Opt3
   if ThisOption = "4" then GetOption = Opt4
   if ThisOption = "5" then GetOption = Opt5
   if ThisOption = "6" then GetOption = Opt6
   if ThisOption = "7" then GetOption = Opt7
   if ThisOption = "8" then GetOption = Opt8
-End Function
-
-Function GetOpt2Text(Opt2)
-  Select Case Opt2
-    Case "1" Opt2Text = "gray"
-    Case "2" Opt2Text = "yellow"
-    Case "3" Opt2Text = "white"
-    Case "4" Opt2Text = "pink"
-    Case "5" Opt2Text = "green"
-    Case "6" Opt2Text = "blue"
-    Case Else Opt2Text = Default2 : Opt2 = 1
-  End Select
-  GetOpt2Text = Opt2Text
 End Function
 
 Sub OptionsCorrupted(numCorr)
@@ -321,14 +308,16 @@ Sub Backup
   On Error Resume Next
   fs.CopyFile OptionsFile, BackupFolder
   if ErrorCheckBackup then exit sub
-  BackupNotesFolder = BackupFolder & "\notes"
+  BackupNotesFolder = BackupFolder & NotesDirWOBSlash
   On Error Resume Next
   fs.CreateFolder(BackupNotesFolder)
   if ErrorCheckBackup then exit sub
   NotesDirPath = NotesDir & "*.*"
-  On Error Resume Next
-  fs.CopyFile NotesDirPath, BackupNotesFolder
-  if ErrorCheckBackup then exit sub
+  if fs.FileExists(NotesDirPath) then
+    On Error Resume Next
+    fs.CopyFile NotesDirPath, BackupNotesFolder
+    if ErrorCheckBackup then exit sub
+  end if
   msgbox "Backup Completed"
 End Sub
 

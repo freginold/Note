@@ -59,9 +59,10 @@ var renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'
 var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'>Delete</button>";
 var xElEnd = "'>X</div>";
 var noteFont = 'serif';
+var fgColor = 'black';
 var selectedFlag = [false, false, false, false];
-var currentVer = 'Note v2.4\nPublic Domain';
-var noteText, currentNote, dummyVar, bgColor, bgColorNum;
+var currentVer = 'Note v2.4.1\nPublic Domain';
+var noteText, currentNote, dummyVar, bgColor;
 
 
 // ------- declare functions ----------
@@ -70,8 +71,8 @@ function applyOptions() {
   // apply options on load & on change
   if (!!CheckForOptionsFile()) { GetOptions(dummyVar) }
   else { return; }
-  var bgColorText = GetOption(2).toLowerCase();
-  switch (bgColorText) {
+  fgColor = 'black';
+  switch (Opt2) {
     case "yellow":
       bgColor = "#f0f0b3";
       break;
@@ -87,12 +88,21 @@ function applyOptions() {
     case "blue":
       bgColor = "#a9d6df";
       break;
+    case "charcoal":
+      bgColor = "#555555";
+      fgColor = "#ffffff";
+      break;
+    case "black":
+      bgColor = "#222222";
+      fgColor = "#eeeeee";
+      break;
     default:
       bgColor = "lightgray";
       break;
 }
-  document.body.style.backgroundColor=bgColor;
-  switch (Opt3.toLowerCase()) {
+  document.body.style.backgroundColor = bgColor;
+  document.body.style.color = fgColor;
+  switch (Opt3) {
     case "uf0":
       noteFont = Opt5;
       break;
@@ -124,13 +134,14 @@ function saveOptions() {
   if (document.getElementsByName('timeStamp')[1].checked) { Opt1='show'; }
   else { Opt1 = 'hide'; }
   // option 2 - background color
-  if (document.getElementsByName('bg')[0].checked) { bgColorNum=1; }
-  else if (document.getElementsByName('bg')[1].checked) { bgColorNum=2; }
-  else if (document.getElementsByName('bg')[2].checked) { bgColorNum=3; }
-  else if (document.getElementsByName('bg')[3].checked) { bgColorNum=4; }
-  else if (document.getElementsByName('bg')[4].checked) { bgColorNum=5; }
-  else if (document.getElementsByName('bg')[5].checked) { bgColorNum=6; }
-  Opt2 = bgColorNum;
+  if (document.getElementsByName('bg')[0].checked) { Opt2 = 'gray' }
+  else if (document.getElementsByName('bg')[1].checked) { Opt2 = 'yellow'; }
+  else if (document.getElementsByName('bg')[2].checked) { Opt2 = 'white'; }
+  else if (document.getElementsByName('bg')[3].checked) { Opt2 = 'pink'; }
+  else if (document.getElementsByName('bg')[4].checked) { Opt2 = 'green'; }
+  else if (document.getElementsByName('bg')[5].checked) { Opt2 = 'blue'; }
+  else if (document.getElementsByName('bg')[6].checked) { Opt2 = 'charcoal'; }
+  else if (document.getElementsByName('bg')[7].checked) { Opt2 = 'black'; }
   // option 3 - font
   Opt3 = 'p1';
   if (localFontCheckBox[0].checked) { Opt3 = 'uf0'; }
@@ -237,11 +248,10 @@ function showOptions() {
   clearAll();
   noteBody.style.display='none';
   noteTitle.innerText = 'Options:';
-  var bgColorText = GetOption(2).toLowerCase();
   optionsDiv.style.display='block';
   if (Opt1 == 'show') { document.getElementsByName('timeStamp')[1].checked=true; }
   else { document.getElementsByName('timeStamp')[0].checked=true; }
-  switch (bgColorText) {
+  switch (Opt2) {
     case "gray":
       document.getElementsByName('bg')[0].checked=true;
       break;
@@ -259,6 +269,12 @@ function showOptions() {
       break;
     case "blue":
       document.getElementsByName('bg')[5].checked=true;
+      break;
+    case "charcoal":
+      document.getElementsByName('bg')[6].checked=true;
+      break;
+    case "black":
+      document.getElementsByName('bg')[7].checked=true;
       break;
   }
   var fonts = document.getElementsByName('font');
