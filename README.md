@@ -11,7 +11,7 @@ Note allows up to four user-defined local fonts to be specified.  Any font insta
 (https://github.com/freginold/Note/blob/master/note_ss.png)
 
 ### Installation / Execution:
-On a Windows computer with Internet Explorer installed:
+On a Windows computer with Internet Explorer (or Edge) installed:
   - Download the [Note master zip file] (https://github.com/freginold/Note/archive/master.zip)
   - Unzip the files into the folder of your choice
   - Double-click the `note.hta` file to run the program
