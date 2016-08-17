@@ -104,13 +104,21 @@
     </div>
   </label>
   <label class='sans'><input type='radio' name='font' class='optionInput' id='sansRadio' value='p1' /> Sans Serif</label><br />
-  <label class='serif'><input type='radio' name='font' class='optionInput' value='p2' /> Serif &nbsp;<span class='goItalic'>(default)</span></label><br />
-  </td>
-  <td class='optionsColumn'>
+  <label class='serif'><input type='radio' name='font' class='optionInput' value='p2' /> Serif &nbsp;<span class='goItalic'>(default)</span></label>
+  <br /><br />
   <h4>Note Font Size:</h4>
   <label class='smallFont'><input type='radio' name='textSize' class='optionInput' value='small'> Small</label><br />
   <label class='mediumFont'><input type='radio' name='textSize' class='optionInput' value='medium'> Medium &nbsp;<span class='goItalic'>(default)</span></label><br />
   <label class='largeFont'><input type='radio' name='textSize' class='optionInput' value='large'> Large</label>
+  <button id='backupButton' onclick='Backup()'>Backup</button>
+  </td>
+  <td class='optionsColumn'>
+  <h4>Screen Position:</h4>
+  <label><input type='radio' name='screenPos' class='optionInput' value='ul'> Upper Left</label><br />
+  <label><input type='radio' name='screenPos' class='optionInput' value='ur'> Upper Right</label><br />
+  <label><input type='radio' name='screenPos' class='optionInput' value='mm'> Centered &nbsp;<span class='goItalic'>(default)</span></label><br />
+  <label><input type='radio' name='screenPos' class='optionInput' value='ll'> Lower Left</label><br />
+  <label><input type='radio' name='screenPos' class='optionInput' value='lr'> Lower Right</label>
   <button id='backupButton' onclick='Backup()'>Backup</button>
   </td>
   </tr></table>

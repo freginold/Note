@@ -8,6 +8,7 @@ var newNoteDiv = document.getElementById('newNoteDiv');
 var noteTitle = document.getElementById('noteTitle');
 var optionsDiv = document.getElementById('optionsDiv');
 var newNoteInputBox = document.getElementById('newNoteInputBox');
+var screenPosChoices = document.getElementsByName('screenPos');
 var localFontDiv = [
   document.getElementById('localFontDiv0'),
   document.getElementById('localFontDiv1'),
@@ -61,7 +62,7 @@ var xElEnd = "'>X</div>";
 var noteFont = 'serif';
 var fgColor = 'black';
 var selectedFlag = [false, false, false, false];
-var currentVer = 'Note v2.4.1\nPublic Domain';
+var currentVer = 'Note v2.5\nPublic Domain';
 var noteText, currentNote, dummyVar, bgColor;
 
 
@@ -126,6 +127,7 @@ function applyOptions() {
   uFont[1] = Opt6;
   uFont[2] = Opt7;
   uFont[3] = Opt8;
+  SetPos()
 }
 
 function saveOptions() {
@@ -161,9 +163,76 @@ function saveOptions() {
   Opt7 = uFont[2];
   // option 8 - user font 3
   Opt8 = uFont[3];
+  if (document.getElementsByName('screenPos')[0].checked) { Opt9='ul'; }
+  else if (document.getElementsByName('screenPos')[1].checked) { Opt9 = 'ur'; }
+  else if (document.getElementsByName('screenPos')[3].checked) { Opt9 = 'll'; }
+  else if (document.getElementsByName('screenPos')[4].checked) { Opt9 = 'lr'; }
+  else { Opt9 = 'mm'; }
   WriteOptions()
   applyOptions();
   showOptions();
+}
+
+function showOptions() {
+  clearAll();
+  noteBody.style.display='none';
+  noteTitle.innerText = 'Options:';
+  optionsDiv.style.display='block';
+  if (Opt1 == 'show') { document.getElementsByName('timeStamp')[1].checked=true; }
+  else { document.getElementsByName('timeStamp')[0].checked=true; }
+  switch (Opt2) {
+    case "gray":
+      document.getElementsByName('bg')[0].checked=true;
+      break;
+    case "yellow":
+      document.getElementsByName('bg')[1].checked=true;
+      break;
+    case "white":
+      document.getElementsByName('bg')[2].checked=true;
+      break;
+    case "pink":
+      document.getElementsByName('bg')[3].checked=true;
+      break;
+    case "green":
+      document.getElementsByName('bg')[4].checked=true;
+      break;
+    case "blue":
+      document.getElementsByName('bg')[5].checked=true;
+      break;
+    case "charcoal":
+      document.getElementsByName('bg')[6].checked=true;
+      break;
+    case "black":
+      document.getElementsByName('bg')[7].checked=true;
+      break;
+  }
+  var fonts = document.getElementsByName('font');
+  // populate user font boxes, if they've been saved
+  var foundFont = false;
+  for (i = 0; i < uFont.length; i++) {
+    if (fonts[i].value.toLowerCase() == Opt3) { fonts[i].checked=true; foundFont = true; }
+    if (uFont[i]=='') {
+      localFontShow[i].style.display='none';
+      localFontDiv[i].style.display='inline';
+    }
+    else {
+      localFontDiv[i].style.display='none';
+      localFontShow[i].style.display='inline';
+      if (uFont[i].length>=14) { localFontShowP[i].innerText=uFont[i].slice(0,11)+"..."; }
+      else { localFontShowP[i].innerText=uFont[i]; }
+      localFontShowP[i].style.fontFamily="'"+uFont[i]+"', serif";
+    }
+  }
+  if (Opt3 == 'p2') { fonts[4].checked=true; noteFont = 'sans-serif'; foundFont = true; }
+  if (!foundFont) { fonts[5].checked=true; noteFont = 'serif'; }
+  var sizes = document.getElementsByName('textSize');
+  // ---- use this method for other options too ----
+  for (i = 0; i < sizes.length; i++) {
+    if (sizes[i].value == Opt4) { sizes[i].checked=true; }
+  }
+  for (i = 0; i < screenPosChoices.length; i++) {
+    if (screenPosChoices[i].value == Opt9) { screenPosChoices[i].checked = true; break; }
+  }
 }
 
 function clearAll() {
@@ -242,65 +311,6 @@ function hideX(self) {
   // hide X on mouseout
   thisX = "X"+self.id.slice(4);
   document.getElementById(thisX).style.display='none';
-}
-
-function showOptions() {
-  clearAll();
-  noteBody.style.display='none';
-  noteTitle.innerText = 'Options:';
-  optionsDiv.style.display='block';
-  if (Opt1 == 'show') { document.getElementsByName('timeStamp')[1].checked=true; }
-  else { document.getElementsByName('timeStamp')[0].checked=true; }
-  switch (Opt2) {
-    case "gray":
-      document.getElementsByName('bg')[0].checked=true;
-      break;
-    case "yellow":
-      document.getElementsByName('bg')[1].checked=true;
-      break;
-    case "white":
-      document.getElementsByName('bg')[2].checked=true;
-      break;
-    case "pink":
-      document.getElementsByName('bg')[3].checked=true;
-      break;
-    case "green":
-      document.getElementsByName('bg')[4].checked=true;
-      break;
-    case "blue":
-      document.getElementsByName('bg')[5].checked=true;
-      break;
-    case "charcoal":
-      document.getElementsByName('bg')[6].checked=true;
-      break;
-    case "black":
-      document.getElementsByName('bg')[7].checked=true;
-      break;
-  }
-  var fonts = document.getElementsByName('font');
-  // populate user font boxes, if they've been saved
-  var foundFont = false;
-  for (i = 0; i < uFont.length; i++) {
-    if (fonts[i].value.toLowerCase() == Opt3) { fonts[i].checked=true; foundFont = true; }
-    if (uFont[i]=='') {
-      localFontShow[i].style.display='none';
-      localFontDiv[i].style.display='inline';
-    }
-    else {
-      localFontDiv[i].style.display='none';
-      localFontShow[i].style.display='inline';
-      if (uFont[i].length>=14) { localFontShowP[i].innerText=uFont[i].slice(0,11)+"..."; }
-      else { localFontShowP[i].innerText=uFont[i]; }
-      localFontShowP[i].style.fontFamily="'"+uFont[i]+"', serif";
-    }
-  }
-  if (Opt3 == 'p2') { fonts[4].checked=true; noteFont = 'sans-serif'; foundFont = true; }
-  if (!foundFont) { fonts[5].checked=true; noteFont = 'serif'; }
-  var sizes = document.getElementsByName('textSize');
-  // ---- use this method for other options too ----
-  for (i = 0; i < sizes.length; i++) {
-    if (sizes[i].value == Opt4) { sizes[i].checked=true; }
-  }
 }
 
 function showNewNoteBox() {
