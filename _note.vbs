@@ -13,8 +13,8 @@
 ' ----- set up variables, constants, & objects ------
 
 'Option Explicit
-Dim fs, NewFileWithPath, rfile, afile, tfile, rofile, FileName, line
-Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8
+Dim fs, NewFileWithPath, rfile, afile, tfile, rofile, line
+Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9
 Dim NoteWidth, NoteHeight, LeftXPos, RightXPos, MidXPos, TopYPos, MidYPos, BottomYPos
 
 Set fs = CreateObject("Scripting.FileSystemObject")
@@ -96,6 +96,7 @@ End Function
 Function HideStamp(line)
   ' if set to hide time stamp, get line starting after 1st >
   Dim segments, x, i, tempLine
+  line = Replace(line, ">       ", ">", 1, 1)
   segments = Split(line, ">")
   i = 0
   tempLine = ""
@@ -126,6 +127,10 @@ Function GetLine(dummyVar)
     Case false
       line = rfile.Readline
       if LCase(Opt1) = "hide" then line = HideStamp(line)
+      ' preserve spacing but don't prevent line breaking
+      line = Replace(line, "    ", "&emsp;&ensp;")
+      line = Replace(line, "   ", "&emsp;")
+      line = Replace(line, "  ", "&ensp;")
     Case Else
       line = EOFConst
   End Select
@@ -134,7 +139,7 @@ End Function
 
 Sub AddNote(TempText, NoteName)
   ' append TempText to note file
-  ' *** change this function call to an if statement; if true, add VbCrLf
+  Dim Filename
   FileName = NotesDir + NoteName + ".txt"
   Set afile=fs.openTextFile(FileName, 8, true)
   afile.WriteLine(VbLf & date & ", " & time & " >       " & TempText)

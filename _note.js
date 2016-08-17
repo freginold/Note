@@ -62,7 +62,7 @@ var xElEnd = "'>X</div>";
 var noteFont = 'serif';
 var fgColor = 'black';
 var selectedFlag = [false, false, false, false];
-var currentVer = 'Note v2.5\nPublic Domain';
+var currentVer = 'Note v' + Note.version + '\nPublic Domain';
 var noteText, currentNote, dummyVar, bgColor;
 
 
