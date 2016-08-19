@@ -12,7 +12,7 @@ Note allows up to four user-defined local fonts to be specified.  Any font insta
 
 ### Installation / Execution:
 On a Windows computer with Internet Explorer (or Edge) installed:
-  - Download the [latest release] (https://github.com/freginold/Note/releases/latest)
+  - Download the [latest release] (https://github.com/freginold/Note/releases/latest) of Note, as either a tarball or zip file
   - Unzip the files into the folder of your choice
   - Double-click the `note.hta` file to run the program
 
