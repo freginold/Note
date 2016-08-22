@@ -8,7 +8,7 @@ var newNoteDiv = document.getElementById('newNoteDiv');
 var noteTitle = document.getElementById('noteTitle');
 var optionsDiv = document.getElementById('optionsDiv');
 var newNoteInputBox = document.getElementById('newNoteInputBox');
-var screenPosChoices = document.getElementsByName('screenPos');
+var coords = document.getElementById('coords');
 var localFontDiv = [
   document.getElementById('localFontDiv0'),
   document.getElementById('localFontDiv1'),
@@ -61,9 +61,10 @@ var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'>De
 var xElEnd = "'>X</div>";
 var noteFont = 'serif';
 var fgColor = 'black';
+var firstCoordCheck = true;
 var selectedFlag = [false, false, false, false];
 var currentVer = 'Note v' + Note.version + '\nPublic Domain';
-var noteText, currentNote, dummyVar, bgColor;
+var noteText, currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
 
 
 // ------- declare functions ----------
@@ -127,7 +128,7 @@ function applyOptions() {
   uFont[1] = Opt6;
   uFont[2] = Opt7;
   uFont[3] = Opt8;
-  SetPos()
+  if (Opt9 == 'cc') { currentX = Opt10; currentY = Opt11; }
 }
 
 function saveOptions() {
@@ -163,14 +164,24 @@ function saveOptions() {
   Opt7 = uFont[2];
   // option 8 - user font 3
   Opt8 = uFont[3];
-  if (document.getElementsByName('screenPos')[0].checked) { Opt9='ul'; }
-  else if (document.getElementsByName('screenPos')[1].checked) { Opt9 = 'ur'; }
-  else if (document.getElementsByName('screenPos')[3].checked) { Opt9 = 'll'; }
-  else if (document.getElementsByName('screenPos')[4].checked) { Opt9 = 'lr'; }
-  else { Opt9 = 'mm'; }
+  if (document.getElementsByName('screenPos')[1].checked) {
+    Opt9='cc';
+    Opt10 = currentX - offsetX;
+    Opt11 = currentY - offsetY;
+  }
+  else { Opt9 = 'mm'; Opt10 = 0; Opt11 = 0; }
   WriteOptions()
   applyOptions();
   showOptions();
+}
+
+function savePos() {
+  // stripped-down save function to only save screen position
+  if (document.getElementsByName('screenPos')[1].checked) { Opt9 = 'cc'; }
+  else { Opt9 = 'mm'; }
+  Opt10 = currentX - offsetX;
+  Opt11 = currentY - offsetY;
+  WriteOptions();
 }
 
 function showOptions() {
@@ -230,9 +241,10 @@ function showOptions() {
   for (i = 0; i < sizes.length; i++) {
     if (sizes[i].value == Opt4) { sizes[i].checked=true; }
   }
-  for (i = 0; i < screenPosChoices.length; i++) {
-    if (screenPosChoices[i].value == Opt9) { screenPosChoices[i].checked = true; break; }
-  }
+  if (Opt9 == 'cc') { document.getElementsByName('screenPos')[1].checked = true; }
+  else { document.getElementsByName('screenPos')[0].checked = true; }
+  checkCoords();
+  showCoords();
 }
 
 function clearAll() {
@@ -248,7 +260,7 @@ function clearAll() {
   newNoteInputBox.value = '';
   inputBox.value='';
   items[0] = 'clear';
-  for (var i in items) {
+  for (i in items) {
     items[i] = '';
   }
   for (i = 0; i < localFontBox.length; i++) {
@@ -409,12 +421,49 @@ function displayAbout() {
   document.getElementById('versionInfo').innerText = currentVer;
 }
 
+function checkCoords() {
+  oldX = currentX;
+  oldY = currentY;
+  getCoords();
+  if (!firstCoordCheck) {
+    if ((oldX != currentX) || (oldY != currentY)) {
+      if (Opt9 == 'cc') { showCoords(); savePos(); }
+      else {
+        Opt9 = 'cc';
+        document.getElementsByName('screenPos')[1].checked = true;
+        showCoords();
+        savePos();
+      }
+    }
+  }
+  else { firstCoordCheck = false; }
+}
+
+function getCoords() {
+  currentX = window.screenLeft;
+  currentY = window.screenTop;
+}
+
+function showCoords() {
+  getCoords();
+  coords.innerText = "(x: " + (currentX - offsetX) + ", y: " + (currentY - offsetY) + ")";
+}
+
+function getOffset() {
+  // determine x & y offset amt at start
+  var nowX = window.screenLeft;
+  var nowY = window.screenTop;
+  window.moveTo(nowX, nowY);
+  offsetX = window.screenLeft - nowX;
+  offsetY = window.screenTop - nowY;
+}
+
 
 // ----------- declare event handlers ----------
 
 // option button handlers
 inputs = document.getElementsByTagName('input');
-for (var i=0; i<inputs.length; i++) {
+for (i=0; i<inputs.length; i++) {
   if (inputs[i].value.slice(0,2).toLowerCase() == 'uf') {
     switch (inputs[i].value.slice(2)) {
       case "0":
@@ -430,6 +479,12 @@ for (var i=0; i<inputs.length; i++) {
         inputs[i].attachEvent('onclick', function() { checkLocal(3); });
         break;
     }
+  }
+  else if (inputs[i].value == "mm") {
+    inputs[i].attachEvent('onclick', function() { showCoords(); savePos(); setPos(); showCoords(); });
+  }
+  else if (inputs[i].value == "cc") {
+    inputs[i].attachEvent('onclick', function() { showCoords(); savePos(); });
   }
   else if (inputs[i].className == "optionInput") {
     inputs[i].attachEvent('onclick', saveOptions);
@@ -457,4 +512,7 @@ for (i=0;i<localFontBox.length;i++) {
 // --------- execution -----------------
 
 clearAll();
+getOffset();
 applyOptions();
+setPos();
+var checkCoordsInt = setInterval(checkCoords, 500);

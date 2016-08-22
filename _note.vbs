@@ -7,14 +7,16 @@
 ' 6. User Font 2
 ' 7. User Font 3
 ' 8. User Font 4
-' 9. Screen Postion: ul/ur/mm/ll/lr
+' 9. Screen Postion: mm-centered/cc-custom
+' 10. Custom x coord
+' 11. Custom y coord
 
 
 ' ----- set up variables, constants, & objects ------
 
 'Option Explicit
 Dim fs, NewFileWithPath, rfile, afile, tfile, rofile, line
-Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9
+Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9, Opt10, Opt11
 Dim NoteWidth, NoteHeight, LeftXPos, RightXPos, MidXPos, TopYPos, MidYPos, BottomYPos
 
 Set fs = CreateObject("Scripting.FileSystemObject")
@@ -29,6 +31,8 @@ Const Default6 = ""
 Const Default7 = ""
 Const Default8 = ""
 Const Default9 = "mm"
+Const Default10 = "0"
+Const Default11 = "0"
 Const OptionsFile = "config.txt"
 Const EOFConst = "<<<EOF>>>"
 Const BackupPrefix = "backup_notes_"
@@ -47,15 +51,17 @@ Opt6 = Default6
 Opt7 = Default7
 Opt8 = Default8
 Opt9 = Default9
+Opt10 = Default10
+Opt11 = Default11
 NewFileWithPath = ""
 NoteWidth = screen.availWidth/1.75
 NoteHeight = screen.availHeight/1.65
-LeftXPos = 50
-RightXPos = screen.availWidth-50 - NoteWidth
+LeftXPos = 25
+RightXPos = screen.availWidth - 25 - NoteWidth
 MidXPos = screen.availWidth/2 - NoteWidth/2
-TopYPos = 50
+TopYPos = 25
 MidYPos = screen.availHeight/2 - NoteHeight/2
-BottomYPos = screen.availHeight - 50 - NoteHeight
+BottomYPos = screen.availHeight - 25 - NoteHeight
 
 
 ' ------ subroutines & functions -----------
@@ -198,12 +204,18 @@ Sub GetOptions(dummyVar)
     ' get option 7 - user font 3
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(6) : Exit Sub
     Opt7 = Lcase(rofile.Readline)
-    ' get option8 - user font 4
+    ' get option 8 - user font 4
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(7) : Exit Sub
     Opt8 = Lcase(rofile.Readline)
-    ' get option 7 - user font 3
+    ' get option 9 - screen position
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(8) : Exit Sub
     Opt9 = Lcase(rofile.Readline)
+    ' get option 10 - custom x coord
+    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(9) : Exit Sub
+    Opt10 = rofile.Readline
+    ' get option 11 - custom y coord
+    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(10) : Exit Sub
+    Opt11 = rofile.Readline
     ' close file
     rofile.close
   Else
@@ -222,11 +234,15 @@ Function GetOption(ThisOption)
   if ThisOption = "7" then GetOption = Opt7
   if ThisOption = "8" then GetOption = Opt8
   if ThisOption = "9" then GetOption = Opt9
+  if ThisOption = "10" then GetOption = Opt10
+  if ThisOption = "11" then GetOption = Opt11
 End Function
 
 Sub OptionsCorrupted(numCorr)
   ' if options file not present or not formatted correctly, pass in any missing values & recreate it
   ' numCorr = number of options loaded succesfully
+  if numCorr < 11 then Opt11 = Default11
+  if numCorr < 10 then Opt10 = Default10
   if numCorr < 9 then Opt9 = Default9
   if numCorr < 8 then Opt8 = Default8
   if numCorr < 7 then Opt7 = Default7
@@ -254,6 +270,8 @@ Sub WriteOptions
   tfile.WriteLine(Opt7)
   tfile.WriteLine(Opt8)
   tfile.WriteLine(Opt9)
+  tfile.WriteLine(Opt10)
+  tfile.WriteLine(Opt11)
   tfile.close
   if fs.FileExists(OptionsFile) then fs.DeleteFile(OptionsFile)
   fs.MoveFile TempFile, OptionsFile  
@@ -380,14 +398,8 @@ End Function
 Sub SetPos
   ' set screen position according to options
   Select Case Opt9
-    Case "ul"
-      window.moveTo LeftXPos, TopYPos
-    Case "ur"
-      window.moveTo RightXPos, TopYPos
-    Case "ll"
-      window.moveTo LeftXPos, BottomYPos
-    Case "lr"
-      window.moveTo RightXPos, BottomYPos
+    Case "cc"
+      window.moveTo currentX, currentY
     Case Else
       window.moveTo MidXPos, MidYPos
   End Select
@@ -397,7 +409,6 @@ End Sub
 ' ---------- execution --------------
 
 window.resizeTo NoteWidth, NoteHeight
-SetPos
 CheckForNotesFolder()
 CheckForOptionsFile()
 GetFileList()

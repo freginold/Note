@@ -8,7 +8,7 @@
   SingleInstance = yes
   Scroll = no
   Icon = "note_icon.ico"
-  version = "2.5"
+  version = "2.5.1"
 >
 <title>Note</title>
 <link href='_note.css' rel='stylesheet' type='text/css'>
@@ -116,11 +116,9 @@
   </td>
   <td class='optionsColumn'>
   <h4>Screen Position:</h4>
-  <label><input type='radio' name='screenPos' class='optionInput' value='ul'> Upper Left</label><br />
-  <label><input type='radio' name='screenPos' class='optionInput' value='ur'> Upper Right</label><br />
   <label><input type='radio' name='screenPos' class='optionInput' value='mm'> Centered &nbsp;<span class='goItalic'>(default)</span></label><br />
-  <label><input type='radio' name='screenPos' class='optionInput' value='ll'> Lower Left</label><br />
-  <label><input type='radio' name='screenPos' class='optionInput' value='lr'> Lower Right</label>
+  <label><input type='radio' name='screenPos' class='optionInput' value='cc'> Custom <span id='coords' class='smallFont'></span>
+    <br /><span class='smallFont'>&ensp;&emsp;&emsp;(Drag to desired position)</span></label>
   <button id='backupButton' onclick='Backup()'>Backup</button>
   </td>
   </tr></table>
