@@ -289,12 +289,12 @@ function showNotes(cNote) {
   if (firstBut != null) {
     document.getElementById('u0').disabled = true;
     document.getElementById('u0').style.filter = "alpha(opacity = 25)";
-    document.getElementById('u0').opacity = 25;
+    document.getElementById('u0').opacity = .25;
   }
   if (lastBut != null) {
     window['d' + (lastLine-1)].disabled = true;
     window['d' + (lastLine-1)].style.filter = "alpha(opacity = 25)";
-    window['d' + (lastLine-1)].style.opacity = 25;
+    window['d' + (lastLine-1)].style.opacity = .25;
   }
   inputDiv.style.display='block';
   inputBox.focus();
@@ -302,7 +302,7 @@ function showNotes(cNote) {
 
 function getLines(thisNote) {
   // loop through file, get each line from note and add X to it, return HTML as noteText
-  var notesHTML='<div>';
+  var notesHTML="<div><table>";
   var currentLine;
   var noteNum = 0;
   lastLine = 0;
@@ -321,12 +321,12 @@ function getLines(thisNote) {
       // check input string for < or >, repl w/ &gt; or &lt;
       currentLine = currentLine.replace(/</g, "&lt;");
       currentLine = currentLine.replace(/>/g, "&gt;");
-      notesHTML = notesHTML + "<li class='" + currentClasses + "' id='item" + noteNum + "' onmouseover='showX(this);' onmouseout='hideX(this);'" + localFontHTML + ">" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartHTML + currentLine +"&nbsp;&nbsp;"+ xElBeg + noteNum + xElEnd + "</li>";
+      notesHTML = notesHTML + "<tr class='" + currentClasses + "' id='item" + noteNum + "' onmouseover='showX(this);' onmouseout='hideX(this);'" + localFontHTML + "><td>" + xElBeg + noteNum + xElEnd + "&nbsp;&nbsp;" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartHTML + "</td><td>" + currentLine + "</td></tr>";
       noteNum++;
     }
   }
   CloseRFile(currentNote);
-  notesHTML=notesHTML + "</div>";
+  notesHTML=notesHTML + "</table></div>";
   return notesHTML;
 }
 
@@ -337,14 +337,14 @@ function onSubmitted(tempVar, thisNote) {
 
 function showX(self) {
   // show X to right of each item, on mouseover
-  thisX = "X"+self.id.slice(4);
-  document.getElementById(thisX).style.display='inline';
+  thisX = "X" + self.id.slice(4);
+  document.getElementById(thisX).style.visibility = 'visible';
 }
 
 function hideX(self) {
   // hide X on mouseout
-  thisX = "X"+self.id.slice(4);
-  document.getElementById(thisX).style.display='none';
+  thisX = "X" + self.id.slice(4);
+  document.getElementById(thisX).style.visibility = 'hidden';
 }
 
 function showNewNoteBox() {

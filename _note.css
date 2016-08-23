@@ -35,12 +35,12 @@ h4 {
 }
 .item {
   display: inline-block;
-  list-style-type: none;
   line-height: 1.1em;
   margin-bottom: 0.4em;
 }
 .x {
-  display: none;
+  display: inline;
+  visibility: hidden;
   font-family: sans-serif;
   font-weight: 700;
   position: relative;
@@ -124,7 +124,7 @@ h4 {
 #noteBody {
   height: 280px;
   overflow: auto;
-  padding: 5px;
+  padding: 5px;4
   font-family: serif;
   font-size: 1em;
 }
