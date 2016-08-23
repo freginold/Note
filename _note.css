@@ -7,28 +7,6 @@ h4 {
   margin-bottom: 2px;
   text-decoration: underline;
 }
-#noteList {
-  display: block;
-  margin: 5px;
-  padding: 2px;
-  height: 80px;
-  overflow: auto;
-  white-space: pre;
-}
-#noteBody {
-  height: 280px;
-  overflow: auto;
-  padding: 5px;
-  font-family: serif;
-  font-size: 1em;
-}
-#upperRightBox {
-  border-left-style: groove;
-  position: relative;
-  float: right;
-  width: 110px;
-  padding-bottom: 4px;
-}
 .upperRightButton {
   position: relative;
   float: left;
@@ -41,19 +19,6 @@ h4 {
 }
 #inputDiv {
   display: none;
-}
-#newNoteDiv {
-  display: none;
-}
-#noteTitle {
-  text-align: center;
-  padding-bottom: 10px;
-  margin-top: 4px;
-}
-#optionsDiv {
-  display: none;
-  font-family: serif;
-  font-size: 1em;
 }
 .optionInput {
   margin-left: 10px;
@@ -70,13 +35,9 @@ h4 {
 }
 .item {
   display: inline-block;
-  list-style-type: circle;
+  list-style-type: none;
   line-height: 1.1em;
   margin-bottom: 0.4em;
-  font-family: serif;
-}
-.item:hover {
-  list-style-type: disc;
 }
 .x {
   display: none;
@@ -138,6 +99,54 @@ h4 {
   float: right;
   clear: right;
   top: 0px;
+}
+.moveButtons {
+  line-height: 0.7em;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+  vertical-align: middle;
+}
+.uBut {
+  margin-left: 1px;
+  margin-right: 2px;
+}
+.dBut {
+  margin-right: 5px;
+}
+#noteList {
+  display: block;
+  margin: 5px;
+  padding: 2px;
+  height: 80px;
+  overflow: auto;
+  white-space: pre;
+}
+#noteBody {
+  height: 280px;
+  overflow: auto;
+  padding: 5px;
+  font-family: serif;
+  font-size: 1em;
+}
+#upperRightBox {
+  border-left-style: groove;
+  position: relative;
+  float: right;
+  width: 110px;
+  padding-bottom: 4px;
+}
+#newNoteDiv {
+  display: none;
+}
+#noteTitle {
+  text-align: center;
+  padding-bottom: 10px;
+  margin-top: 4px;
+}
+#optionsDiv {
+  display: none;
+  font-family: serif;
+  font-size: 1em;
 }
 #delBox {
   position: relative;

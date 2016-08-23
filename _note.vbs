@@ -277,14 +277,66 @@ Sub WriteOptions
   fs.MoveFile TempFile, OptionsFile  
 End Sub
 
-Sub DelLine(ThisLine)
-  Dim TempFileName, TempFile, segments, LineNum, count, currentNoteFile
-  segments = Split(ThisLine.id, "X")
-  LineNum = CInt(segments(1))
+Sub MoveUp(ThisButton)
+  ' move an item up one line, save, then re-display
+  Dim NumToSwap, NumToBeSwapped
+  ThisButton.disabled = true
+  NumToSwap = GetLineNum(ThisButton)
+  NumToBeSwapped = NumToSwap - 1
+  WriteModifiedFile NumToBeSwapped, NumToSwap
+End Sub
+
+Sub MoveDown(ThisButton)
+  ' move an item down one line, save, then re-display
+  Dim NumToSwap, NumToBeSwapped
+  ThisButton.disabled = true
+  NumToSwap = GetLineNum(ThisButton)
+  NumToBeSwapped = NumToSwap + 1
+  WriteModifiedFile NumToSwap, NumToBeSwapped
+End Sub
+
+Sub WriteModifiedFile(Swap1, Swap2)
+  ' after a move, write the new file w/ reordered items
+  Dim TempFile, count, Swap1Txt, Swap2Txt
   OpenRFile(currentNote)
+  TempFile = MakeTempFile
+  count = 0
+  do until rfile.AtEndOfStream
+    line=rfile.Readline
+    if line <> "" then
+      Select Case count
+        Case Swap1
+          Swap1Txt = line
+        Case Swap2
+          Swap2Txt = line
+          tfile.WriteLine(Swap2Txt)
+          tfile.WriteLine(swap1Txt)
+        Case Else
+          tfile.WriteLine(line)
+      End Select
+      count = count + 1
+    end if
+  loop
+  tfile.close
+  CloseRFile(currentNote)
+  DeleteAFile(currentNote)
+  fs.MoveFile TempFile, NotesDir + currentNote + ".txt"
+  showNotes(CurrentNote)  
+End Sub
+
+Function MakeTempFile
+  Dim TempFileName
   TempFileName = fs.GetTempName
-  TempFile = NotesDir + TempFileName + ".txt"
-  set tfile = fs.OpenTextFile(TempFile, 2, True)
+  TempFileName = NotesDir + TempFileName + ".txt"
+  set tfile = fs.OpenTextFile(TempFileName, 2, True)
+  MakeTempFile = TempFileName
+End Function
+
+Sub DelLine(ThisLine)
+  Dim LineNum, TempFile, count, currentNoteFile
+  LineNum = GetLineNum(ThisLine)
+  OpenRFile(currentNote)
+  TempFile = MakeTempFile
   count = 0
   do until rfile.AtEndOfStream
     line=rfile.Readline
@@ -293,22 +345,27 @@ Sub DelLine(ThisLine)
   loop
   tfile.close
   CloseRFile(currentNote)
-  currentNoteFile = NotesDir + currentNote + ".txt"
-  if fs.FileExists(CurrentNoteFile) then fs.DeleteFile(CurrentNoteFile)
-  fs.MoveFile TempFile, CurrentNoteFile
+  DeleteAFile(currentNote)
+  fs.MoveFile TempFile, NotesDir + currentNote + ".txt"
   showNotes(CurrentNote)  
 End Sub
 
 Sub DeleteThisNote
-  Dim CurrentNoteFile
-  CurrentNoteFile = NotesDir + currentNote + ".txt"
-  if fs.FileExists(CurrentNoteFile) then
-    fs.DeleteFile(CurrentNoteFile)
-  Else
-    msgbox "File Error: could not delete " & currentNote
-  End If
+  ' delete the current note, when Delete button is clicked and confirmed
+  DeleteAFile(currentNote)
   GetFileList()
   clearAll()
+End Sub
+
+Sub DeleteAFile(thisFile)
+  ' note file deletion subroutine
+  Dim CurrentFile
+  CurrentFile = NotesDir + thisFile + ".txt"
+  if fs.FileExists(CurrentFile) then
+    fs.DeleteFile(CurrentFile)
+  Else
+    msgbox "File Error: Operation could not be performed"
+  End If  
 End Sub
 
 Sub RenameThisNote()
@@ -393,6 +450,11 @@ Function AddSpaces(str)
     newStr = newStr + mid(str, a, 1) + "  "
   next
   AddSpaces = newStr
+End Function
+
+Function GetLineNum(TempStr)
+  ' get line # from an element w/ 1 leading letter in id
+  GetLineNum = int(mid(TempStr.id,2))
 End Function
 
 Sub SetPos

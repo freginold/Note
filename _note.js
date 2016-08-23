@@ -58,6 +58,10 @@ var uFont = ['', '', '', ''];
 var xElBeg = "<div class='x' onclick='DelLine(this)' id='X";
 var renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'>Rename</button>";
 var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'>Delete</button>";
+var moveButtonsHTMLBeg = "<button class='moveButtons smallFont uBut' id='u";
+var moveButtonsHTMLMid = "' onclick='MoveUp(this)'>&uarr;</button> <button class='moveButtons smallFont dBut' id='d";
+var moveButtonsHTMLEnd = "' onclick='MoveDown(this)'>&darr;</button>";
+var lineStartHTML = "<span class='serif'>&sdot; </span>";
 var xElEnd = "'>X</div>";
 var noteFont = 'serif';
 var fgColor = 'black';
@@ -65,6 +69,7 @@ var firstCoordCheck = true;
 var selectedFlag = [false, false, false, false];
 var currentVer = 'Note v' + Note.version + '\nPublic Domain';
 var noteText, currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
+var lastLine;
 
 
 // ------- declare functions ----------
@@ -181,7 +186,8 @@ function savePos() {
   else { Opt9 = 'mm'; }
   Opt10 = currentX - offsetX;
   Opt11 = currentY - offsetY;
-  WriteOptions();
+  WriteOptions()
+  showOptions();
 }
 
 function showOptions() {
@@ -278,6 +284,18 @@ function showNotes(cNote) {
   if (currentNote == "&") { currentNoteDisplay = "&#38;"; }    // to deal w/ & as only char in title
   noteTitle.innerHTML = "<div id='delBox'>" + renButtonHTML + delButtonHTML + "</div>" + currentNoteDisplay;
   noteBody.innerHTML = noteText;
+  var firstBut = document.getElementById('u0');
+  var lastBut = window['d' + (lastLine-1)];
+  if (firstBut != null) {
+    document.getElementById('u0').disabled = true;
+    document.getElementById('u0').style.filter = "alpha(opacity = 25)";
+    document.getElementById('u0').opacity = 25;
+  }
+  if (lastBut != null) {
+    window['d' + (lastLine-1)].disabled = true;
+    window['d' + (lastLine-1)].style.filter = "alpha(opacity = 25)";
+    window['d' + (lastLine-1)].style.opacity = 25;
+  }
   inputDiv.style.display='block';
   inputBox.focus();
 }
@@ -287,6 +305,7 @@ function getLines(thisNote) {
   var notesHTML='<div>';
   var currentLine;
   var noteNum = 0;
+  lastLine = 0;
   var FileEnd = false;
   var localFontHTML = '';
   localFontHTML = " style='font-family: &#34;" + noteFont + "&#34;, serif;'";
@@ -294,12 +313,15 @@ function getLines(thisNote) {
   OpenRFile(thisNote)
   while (!FileEnd) {
     currentLine = GetLine(dummyVar)
-    if (currentLine == EOFConst) { FileEnd = true; }
+    if (currentLine == EOFConst) {
+      FileEnd = true;
+      lastLine = noteNum;
+    }
     else if (currentLine != "") {
       // check input string for < or >, repl w/ &gt; or &lt;
       currentLine = currentLine.replace(/</g, "&lt;");
       currentLine = currentLine.replace(/>/g, "&gt;");
-      notesHTML = notesHTML + "<li class='" + currentClasses + "' id='item" + noteNum + "' onmouseover='showX(this);' onmouseout='hideX(this);'" + localFontHTML + ">" + currentLine +"&nbsp;&nbsp;"+ xElBeg + noteNum + xElEnd + "</li>";
+      notesHTML = notesHTML + "<li class='" + currentClasses + "' id='item" + noteNum + "' onmouseover='showX(this);' onmouseout='hideX(this);'" + localFontHTML + ">" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartHTML + currentLine +"&nbsp;&nbsp;"+ xElBeg + noteNum + xElEnd + "</li>";
       noteNum++;
     }
   }
