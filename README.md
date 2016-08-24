@@ -28,5 +28,3 @@ Note files (and configuration settings) can be backed up to a local subfolder.  
 
 
 *Side note:* HTA files run as "trusted" programs in Windows.  They are good for sysadmin work and local scripting, but be aware of the security concerns before making use of an HTA file, especially one downloaded from an unfamiliar source.
-
-*Acknowledgements:* Thanks to [GetFree] (http://stackoverflow.com/users/25700/getfree) for the [StackOverflow answer] (http://stackoverflow.com/questions/5503242/how-to-get-the-size-of-a-hta-window) that helped to position the HTA window correctly.
