@@ -14,10 +14,11 @@
 
 ' ----- set up variables, constants, & objects ------
 
-'Option Explicit
+Option Explicit
 Dim fs, NewFileWithPath, rfile, afile, tfile, rofile, line
 Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9, Opt10, Opt11
 Dim NoteWidth, NoteHeight, LeftXPos, RightXPos, MidXPos, TopYPos, MidYPos, BottomYPos
+Dim EditedString
 
 Set fs = CreateObject("Scripting.FileSystemObject")
 const NotesDir = ".\notes\"
@@ -55,13 +56,14 @@ Opt10 = Default10
 Opt11 = Default11
 NewFileWithPath = ""
 NoteWidth = screen.availWidth/1.75
-NoteHeight = screen.availHeight/1.65
+NoteHeight = screen.availHeight/1.45
 LeftXPos = 25
 RightXPos = screen.availWidth - 25 - NoteWidth
 MidXPos = screen.availWidth/2 - NoteWidth/2
 TopYPos = 25
 MidYPos = screen.availHeight/2 - NoteHeight/2
 BottomYPos = screen.availHeight - 25 - NoteHeight
+EditedString = ""
 
 
 ' ------ subroutines & functions -----------
@@ -127,7 +129,7 @@ Sub CloseRFile(FileName)
 End Sub
 
 Function GetLine(dummyVar)
-  ' pull each line out of the note file, return it
+  ' pull each line out of the note file, format it & return it
   line = ""
   Select Case rfile.AtEndOfStream
     Case false
@@ -143,15 +145,20 @@ Function GetLine(dummyVar)
   GetLine = line
 End Function
 
-Sub AddNote(TempText, NoteName)
+Sub AddNote(TempText)
   ' append TempText to note file
   Dim Filename
-  FileName = NotesDir + NoteName + ".txt"
+  FileName = NotesDir + currentNote + ".txt"
   Set afile=fs.openTextFile(FileName, 8, true)
-  afile.WriteLine(VbLf & date & ", " & time & " >       " & TempText)
+  afile.WriteLine(GetTimeStampedLine(TempText))
   afile.close
-  showNotes(NoteName)
+  showNotes(currentNote)
 End Sub
+
+Function GetTimeStampedLine(LineText)
+  ' add time stamp to line
+  GetTimeStampedLine = VbLf & date & ", " & time & " >       " & LineText
+End Function
 
 Function CreateNewFile(FileName)
   Dim c, c2, BadChar
@@ -297,20 +304,35 @@ End Sub
 
 Sub WriteModifiedFile(Swap1, Swap2)
   ' after a move, write the new file w/ reordered items
+  ' also used to save edited note file; if Swap1 and Swap2 are same #
+  ' also used to insert new note, if Swap2 = -1
   Dim TempFile, count, Swap1Txt, Swap2Txt
+  Swap1 = int(Swap1)
+  Swap2 = int(Swap2)
   OpenRFile(currentNote)
   TempFile = MakeTempFile
   count = 0
   do until rfile.AtEndOfStream
     line=rfile.Readline
-    if line <> "" then
+    if (line <> "") and (HideStamp(line) <> "") then
       Select Case count
         Case Swap1
-          Swap1Txt = line
+          if Swap1 = Swap2 then
+            tfile.WriteLine(GetTimeStampedLine(EditedString))
+          else
+            if Swap2 = -1 then
+              tfile.WriteLine(GetTimeStampedLine(EditedString))
+              tfile.WriteLine(line)
+            else
+              Swap1Txt = line
+            end if
+          end if
         Case Swap2
-          Swap2Txt = line
-          tfile.WriteLine(Swap2Txt)
-          tfile.WriteLine(swap1Txt)
+          if Swap1 <> Swap2 then
+            Swap2Txt = line
+            tfile.WriteLine(Swap2Txt)
+            tfile.WriteLine(swap1Txt)
+          end if
         Case Else
           tfile.WriteLine(line)
       End Select
@@ -341,7 +363,7 @@ Sub DelLine(ThisLine)
   do until rfile.AtEndOfStream
     line=rfile.Readline
     if count <> LineNum then tfile.WriteLine(line)
-    if line <> "" then count = count + 1
+    if (line <> "") and (HideStamp(line) <> "") then count = count + 1
   loop
   tfile.close
   CloseRFile(currentNote)
@@ -465,6 +487,16 @@ Sub SetPos
     Case Else
       window.moveTo MidXPos, MidYPos
   End Select
+End Sub
+
+Sub SubmitEdit(NewStr)
+  ' save edited note & redisplay
+  Dim Temp1, Temp2
+  Temp1 = Mid(itemToEdit,5)
+  Temp2 = Temp1
+  EditedString = NewStr
+  WriteModifiedFile Temp1, Temp2
+  showNotes(currentNote)
 End Sub
 
 

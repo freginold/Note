@@ -8,7 +8,7 @@
   SingleInstance = yes
   Scroll = no
   Icon = "note_icon.ico"
-  version = "2.6.1"
+  version = "3.0"
 >
 <title>Note</title>
 <link href='_note.css' rel='stylesheet' type='text/css'>
@@ -35,9 +35,17 @@
 </div>
 
 <div id='inputDiv'>
+  <br /><br />
   <form name='inputForm' onsubmit='onSubmitted(inputBox.value, currentNote);' action='#' >
-    <input type='text' size=100 id='inputBox' />
-    <input type='submit' value='Add' />
+    <table><tr>
+      <td>
+        <input type='text' size=100 id='inputBox' />
+      </td><td>
+        <input type='submit' class='smallFont' value='Add at Bottom' /><br />
+      </td></tr><tr><td></td><td>
+        <input type='button' class='smallFont' value='Insert Above ...' onclick='insertItem();' />
+      </td>
+    </tr></table>
   </form>
 </div>
 
@@ -112,7 +120,6 @@
   <label class='smallFont'><input type='radio' name='textSize' class='optionInput' value='small'> Small</label><br />
   <label class='mediumFont'><input type='radio' name='textSize' class='optionInput' value='medium'> Medium &nbsp;<span class='goItalic'>(default)</span></label><br />
   <label class='largeFont'><input type='radio' name='textSize' class='optionInput' value='large'> Large</label>
-  <button id='backupButton' onclick='Backup()'>Backup</button>
   </td>
   <td class='optionsColumn'>
   <h4>Screen Position:</h4>

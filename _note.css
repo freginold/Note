@@ -17,9 +17,6 @@ h4 {
   margin: 2px;
   font-size: 1.2em;
 }
-#inputDiv {
-  display: none;
-}
 .optionInput {
   margin-left: 10px;
   margin-top: 4px;
@@ -37,16 +34,6 @@ h4 {
   display: inline-block;
   line-height: 1.1em;
   margin-bottom: 0.4em;
-}
-.x {
-  display: inline;
-  visibility: hidden;
-  font-family: sans-serif;
-  font-weight: 700;
-  position: relative;
-  border: 2px solid red;
-  color: red;
-  font-size: 0.8em;
 }
 .optionsColumn {
   margin-left: 1px;
@@ -100,6 +87,15 @@ h4 {
   clear: right;
   top: 0px;
 }
+.x {
+  font-family: sans-serif;
+  font-weight: 400;
+  color: black;
+  font-size: 0.8em;
+}
+.x:hover {
+  color: red;
+}
 .moveButtons {
   line-height: 0.7em;
   padding-left: 0.2em;
@@ -113,6 +109,10 @@ h4 {
 .dBut {
   margin-right: 5px;
 }
+.insert:hover {
+  border-top: 4px solid black;
+  cursor: pointer;
+}
 #noteList {
   display: block;
   margin: 5px;
@@ -122,7 +122,6 @@ h4 {
   white-space: pre;
 }
 #noteBody {
-  height: 280px;
   overflow: auto;
   padding: 5px;4
   font-family: serif;
@@ -142,6 +141,10 @@ h4 {
   text-align: center;
   padding-bottom: 10px;
   margin-top: 4px;
+}
+#inputDiv {
+  display: none;
+  margin-left: 10px;
 }
 #optionsDiv {
   display: none;

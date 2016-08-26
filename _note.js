@@ -55,21 +55,21 @@ var aboutDiv = document.getElementById('aboutDiv');
 var inputs = [];
 var items = [];
 var uFont = ['', '', '', ''];
-var xElBeg = "<div class='x' onclick='DelLine(this)' id='X";
+var xElBeg = "<button class='x smallFont moveButtons' onclick='DelLine(this)' id='X";
+var xElEnd = "'>X</button>";
 var renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'>Rename</button>";
 var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'>Delete</button>";
 var moveButtonsHTMLBeg = "<button class='moveButtons smallFont uBut' id='u";
 var moveButtonsHTMLMid = "' onclick='MoveUp(this)'>&uarr;</button> <button class='moveButtons smallFont dBut' id='d";
 var moveButtonsHTMLEnd = "' onclick='MoveDown(this)'>&darr;</button>";
 var lineStartHTML = "<span class='serif'>&sdot; </span>";
-var xElEnd = "'>X</div>";
 var noteFont = 'serif';
 var fgColor = 'black';
 var firstCoordCheck = true;
 var selectedFlag = [false, false, false, false];
 var currentVer = 'Note v' + Note.version + '\nPublic Domain';
 var noteText, currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
-var lastLine;
+var lastLine, itemToEdit, itemTotal;
 
 
 // ------- declare functions ----------
@@ -187,7 +187,7 @@ function savePos() {
   Opt10 = currentX - offsetX;
   Opt11 = currentY - offsetY;
   WriteOptions()
-  showOptions();
+  if (optionsDiv.style.display != 'none') { showOptions(); }
 }
 
 function showOptions() {
@@ -272,11 +272,13 @@ function clearAll() {
   for (i = 0; i < localFontBox.length; i++) {
     localFontBox[i].value=uFont[i];
   }
+  itemTotal = 0;
 }
 
 function showNotes(cNote) {
   clearAll();
   currentNote = cNote;
+  editing = false;
   window[currentNote].className='noteButton activeNote';
   noteText='';
   noteText = getLines(currentNote);
@@ -289,7 +291,7 @@ function showNotes(cNote) {
   if (firstBut != null) {
     document.getElementById('u0').disabled = true;
     document.getElementById('u0').style.filter = "alpha(opacity = 25)";
-    document.getElementById('u0').opacity = .25;
+    document.getElementById('u0').style.opacity = .25;
   }
   if (lastBut != null) {
     window['d' + (lastLine-1)].disabled = true;
@@ -302,14 +304,14 @@ function showNotes(cNote) {
 
 function getLines(thisNote) {
   // loop through file, get each line from note and add X to it, return HTML as noteText
-  var notesHTML="<div><table>";
+  var notesHTML="<div><table id='itemTable'>";
   var currentLine;
   var noteNum = 0;
   lastLine = 0;
   var FileEnd = false;
   var localFontHTML = '';
   localFontHTML = " style='font-family: &#34;" + noteFont + "&#34;, serif;'";
-  var currentClasses = 'item ' + ' ' + Opt4 + 'Font';
+  var currentClasses = 'item ' + Opt4 + 'Font';
   OpenRFile(thisNote)
   while (!FileEnd) {
     currentLine = GetLine(dummyVar)
@@ -321,18 +323,19 @@ function getLines(thisNote) {
       // check input string for < or >, repl w/ &gt; or &lt;
       currentLine = currentLine.replace(/</g, "&lt;");
       currentLine = currentLine.replace(/>/g, "&gt;");
-      notesHTML = notesHTML + "<tr class='" + currentClasses + "' id='item" + noteNum + "' onmouseover='showX(this);' onmouseout='hideX(this);'" + localFontHTML + "><td>" + xElBeg + noteNum + xElEnd + "&nbsp;&nbsp;" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartHTML + "</td><td>" + currentLine + "</td></tr>";
+      notesHTML = notesHTML + "<tr class='" + currentClasses + "' id='item" + noteNum + localFontHTML + "><td>" + xElBeg + noteNum + xElEnd + "&nbsp;&nbsp;" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartHTML + "</td><td id='text" + noteNum + "' ondblclick='goEdit(this);'>" + currentLine + "</td></tr>";
       noteNum++;
     }
   }
+  itemTotal = noteNum;
   CloseRFile(currentNote);
   notesHTML=notesHTML + "</table></div>";
   return notesHTML;
 }
 
-function onSubmitted(tempVar, thisNote) {
+function onSubmitted(tempVar) {
   event.returnValue = false;
-  AddNote(tempVar, thisNote)
+  AddNote(tempVar)
 }
 
 function showX(self) {
@@ -444,6 +447,16 @@ function displayAbout() {
 }
 
 function checkCoords() {
+  // check current coordinates, also check current size to adjust div heights
+  if ((screen.availHeight > 650) && (document.documentElement.clientHeight > 380)) {
+    noteBody.style.height = document.documentElement.clientHeight - 350;
+    noteList.style.display = 'block';
+  }
+  else {
+    noteBody.style.height = 290;
+    noteList.style.display = 'none';
+  }
+  noteBody.style.width = document.documentElement.clientWidth * 0.96;
   oldX = currentX;
   oldY = currentY;
   getCoords();
@@ -478,6 +491,32 @@ function getOffset() {
   window.moveTo(nowX, nowY);
   offsetX = window.screenLeft - nowX;
   offsetY = window.screenTop - nowY;
+}
+
+function goEdit(itemObj) {
+  // add an input box to edit current note item
+  itemToEdit = itemObj.id;
+  var tempText = itemObj.innerText;
+  if (!!editing) { showNotes(currentNote); } 
+  editing = true;
+  var editBoxHTML = "<form name='editForm' onsubmit='event.returnValue=false;SubmitEdit(editBox.value);' action='#'><input type='text' size=50 id='editBox' /><input type='submit' style='color: green; margin-left: 2px;' value='Change' /><input type='button' style='color: red; margin-left: 2px;' value='Cancel' onclick='showNotes(currentNote);' /></form>";
+  document.getElementById(itemToEdit).innerHTML = editBoxHTML;
+  document.getElementById('editBox').value = tempText;
+  document.getElementById('editBox').focus();
+  document.getElementById('editBox').select();
+}
+
+function insertItem() {
+  // let user pick where to insert new note
+  for (i=0; i<itemTotal; i++) {
+    // add "insert" class to item text <td> elements, and onclick handler for insertion
+    document.getElementById('text' + i).className = 'insert';
+//    document.getElementById('text' + i).attachEvent('onclick', function() {
+    document.getElementById('text' + i).onclick = function() {
+      EditedString = inputBox.value;
+      WriteModifiedFile((this.id).slice(4), -1)
+    };
+  }
 }
 
 
