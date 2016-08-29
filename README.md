@@ -3,7 +3,7 @@ Note is a very basic Windows GUI note/task app.  It is free, open source, and in
 
 Note saves all notes or task items in a `notes` subfolder, located inside the folder where Note is installed.  It will create the `notes` subfolder if it doesn't already exist.  It uses the `config.txt` file to store configuration settings -- time stamp display (on/off), background color, text font, text size, and default screen position.  If no configuration file is present, Note will create one on launch.
 
-You can create new note groups, each one saved as a separate text file, and add individual note items to each group/file.  Each note item can be deleted individually (ie. for a to-do list).  Individual note items can be moved up or down on the list.  Note groups can be renamed or deleted.  Any changes are saved immediately.
+You can create new note groups, each one saved as a separate text file, and add individual note items to each group/file.  New note items can be added at the bottom of the list, or inserted anywhere in an existing note list.  Each note item can be deleted individually (ie. for a to-do list).  Individual note items can be moved up or down on the list.  They can also be edited in-line.  Note groups can be renamed or deleted.  Any changes are saved immediately.
 
 Note allows up to four user-defined local fonts to be specified.  Any font installed on the local computer can be used.  All four selections, once made, will be saved.  Spelling counts but capitalization does not.
 
@@ -19,6 +19,8 @@ On a Windows computer with Internet Explorer (or Edge) installed:
 (If you get the "Unknown Publisher" message, click *Run* to bypass it.  You can uncheck the box marked "Always ask before opening this file" so the message won't appear again.)
 
 The only necessary files are `note.hta`, `_note.js`, `_note.vbs`, and `_note.css`.  The others can be deleted if you want.  The icon file, `note_icon.ico`, will be used if it's there, but Note will run fine without it.
+
+To edit a note item, double click on it.  To insert a new note item into an existing list (rather than add it to the bottom) type the text that you want to add, then click "*Insert Above...*" and select where you would like to insert the new item.
 
 Note files (and configuration settings) can be backed up to a local subfolder.  To backup your note files, click the *Backup* button on the Options screen.
 
