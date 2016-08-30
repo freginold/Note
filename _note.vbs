@@ -55,7 +55,7 @@ Opt9 = Default9
 Opt10 = Default10
 Opt11 = Default11
 NewFileWithPath = ""
-NoteWidth = screen.availWidth/1.75
+NoteWidth = screen.availWidth/1.65
 NoteHeight = screen.availHeight/1.45
 LeftXPos = 25
 RightXPos = screen.availWidth - 25 - NoteWidth
@@ -147,6 +147,7 @@ End Function
 
 Sub AddNote(TempText)
   ' append TempText to note file
+  if TempText = "" then showStatus("Nothing to add") : focusInput : exit sub
   Dim Filename
   FileName = NotesDir + currentNote + ".txt"
   Set afile=fs.openTextFile(FileName, 8, true)
@@ -291,6 +292,7 @@ Sub MoveUp(ThisButton)
   NumToSwap = GetLineNum(ThisButton)
   NumToBeSwapped = NumToSwap - 1
   WriteModifiedFile NumToBeSwapped, NumToSwap
+  showStatus("Items #" & cstr(int(NumToBeSwapped)+1) & " and #" & cstr(int(NumToSwap)+1) & " swapped")
 End Sub
 
 Sub MoveDown(ThisButton)
@@ -300,15 +302,17 @@ Sub MoveDown(ThisButton)
   NumToSwap = GetLineNum(ThisButton)
   NumToBeSwapped = NumToSwap + 1
   WriteModifiedFile NumToSwap, NumToBeSwapped
+  showStatus("Items #" & cstr(int(NumToSwap)+1) & " and #" & cstr(int(NumToBeSwapped)+1) & " swapped")
 End Sub
 
 Sub WriteModifiedFile(Swap1, Swap2)
   ' after a move, write the new file w/ reordered items
   ' also used to save edited note file; if Swap1 and Swap2 are same #
-  ' also used to insert new note, if Swap2 = -1
-  Dim TempFile, count, Swap1Txt, Swap2Txt
+  ' also used to insert new note or restore deleted note, if Swap2 = -1
+  Dim TempFile, count, Swap1Txt, Swap2Txt, Undeleted
   Swap1 = int(Swap1)
   Swap2 = int(Swap2)
+  Undeleted = false
   OpenRFile(currentNote)
   TempFile = MakeTempFile
   count = 0
@@ -323,6 +327,7 @@ Sub WriteModifiedFile(Swap1, Swap2)
             if Swap2 = -1 then
               tfile.WriteLine(GetTimeStampedLine(EditedString))
               tfile.WriteLine(line)
+              Undeleted = true
             else
               Swap1Txt = line
             end if
@@ -339,6 +344,7 @@ Sub WriteModifiedFile(Swap1, Swap2)
       count = count + 1
     end if
   loop
+  if (Swap2 = -1) and (not Undeleted) then tfile.WriteLine(EditedString) : Undeleted = true
   tfile.close
   CloseRFile(currentNote)
   DeleteAFile(currentNote)
@@ -355,8 +361,13 @@ Function MakeTempFile
 End Function
 
 Sub DelLine(ThisLine)
-  Dim LineNum, TempFile, count, currentNoteFile
+  Dim LineNum, TempFile, count, currentNoteFile, TempEl
   LineNum = GetLineNum(ThisLine)
+  TempEl = "text" & LineNum
+  delItem.text = document.getElementById(TempEl).innerText
+  delItem.num = LineNum
+  delItem.note = currentNote
+  undeleteButton.disabled = false
   OpenRFile(currentNote)
   TempFile = MakeTempFile
   count = 0
@@ -369,14 +380,17 @@ Sub DelLine(ThisLine)
   CloseRFile(currentNote)
   DeleteAFile(currentNote)
   fs.MoveFile TempFile, NotesDir + currentNote + ".txt"
-  showNotes(CurrentNote)  
+  showNotes(CurrentNote)
+  showStatus("Item #" & cstr(int(LineNum)+1) & ", " & AbbrevText(delItem.text) & " has been deleted")
 End Sub
 
 Sub DeleteThisNote
   ' delete the current note, when Delete button is clicked and confirmed
   DeleteAFile(currentNote)
+  if delItem.note = currentNote then undeleteButton.disabled = true
   GetFileList()
   clearAll()
+  showStatus(AbbrevText(currentNote) & " has been deleted")
 End Sub
 
 Sub DeleteAFile(thisFile)
@@ -391,13 +405,13 @@ Sub DeleteAFile(thisFile)
 End Sub
 
 Sub RenameThisNote()
-  Dim NewName
+  Dim NewName, OldName
   NewName = InputBox("New name for this note:", "Note", currentNote, screen.availWidth/.45, screen.availWidth/.45)
-  if NewName = "" then exit sub
+  if NewName = "" then showStatus("No text entered") : exit sub
   NewName = checkForLeadingSpaces(NewName)
   NewName = checkForTrailingSpaces(NewName)
-  if NewName = "" then exit sub
-  if NewName = currentNote then exit sub
+  if NewName = "" then showStatus("No text entered") : exit sub
+  if NewName = currentNote then showStatus("New name is same as current name") : exit sub
   if CreateNewFile(NewName) = false then exit sub
   OpenRFile(currentNote)
   On Error Resume Next
@@ -410,16 +424,19 @@ Sub RenameThisNote()
   loop
   CloseRFile(currentNote)
   tfile.close
+  if delItem.note = currentNote then delitem.note = NewName
   DeleteThisNote
+  OldName = currentNote
   currentNote = NewName
   showNotes(currentNote)
+  showStatus(AbbrevText(OldName) & " renamed to " & AbbrevText(NewName))
 End Sub
 
 Sub Backup
   ' backup note files to notes_backup_date&time folder
   ' use error handling
   ' make folder, copy config.txt & notes subfolder, check that they exist
-  Dim d, t, BackupDate, BackupTime, BackupFolder, BackupNotesFolder
+  Dim d, t, BackupDate, BackupTime, BackupFolder, BackupNotesFolder, FileToCopy
   d = date
   t = time
   BackupDate = month(FormatDateTime(d,2)) & "-" & day(FormatDateTime(d,2)) & "-" & year(FormatDateTime(d,2))
@@ -437,8 +454,8 @@ Sub Backup
   fs.CreateFolder(BackupNotesFolder)
   if ErrorCheckBackup then exit sub
   On Error Resume Next
-  for each file in fs.GetFolder(notesDir).Files
-    fs.CopyFile file, (BackupFolder & notesDir)
+  for each FileToCopy in fs.GetFolder(notesDir).Files
+    fs.CopyFile FileToCopy, (BackupFolder & notesDir)
     if ErrorCheckBackup then exit sub
   next
   msgbox "Backup Completed"
@@ -497,7 +514,31 @@ Sub SubmitEdit(NewStr)
   EditedString = NewStr
   WriteModifiedFile Temp1, Temp2
   showNotes(currentNote)
+  showStatus("Item #" & (int(Temp1)+1) & " edited")
 End Sub
+
+Sub Undelete
+  ' subroutine to restore last deleted note item (not saved on exit)
+  ' need to save item text, currentNote, line #
+  ' on restore, add item to line where it was or at bottom, then show that note
+  EditedString = delItem.text
+  currentNote = delItem.note
+  WriteModifiedFile int(delItem.num), -1
+  undeleteButton.disabled = true
+  showNotes(currentNote)
+  highlight(delItem.num)
+  showStatus("Restored item #" & (int(delItem.num)+1) & ", " & AbbrevText(delItem.text) & ", to " &_
+    AbbrevText(delItem.note))
+  delItem.text = ""
+  delItem.num = ""
+  delItem.note = ""
+End Sub
+
+Function AbbrevText(AbbrStr)
+  ' abbreviate note text for status bar, add quotes and apply non-italic class
+  if len(AbbrStr) > 25 then AbbrStr = mid(AbbrStr, 1, 22) & "..."
+  AbbrevText = "<span class='nonItalic'>'" & AbbrStr & "'</span>"
+End Function
 
 
 ' ---------- execution --------------

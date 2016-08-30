@@ -9,6 +9,8 @@ var noteTitle = document.getElementById('noteTitle');
 var optionsDiv = document.getElementById('optionsDiv');
 var newNoteInputBox = document.getElementById('newNoteInputBox');
 var coords = document.getElementById('coords');
+var undeleteButton = document.getElementById('undeleteButton');
+var statusBar = document.getElementById('statusBar');
 var localFontDiv = [
   document.getElementById('localFontDiv0'),
   document.getElementById('localFontDiv1'),
@@ -55,6 +57,10 @@ var aboutDiv = document.getElementById('aboutDiv');
 var inputs = [];
 var items = [];
 var uFont = ['', '', '', ''];
+var delItem = {
+  text: '',
+  num: '',
+  note: '' }
 var xElBeg = "<button class='x smallFont moveButtons' onclick='DelLine(this)' id='X";
 var xElEnd = "'>X</button>";
 var renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'>Rename</button>";
@@ -63,13 +69,14 @@ var moveButtonsHTMLBeg = "<button class='moveButtons smallFont uBut' id='u";
 var moveButtonsHTMLMid = "' onclick='MoveUp(this)'>&uarr;</button> <button class='moveButtons smallFont dBut' id='d";
 var moveButtonsHTMLEnd = "' onclick='MoveDown(this)'>&darr;</button>";
 var lineStartHTML = "<span class='serif'>&sdot; </span>";
+var statusBarHTML = "<hr>&nbsp;";
 var noteFont = 'serif';
 var fgColor = 'black';
 var firstCoordCheck = true;
 var selectedFlag = [false, false, false, false];
 var currentVer = 'Note v' + Note.version + '\nPublic Domain';
 var noteText, currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
-var lastLine, itemToEdit, itemTotal;
+var lastLine, itemToEdit, itemTotal, statusTimer;
 
 
 // ------- declare functions ----------
@@ -195,6 +202,11 @@ function showOptions() {
   noteBody.style.display='none';
   noteTitle.innerText = 'Options:';
   optionsDiv.style.display='block';
+  for (i = 0; i<document.getElementsByTagName('td').length; i++) {
+    if (document.getElementsByTagName('td')[i].className == 'optionsColumn') {
+      document.getElementsByTagName('td')[i].style.width = (document.documentElement.clientWidth / 3);
+    }
+  }
   if (Opt1 == 'show') { document.getElementsByName('timeStamp')[1].checked=true; }
   else { document.getElementsByName('timeStamp')[0].checked=true; }
   switch (Opt2) {
@@ -264,6 +276,7 @@ function clearAll() {
   noteBody.innerText = '';
   noteTitle.innerText = '';
   newNoteInputBox.value = '';
+  clearStatus();
   inputBox.value='';
   items[0] = 'clear';
   for (i in items) {
@@ -309,8 +322,7 @@ function getLines(thisNote) {
   var noteNum = 0;
   lastLine = 0;
   var FileEnd = false;
-  var localFontHTML = '';
-  localFontHTML = " style='font-family: &#34;" + noteFont + "&#34;, serif;'";
+  var localFontHTML = " style='font-family: &#34;" + noteFont + "&#34;, serif;'";
   var currentClasses = 'item ' + Opt4 + 'Font';
   OpenRFile(thisNote)
   while (!FileEnd) {
@@ -323,7 +335,7 @@ function getLines(thisNote) {
       // check input string for < or >, repl w/ &gt; or &lt;
       currentLine = currentLine.replace(/</g, "&lt;");
       currentLine = currentLine.replace(/>/g, "&gt;");
-      notesHTML = notesHTML + "<tr class='" + currentClasses + "' id='item" + noteNum + localFontHTML + "><td>" + xElBeg + noteNum + xElEnd + "&nbsp;&nbsp;" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartHTML + "</td><td id='text" + noteNum + "' ondblclick='goEdit(this);'>" + currentLine + "</td></tr>";
+      notesHTML = notesHTML + "<tr class='" + currentClasses + "' id='item" + noteNum + "'" + localFontHTML + "><td>" + xElBeg + noteNum + xElEnd + "&nbsp;&nbsp;" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartHTML + "</td><td id='text" + noteNum + "' ondblclick='goEdit(this);'>" + currentLine + "</td></tr>";
       noteNum++;
     }
   }
@@ -336,6 +348,7 @@ function getLines(thisNote) {
 function onSubmitted(tempVar) {
   event.returnValue = false;
   AddNote(tempVar)
+  showStatus(AbbrevText(tempVar) + " added to bottom");
 }
 
 function showX(self) {
@@ -363,10 +376,10 @@ function createNewNote(newNoteName) {
   event.returnValue = false;
   newNoteName = checkForLeadingSpaces(newNoteName);
   newNoteName = checkForTrailingSpaces(newNoteName);
-  if (newNoteName == '') { clearAll(); return; }
+  if (newNoteName == '') { showNewNoteBox(); showStatus("No text entered"); return; }
   var fileCreated = CreateNewFile(newNoteName)
-  if (!!fileCreated) { showNotes(newNoteName); }
-  else { newNoteInputBox.value = ''; }
+  if (!!fileCreated) { showNotes(newNoteName); showStatus("New note, " + AbbrevText(newNoteName) + " created"); }
+  else { clearStatus(); newNoteInputBox.value = ''; }
 }
 
 function getLocalFont(n) {
@@ -447,14 +460,16 @@ function displayAbout() {
 }
 
 function checkCoords() {
-  // check current coordinates, also check current size to adjust div heights
+  // check current coordinates, also check current size to adjust div heights, also check status timer
   if ((screen.availHeight > 650) && (document.documentElement.clientHeight > 380)) {
     noteBody.style.height = document.documentElement.clientHeight - 350;
     noteList.style.display = 'block';
+    statusBar.style.display = 'inline-block';
   }
   else {
     noteBody.style.height = 290;
     noteList.style.display = 'none';
+    statusBar.style.display = 'none';
   }
   noteBody.style.width = document.documentElement.clientWidth * 0.96;
   oldX = currentX;
@@ -472,6 +487,10 @@ function checkCoords() {
     }
   }
   else { firstCoordCheck = false; }
+  if (statusBar.innerHTML != statusBarHTML) {
+    statusTimer = statusTimer + 0.5;
+    if (statusTimer > 9.5) { clearStatus(); }
+  }
 }
 
 function getCoords() {
@@ -515,8 +534,40 @@ function insertItem() {
     document.getElementById('text' + i).onclick = function() {
       EditedString = inputBox.value;
       WriteModifiedFile((this.id).slice(4), -1)
+      showStatus(AbbrevText(EditedString) + " inserted at line #" + (1 * (this.id).slice(4) + 1));
     };
   }
+}
+
+function showStatus(statusStr) {
+  // show a status message at bottom of window
+  statusBar.innerHTML = '<hr>' + statusStr;
+  statusTimer = 0;
+}
+
+function clearStatus() {
+  // clear status bar
+  statusBar.innerHTML = statusBarHTML;
+  statusTimer = 0;
+}
+
+function focusInput() {
+  // call from VBS file to refocus on inputBox after a status msg display
+  inputBox.focus();
+}
+
+function highlight(tempNum) {
+  // highlight recently-restored note item for a second
+  var tempHL = document.getElementById(('text'+tempNum));
+  tempHL.style.backgroundColor = 'yellow';
+  if (fgColor != 'black') {
+    var tempColor = fgColor;
+    tempHL.style.color = 'black';
+  }
+  setTimeout(function(){
+    tempHL.style.backgroundColor = bgColor;
+    tempHL.style.color = fgColor;
+  }, 1000);
 }
 
 

@@ -25,6 +25,9 @@ h4 {
   font-style: italic;
   font-size: .8em;
 }
+.nonItalic {
+  font-style: normal;
+}
 .activeNote {
   font-weight: bold;
   border: 2px solid black;
@@ -36,12 +39,12 @@ h4 {
   margin-bottom: 0.4em;
 }
 .optionsColumn {
-  margin-left: 1px;
-  margin-right: 45px;
+  margin-left: 5px;
+  margin-right: 5px;
   vertical-align: top;
   text-align: left;
-  padding-right: 90px;
-  padding-left: 40px;
+  padding-right: 25px;
+  padding-left: 25px;
 }
 .smallFont {
   font-size: 0.8em;
@@ -161,8 +164,19 @@ h4 {
   padding-left: 10px;
   margin-left: 25px;
 }
+#optionsSpacer {
+  margin-top: 5em;
+  padding: 1px;
+}
 #backupButton {
-  position: relative;
-  margin-top: 140px;
-  float: right;
+  margin: 1px 0px 3px 0px;
+}
+#statusBar {
+  display: inline-block;
+  font-size: 0.9em;
+  font-style: italic;
+  position: fixed;
+  bottom: 0px;
+  margin: 2px 2px 10px 1px;
+  width: 98%;
 }
