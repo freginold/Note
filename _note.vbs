@@ -10,13 +10,14 @@
 ' 9. Screen Postion: mm-centered/cc-custom
 ' 10. Custom x coord
 ' 11. Custom y coord
+' 12. Status Bar: hide/show
 
 
 ' ----- set up variables, constants, & objects ------
 
 Option Explicit
 Dim fs, NewFileWithPath, rfile, afile, tfile, rofile, line
-Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9, Opt10, Opt11
+Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9, Opt10, Opt11, Opt12
 Dim NoteWidth, NoteHeight, LeftXPos, RightXPos, MidXPos, TopYPos, MidYPos, BottomYPos
 Dim EditedString
 
@@ -34,6 +35,7 @@ Const Default8 = ""
 Const Default9 = "mm"
 Const Default10 = "0"
 Const Default11 = "0"
+Const Default12 = "show"
 Const OptionsFile = "config.txt"
 Const EOFConst = "<<<EOF>>>"
 Const BackupPrefix = "backup_notes_"
@@ -54,9 +56,10 @@ Opt8 = Default8
 Opt9 = Default9
 Opt10 = Default10
 Opt11 = Default11
+Opt12 = Default12
 NewFileWithPath = ""
-NoteWidth = screen.availWidth/1.65
-NoteHeight = screen.availHeight/1.45
+NoteWidth = screen.availWidth/1.7
+NoteHeight = screen.availHeight/1.41
 LeftXPos = 25
 RightXPos = screen.availWidth - 25 - NoteWidth
 MidXPos = screen.availWidth/2 - NoteWidth/2
@@ -120,7 +123,7 @@ End Function
 Sub OpenRFile(FileName)
   FileName = NotesDir + FileName + ".txt"
   if fs.FileExists(FileName) then set rfile=fs.opentextfile(FileName, 1)
-  if NOT fs.FileExists(FileName) then msgbox FileName & " not there"
+  if NOT fs.FileExists(FileName) then msgbox FileName & " not there", 48
 End Sub
 
 Sub CloseRFile(FileName)
@@ -176,7 +179,7 @@ Function CreateNewFile(FileName)
   if BadChar then
     err.raise 5021
   else
-    if fs.FileExists(NewFileWithPath) then msgbox "A file with that name already exists.": exit function
+    if fs.FileExists(NewFileWithPath) then msgbox "A file with that name already exists.", 64: exit function
     fs.CreateTextFile(NewFileWithPath)
   end if
   if ErrorCheck then exit function
@@ -189,12 +192,12 @@ Sub GetOptions(dummyVar)
   ' open options file, load options into memory
   if fs.FileExists(OptionsFile) then 
     set rofile = fs.opentextfile(OptionsFile, 1)
-    ' get option 1 = time stamp
+    ' get option 1 - time stamp
     ' check for rofile.AtEndOfStream -- if premature, use default values for missing values
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(0) : Exit Sub
     Opt1 = LCase(rofile.Readline)
     if (Opt1 <> "show") and (Opt1 <> "hide") then Opt1 = Default1
-    ' get option 2 = background color
+    ' get option 2 - background color
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(1) : Exit Sub
     Opt2 = LCase(rofile.Readline)
     ' get option 3 - font name
@@ -224,6 +227,9 @@ Sub GetOptions(dummyVar)
     ' get option 11 - custom y coord
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(10) : Exit Sub
     Opt11 = rofile.Readline
+    ' get option 12 - status bar
+    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(11) : Exit Sub
+    Opt12 = Lcase(rofile.Readline)
     ' close file
     rofile.close
   Else
@@ -244,11 +250,13 @@ Function GetOption(ThisOption)
   if ThisOption = "9" then GetOption = Opt9
   if ThisOption = "10" then GetOption = Opt10
   if ThisOption = "11" then GetOption = Opt11
+  if ThisOption = "12" then GetOption = Opt12
 End Function
 
 Sub OptionsCorrupted(numCorr)
   ' if options file not present or not formatted correctly, pass in any missing values & recreate it
   ' numCorr = number of options loaded succesfully
+  if numCorr < 12 then Opt12 = Default12
   if numCorr < 11 then Opt11 = Default11
   if numCorr < 10 then Opt10 = Default10
   if numCorr < 9 then Opt9 = Default9
@@ -280,6 +288,7 @@ Sub WriteOptions
   tfile.WriteLine(Opt9)
   tfile.WriteLine(Opt10)
   tfile.WriteLine(Opt11)
+  tfile.WriteLine(Opt12)
   tfile.close
   if fs.FileExists(OptionsFile) then fs.DeleteFile(OptionsFile)
   fs.MoveFile TempFile, OptionsFile  
@@ -400,7 +409,7 @@ Sub DeleteAFile(thisFile)
   if fs.FileExists(CurrentFile) then
     fs.DeleteFile(CurrentFile)
   Else
-    msgbox "File Error: Operation could not be performed"
+    msgbox "File Error: Operation could not be performed", 48
   End If  
 End Sub
 
@@ -465,7 +474,7 @@ Function ErrorCheck
   ' check to see if an error was generated
   ErrorCheck = false
   if err then
-    msgbox InvalidFNMsg1 & VbCrLf & VbCrLf & InvalidFNMsg2 & VbCrLf & AddSpaces(BadCharString)
+    msgbox InvalidFNMsg1 & VbCrLf & VbCrLf & InvalidFNMsg2 & VbCrLf & AddSpaces(BadCharString), 64
     ErrorCheck = true
   end if
   err.clear
@@ -475,7 +484,7 @@ Function ErrorCheckBackup
   ' check to see if an error was generated while performing backup
   ErrorCheckBackup = false
   if err then
-    msgbox "Error backing up files." & VbCrLf & "Please reload program or try again later."
+    msgbox "Error backing up files." & VbCrLf & "Please reload program or try again later.", 48
     ErrorCheckBackup = true
   end if
   err.clear
@@ -508,6 +517,7 @@ End Sub
 
 Sub SubmitEdit(NewStr)
   ' save edited note & redisplay
+  if NewStr = uneditedString then showNotes(currentNote) : showStatus("No changes made") : exit sub
   Dim Temp1, Temp2
   Temp1 = Mid(itemToEdit,5)
   Temp2 = Temp1
@@ -536,7 +546,7 @@ End Sub
 
 Function AbbrevText(AbbrStr)
   ' abbreviate note text for status bar, add quotes and apply non-italic class
-  if len(AbbrStr) > 25 then AbbrStr = mid(AbbrStr, 1, 22) & "..."
+  if len(AbbrStr) > 30 then AbbrStr = mid(AbbrStr, 1, 27) & "..."
   AbbrevText = "<span class='nonItalic'>'" & AbbrStr & "'</span>"
 End Function
 

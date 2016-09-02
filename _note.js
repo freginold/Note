@@ -74,6 +74,7 @@ var noteFont = 'serif';
 var fgColor = 'black';
 var firstCoordCheck = true;
 var selectedFlag = [false, false, false, false];
+var uneditedString = '';
 var currentVer = 'Note v' + Note.version + '\nPublic Domain';
 var noteText, currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
 var lastLine, itemToEdit, itemTotal, statusTimer;
@@ -141,6 +142,8 @@ function applyOptions() {
   uFont[2] = Opt7;
   uFont[3] = Opt8;
   if (Opt9 == 'cc') { currentX = Opt10; currentY = Opt11; }
+  if (Opt12 == 'hide') { statusBar.style.display = 'none'; }
+  else { statusBar.style.display = 'inline-block'; }
 }
 
 function saveOptions() {
@@ -182,6 +185,8 @@ function saveOptions() {
     Opt11 = currentY - offsetY;
   }
   else { Opt9 = 'mm'; Opt10 = 0; Opt11 = 0; }
+  if (document.getElementsByName('statusOption')[0].checked) { Opt12 = 'hide'; }
+  else { Opt12 = 'show'; }
   WriteOptions()
   applyOptions();
   showOptions();
@@ -261,6 +266,8 @@ function showOptions() {
   }
   if (Opt9 == 'cc') { document.getElementsByName('screenPos')[1].checked = true; }
   else { document.getElementsByName('screenPos')[0].checked = true; }
+  if (Opt12 == 'hide') { document.getElementsByName('statusOption')[0].checked = true; }
+  else { document.getElementsByName('statusOption')[1].checked = true; }
   checkCoords();
   showCoords();
 }
@@ -276,7 +283,6 @@ function clearAll() {
   noteBody.innerText = '';
   noteTitle.innerText = '';
   newNoteInputBox.value = '';
-  clearStatus();
   inputBox.value='';
   items[0] = 'clear';
   for (i in items) {
@@ -379,7 +385,7 @@ function createNewNote(newNoteName) {
   if (newNoteName == '') { showNewNoteBox(); showStatus("No text entered"); return; }
   var fileCreated = CreateNewFile(newNoteName)
   if (!!fileCreated) { showNotes(newNoteName); showStatus("New note, " + AbbrevText(newNoteName) + " created"); }
-  else { clearStatus(); newNoteInputBox.value = ''; }
+  else { newNoteInputBox.value = ''; }
 }
 
 function getLocalFont(n) {
@@ -463,8 +469,9 @@ function checkCoords() {
   // check current coordinates, also check current size to adjust div heights, also check status timer
   if ((screen.availHeight > 650) && (document.documentElement.clientHeight > 380)) {
     noteBody.style.height = document.documentElement.clientHeight - 350;
+    optionsDiv.style.height = document.documentElement.clientHeight - 300;
     noteList.style.display = 'block';
-    statusBar.style.display = 'inline-block';
+    if (Opt12 == 'show') { statusBar.style.display = 'inline-block'; }
   }
   else {
     noteBody.style.height = 290;
@@ -472,6 +479,9 @@ function checkCoords() {
     statusBar.style.display = 'none';
   }
   noteBody.style.width = document.documentElement.clientWidth * 0.96;
+  var tempSize = 100 - (((NoteWidth - document.documentElement.clientWidth) / NoteWidth) * 100);
+  if (tempSize > 100) { tempSize = 100; }
+  inputBox.size = tempSize;
   oldX = currentX;
   oldY = currentY;
   getCoords();
@@ -487,9 +497,9 @@ function checkCoords() {
     }
   }
   else { firstCoordCheck = false; }
-  if (statusBar.innerHTML != statusBarHTML) {
+  if ((Opt12 == 'show') && (statusBar.innerHTML != statusBarHTML)) {
     statusTimer = statusTimer + 0.5;
-    if (statusTimer > 9.5) { clearStatus(); }
+    if (statusTimer > 6.5) { clearStatus(); }
   }
 }
 
@@ -515,14 +525,19 @@ function getOffset() {
 function goEdit(itemObj) {
   // add an input box to edit current note item
   itemToEdit = itemObj.id;
-  var tempText = itemObj.innerText;
+  uneditedString = itemObj.innerText;
   if (!!editing) { showNotes(currentNote); } 
   editing = true;
-  var editBoxHTML = "<form name='editForm' onsubmit='event.returnValue=false;SubmitEdit(editBox.value);' action='#'><input type='text' size=50 id='editBox' /><input type='submit' style='color: green; margin-left: 2px;' value='Change' /><input type='button' style='color: red; margin-left: 2px;' value='Cancel' onclick='showNotes(currentNote);' /></form>";
+  var editBoxHTML = "<form name='editForm' onsubmit='event.returnValue=false;SubmitEdit(editBox.value);' action='#'><input type='text' size=50 id='editBox' /><input type='submit' style='color: green; margin-left: 2px;' value='Change' /><input type='button' style='color: red; margin-left: 2px;' value='Cancel' onclick='canceledEdit();' /></form>";
   document.getElementById(itemToEdit).innerHTML = editBoxHTML;
-  document.getElementById('editBox').value = tempText;
+  document.getElementById('editBox').value = uneditedString;
   document.getElementById('editBox').focus();
   document.getElementById('editBox').select();
+}
+
+function canceledEdit() {
+  showNotes(currentNote);
+  showStatus("Edit canceled");
 }
 
 function insertItem() {
@@ -530,7 +545,6 @@ function insertItem() {
   for (i=0; i<itemTotal; i++) {
     // add "insert" class to item text <td> elements, and onclick handler for insertion
     document.getElementById('text' + i).className = 'insert';
-//    document.getElementById('text' + i).attachEvent('onclick', function() {
     document.getElementById('text' + i).onclick = function() {
       EditedString = inputBox.value;
       WriteModifiedFile((this.id).slice(4), -1)
@@ -541,14 +555,18 @@ function insertItem() {
 
 function showStatus(statusStr) {
   // show a status message at bottom of window
-  statusBar.innerHTML = '<hr>' + statusStr;
-  statusTimer = 0;
+  if (Opt12 == 'show') {
+    statusBar.innerHTML = '<hr>' + statusStr;
+    statusTimer = 0;
+  }
 }
 
 function clearStatus() {
   // clear status bar
-  statusBar.innerHTML = statusBarHTML;
-  statusTimer = 0;
+  if (Opt12 == 'show') {
+    statusBar.innerHTML = statusBarHTML;
+    statusTimer = 0;
+  }
 }
 
 function focusInput() {
@@ -557,7 +575,7 @@ function focusInput() {
 }
 
 function highlight(tempNum) {
-  // highlight recently-restored note item for a second
+  // highlight recently-restored note item for a couple seconds
   var tempHL = document.getElementById(('text'+tempNum));
   tempHL.style.backgroundColor = 'yellow';
   if (fgColor != 'black') {
@@ -567,7 +585,7 @@ function highlight(tempNum) {
   setTimeout(function(){
     tempHL.style.backgroundColor = bgColor;
     tempHL.style.color = fgColor;
-  }, 1000);
+  }, 2000);
 }
 
 

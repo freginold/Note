@@ -8,7 +8,8 @@
   SingleInstance = yes
   Scroll = no
   Icon = "note_icon.ico"
-  version = "3.0.1"
+  navigable = no
+  version = "3.0.2"
 >
 <title>Note</title>
 <link href='_note.css' rel='stylesheet' type='text/css'>
@@ -126,6 +127,9 @@
   <label><input type='radio' name='screenPos' class='optionInput' value='mm'> Centered &nbsp;<span class='goItalic'>(default)</span></label><br />
   <label><input type='radio' name='screenPos' class='optionInput' value='cc'> Custom <span id='coords' class='smallFont'></span>
     <br /><span class='smallFont'>&ensp;&emsp;&emsp;(Drag to desired position)</span></label>
+  <h4>Status Bar:</h4>
+  <label><input type='radio' name='statusOption' class='optionInput' value='Hide' /> Hide</label><br />
+  <label><input type='radio' name='statusOption' class='optionInput' value='Show' /> Show&nbsp;<span class='goItalic'>(default)</span></label>
   <div id='optionsSpacer'></div>
   <button id='backupButton' onclick='Backup()'>Backup</button><br />
   <button id='undeleteButton' onclick='Undelete()' disabled=true>Restore last deleted item</button>
@@ -138,7 +142,7 @@
   <p id='versionInfo'></p>
 </div>
 
-<div id='statusBar'></div>
+<div id='statusBar'><hr>&nbsp;</div>
 
 <script language='vbscript' src='_note.vbs'></script>
 <script language='javascript' src='_note.js'></script>

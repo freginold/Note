@@ -126,7 +126,7 @@ h4 {
 }
 #noteBody {
   overflow: auto;
-  padding: 5px;4
+  padding: 5px;
   font-family: serif;
   font-size: 1em;
 }
@@ -153,6 +153,7 @@ h4 {
   display: none;
   font-family: serif;
   font-size: 1em;
+  overflow: auto;
 }
 #delBox {
   position: relative;
@@ -165,7 +166,7 @@ h4 {
   margin-left: 25px;
 }
 #optionsSpacer {
-  margin-top: 5em;
+  margin-top: 2em;
   padding: 1px;
 }
 #backupButton {
