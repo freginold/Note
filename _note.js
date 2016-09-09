@@ -7,6 +7,9 @@ var inputBox = document.getElementById('inputBox');
 var newNoteDiv = document.getElementById('newNoteDiv');
 var noteTitle = document.getElementById('noteTitle');
 var optionsDiv = document.getElementById('optionsDiv');
+var aboutDiv = document.getElementById('aboutDiv');
+var backupDiv = document.getElementById('backupDiv');
+var backupDispDiv = document.getElementById('backupDispDiv');
 var newNoteInputBox = document.getElementById('newNoteInputBox');
 var coords = document.getElementById('coords');
 var undeleteButton = document.getElementById('undeleteButton');
@@ -53,7 +56,6 @@ var localFontSetButton = [
   document.getElementById('localFontSetButton2'),
   document.getElementById('localFontSetButton3'),
 ];
-var aboutDiv = document.getElementById('aboutDiv');
 var inputs = [];
 var items = [];
 var uFont = ['', '', '', ''];
@@ -279,6 +281,7 @@ function clearAll() {
   optionsDiv.style.display='none';
   inputDiv.style.display = 'none';
   aboutDiv.style.display = 'none';
+  backupDiv.style.display = 'none';
   noteBody.style.display='block';
   noteBody.innerText = '';
   noteTitle.innerText = '';
@@ -354,7 +357,6 @@ function getLines(thisNote) {
 function onSubmitted(tempVar) {
   event.returnValue = false;
   AddNote(tempVar)
-  showStatus(AbbrevText(tempVar) + " added to bottom");
 }
 
 function showX(self) {
@@ -546,6 +548,7 @@ function insertItem() {
     // add "insert" class to item text <td> elements, and onclick handler for insertion
     document.getElementById('text' + i).className = 'insert';
     document.getElementById('text' + i).onclick = function() {
+      if (inputBox.value == "") { showNotes(currentNote); showStatus("Nothing to insert"); return; }
       EditedString = inputBox.value;
       WriteModifiedFile((this.id).slice(4), -1)
       showStatus(AbbrevText(EditedString) + " inserted at line #" + (1 * (this.id).slice(4) + 1));
@@ -586,6 +589,23 @@ function highlight(tempNum) {
     tempHL.style.backgroundColor = bgColor;
     tempHL.style.color = fgColor;
   }, 2000);
+}
+
+function dispBackupDiv() {
+  // show backup div: backup button, current backup dir, button to change dir
+  clearAll();
+  noteBody.style.display='none';
+  noteTitle.innerText = "Backup";
+  backupDiv.style.display = 'block';
+  var Opt13Display = Opt13;
+  if (Opt13 == Default13) { Opt13Display = showDefaultBackup() }
+  if (Opt13Display.length > 50) { Opt13Display = abbrevBackup(Opt13Display); }
+  backupDispDiv.innerText = Opt13Display;
+}
+
+function abbrevBackup(rawText) {
+  // abbreviate backup file path for display
+  return rawText.slice(0, 23) + " ... " + rawText.slice(rawText.length-24);
 }
 
 

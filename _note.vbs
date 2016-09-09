@@ -11,13 +11,14 @@
 ' 10. Custom x coord
 ' 11. Custom y coord
 ' 12. Status Bar: hide/show
+' 13. Backup Location: current folder or user choice
 
 
 ' ----- set up variables, constants, & objects ------
 
 Option Explicit
-Dim fs, NewFileWithPath, rfile, afile, tfile, rofile, line
-Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9, Opt10, Opt11, Opt12
+Dim fs, NewFileWithPath, rfile, afile, tfile, rofile, line, BackupLoc
+Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9, Opt10, Opt11, Opt12, Opt13
 Dim NoteWidth, NoteHeight, LeftXPos, RightXPos, MidXPos, TopYPos, MidYPos, BottomYPos
 Dim EditedString
 
@@ -36,6 +37,7 @@ Const Default9 = "mm"
 Const Default10 = "0"
 Const Default11 = "0"
 Const Default12 = "show"
+Const Default13 = ".\"
 Const OptionsFile = "config.txt"
 Const EOFConst = "<<<EOF>>>"
 Const BackupPrefix = "backup_notes_"
@@ -57,6 +59,7 @@ Opt9 = Default9
 Opt10 = Default10
 Opt11 = Default11
 Opt12 = Default12
+Opt13 = Default13
 NewFileWithPath = ""
 NoteWidth = screen.availWidth/1.7
 NoteHeight = screen.availHeight/1.41
@@ -157,6 +160,7 @@ Sub AddNote(TempText)
   afile.WriteLine(GetTimeStampedLine(TempText))
   afile.close
   showNotes(currentNote)
+  showStatus(AbbrevText(TempText) & " added to bottom")
 End Sub
 
 Function GetTimeStampedLine(LineText)
@@ -230,6 +234,10 @@ Sub GetOptions(dummyVar)
     ' get option 12 - status bar
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(11) : Exit Sub
     Opt12 = Lcase(rofile.Readline)
+    ' get option 13 - backup location
+    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(12) : Exit Sub
+    Opt13 = rofile.Readline
+    if Opt13 = "" then Opt13 = Default13
     ' close file
     rofile.close
   Else
@@ -251,11 +259,13 @@ Function GetOption(ThisOption)
   if ThisOption = "10" then GetOption = Opt10
   if ThisOption = "11" then GetOption = Opt11
   if ThisOption = "12" then GetOption = Opt12
+  if ThisOption = "13" then GetOption = Opt13
 End Function
 
 Sub OptionsCorrupted(numCorr)
   ' if options file not present or not formatted correctly, pass in any missing values & recreate it
   ' numCorr = number of options loaded succesfully
+  if numCorr < 13 then Opt12 = Default13
   if numCorr < 12 then Opt12 = Default12
   if numCorr < 11 then Opt11 = Default11
   if numCorr < 10 then Opt10 = Default10
@@ -289,6 +299,7 @@ Sub WriteOptions
   tfile.WriteLine(Opt10)
   tfile.WriteLine(Opt11)
   tfile.WriteLine(Opt12)
+  tfile.WriteLine(Opt13)
   tfile.close
   if fs.FileExists(OptionsFile) then fs.DeleteFile(OptionsFile)
   fs.MoveFile TempFile, OptionsFile  
@@ -442,7 +453,7 @@ Sub RenameThisNote()
 End Sub
 
 Sub Backup
-  ' backup note files to notes_backup_date&time folder
+  ' backup note files to notes_backup_date&time folder, in specified folder
   ' use error handling
   ' make folder, copy config.txt & notes subfolder, check that they exist
   Dim d, t, BackupDate, BackupTime, BackupFolder, BackupNotesFolder, FileToCopy
@@ -451,10 +462,10 @@ Sub Backup
   BackupDate = month(FormatDateTime(d,2)) & "-" & day(FormatDateTime(d,2)) & "-" & year(FormatDateTime(d,2))
   BackupTime = Hour(Now) & "-" & Minute(Now) & "-" & Second(Now)
   BackupFolder = BackupPrefix & BackupDate & "_" & BackupTime
+  BackupFolder = Opt13 & BackupFolder & "\"
   On Error Resume Next
   fs.CreateFolder(BackupFolder)
   if ErrorCheckBackup then exit sub
-  BackupFolder = ".\" & BackupFolder & "\"
   On Error Resume Next
   fs.CopyFile OptionsFile, BackupFolder
   if ErrorCheckBackup then exit sub
@@ -468,6 +479,7 @@ Sub Backup
     if ErrorCheckBackup then exit sub
   next
   msgbox "Backup Completed"
+  showOptions
 End Sub
 
 Function ErrorCheck
@@ -548,6 +560,25 @@ Function AbbrevText(AbbrStr)
   ' abbreviate note text for status bar, add quotes and apply non-italic class
   if len(AbbrStr) > 30 then AbbrStr = mid(AbbrStr, 1, 27) & "..."
   AbbrevText = "<span class='nonItalic'>'" & AbbrStr & "'</span>"
+End Function
+
+Sub ChangeBackup
+  ' change backup location
+  dim sh, bFolder
+  set sh = CreateObject("shell.application")
+  set bFolder = sh.BrowseForFolder(0, "Choose New Backup Location:", 0)
+  if (not bFolder is nothing) then
+    Opt13 = bFolder.Self.Path & "\"
+    WriteOptions
+  end if
+  set bFolder = nothing
+  set sh = nothing
+  dispBackupDiv
+End Sub
+
+Function ShowDefaultBackup
+  ' get path of default backup location for display
+  ShowDefaultBackup = fs.GetFolder(Opt13) & "\"
 End Function
 
 
