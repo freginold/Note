@@ -1,7 +1,7 @@
 # Note
 Note is a very basic Windows GUI note/task app.  It is free, open source, and in the public domain.  It uses VBScript and JavaScript/JScript with an .HTA interface.
 
-Note saves all notes or task items in a `notes` subfolder, located inside the folder where Note is installed.  It will create the `notes` subfolder if it doesn't already exist.  It uses the `config.txt` file to store configuration settings -- time stamp display (on/off), background color, text font, text size, and default screen position.  If no configuration file is present, Note will create one on launch.
+Note saves all notes or task items in a `notes` subfolder, located inside the folder where Note is installed.  It will create the `notes` subfolder if it doesn't already exist.  It uses the `config.txt` file to store configuration settings -- time stamp display, background color, text font, text size, screen position, status bar display, and backup folder location.  If no configuration file is present, Note will create one on launch.
 
 You can create new note groups, each one saved as a separate text file, and add individual note items to each group/file.  New note items can be added at the bottom of the list, or inserted anywhere in an existing note list.  Each note item can be deleted individually (ie. for a to-do list).  Individual note items can be moved up or down on the list.  They can also be edited in-line.  Note groups can be renamed or deleted.  Any changes are saved immediately.
 
@@ -22,7 +22,7 @@ The only necessary files are `note.hta`, `_note.js`, `_note.vbs`, and `_note.css
 
 To edit a note item, double click on it.  To insert a new note item into an existing list (rather than add it to the bottom) type the text that you want to add, then click "*Insert Above...*" and select where you would like to insert the new item.
 
-Note files (and configuration settings) can be backed up to a local subfolder.  To backup your note files, click the *Backup* button on the Options screen.
+Note files (and configuration settings) can be backed up to any accessible folder.  Selecting the *Backup...* button on the Options screen allows you to choose a backup location (or keep the default location -- the current Note source directory) and perform a backup.
 
 An undelete feature has been added, to restore the last deleted item.  The restore button can be found on the Options screen. If the note that contained the deleted item has since been deleted itself, or if the program has been closed and reopened, you won't be able to restore a deleted item.
 
