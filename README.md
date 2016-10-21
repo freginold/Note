@@ -1,7 +1,7 @@
 # Note
 Note is a very basic Windows GUI note/task app.  It is free, open source, and in the public domain.  It uses VBScript and JavaScript/JScript with an .HTA interface.
 
-Note saves all notes or task items in a `notes` subfolder, located inside the folder where Note is installed.  It will create the `notes` subfolder if it doesn't already exist.  It uses the `config.txt` file to store configuration settings -- time stamp display, background color, text font, text size, screen position, status bar display, and backup folder location.  If no configuration file is present, Note will create one on launch.
+Note saves all notes/tasks in a `notes` subfolder, located inside the folder where Note was installed.  It uses a `config.txt` file to store configuration settings; time stamp display, background color, text font, text size, screen position, status bar display, and backup folder location. If either the `notes` subfolder or the `config.txt` file are not present, Note will create one on launch.
 
 You can create new note groups, each one saved as a separate text file, and add individual note items to each group/file.  New note items can be added at the bottom of the list, or inserted anywhere in an existing note list.  Each note item can be deleted individually (ie. for a to-do list).  Individual note items can be moved up or down on the list.  They can also be edited in-line.  Note groups can be renamed or deleted.  Any changes are saved immediately.
 
