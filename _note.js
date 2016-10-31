@@ -308,6 +308,7 @@ function showNotes(cNote) {
   if (currentNote == "&") { currentNoteDisplay = "&#38;"; }    // to deal w/ & as only char in title
   noteTitle.innerHTML = "<div id='delBox'>" + renButtonHTML + delButtonHTML + "</div>" + currentNoteDisplay;
   noteBody.innerHTML = noteText;
+  noteBody.scrollTop = 0;
   var firstBut = document.getElementById('u0');
   var lastBut = window['d' + (lastLine-1)];
   if (firstBut != null) {
@@ -544,9 +545,11 @@ function canceledEdit() {
 
 function insertItem() {
   // let user pick where to insert new note
+  var insertClass = 'insertBlack';
+  if (fgColor != 'black') { insertClass = 'insertWhite'; }
   for (i=0; i<itemTotal; i++) {
     // add "insert" class to item text <td> elements, and onclick handler for insertion
-    document.getElementById('text' + i).className = 'insert';
+    document.getElementById('text' + i).className = insertClass;
     document.getElementById('text' + i).onclick = function() {
       if (inputBox.value == "") { showNotes(currentNote); showStatus("Nothing to insert"); return; }
       EditedString = inputBox.value;

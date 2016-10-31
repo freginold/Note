@@ -112,8 +112,12 @@ h4 {
 .dBut {
   margin-right: 5px;
 }
-.insert:hover {
+.insertBlack:hover {
   border-top: 4px solid black;
+  cursor: pointer;
+}
+.insertWhite:hover {
+  border-top: 4px solid white;
   cursor: pointer;
 }
 #noteList {

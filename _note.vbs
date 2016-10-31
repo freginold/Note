@@ -19,7 +19,7 @@
 Option Explicit
 Dim fs, NewFileWithPath, rfile, afile, tfile, rofile, line, BackupLoc
 Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9, Opt10, Opt11, Opt12, Opt13
-Dim NoteWidth, NoteHeight, LeftXPos, RightXPos, MidXPos, TopYPos, MidYPos, BottomYPos
+Dim NoteWidth, NoteHeight, MidXPos, MidYPos
 Dim EditedString
 
 Set fs = CreateObject("Scripting.FileSystemObject")
@@ -61,14 +61,10 @@ Opt11 = Default11
 Opt12 = Default12
 Opt13 = Default13
 NewFileWithPath = ""
-NoteWidth = screen.availWidth/1.7
+NoteWidth = screen.availWidth/1.6
 NoteHeight = screen.availHeight/1.41
-LeftXPos = 25
-RightXPos = screen.availWidth - 25 - NoteWidth
 MidXPos = screen.availWidth/2 - NoteWidth/2
-TopYPos = 25
 MidYPos = screen.availHeight/2 - NoteHeight/2
-BottomYPos = screen.availHeight - 25 - NoteHeight
 EditedString = ""
 
 
