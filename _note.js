@@ -14,6 +14,7 @@ var newNoteInputBox = document.getElementById('newNoteInputBox');
 var coords = document.getElementById('coords');
 var undeleteButton = document.getElementById('undeleteButton');
 var statusBar = document.getElementById('statusBar');
+var statusBarText = document.getElementById('statusBarText');
 var localFontDiv = [
   document.getElementById('localFontDiv0'),
   document.getElementById('localFontDiv1'),
@@ -71,15 +72,18 @@ var moveButtonsHTMLBeg = "<button class='moveButtons smallFont uBut' id='u";
 var moveButtonsHTMLMid = "' onclick='MoveUp(this)'>&uarr;</button> <button class='moveButtons smallFont dBut' id='d";
 var moveButtonsHTMLEnd = "' onclick='MoveDown(this)'>&darr;</button>";
 var lineStartHTML = "<span class='serif'>&sdot; </span>";
-var statusBarHTML = "<hr>&nbsp;";
+var statusBarHTML = "&nbsp;";
 var noteFont = 'serif';
 var fgColor = 'black';
 var firstCoordCheck = true;
 var selectedFlag = [false, false, false, false];
 var uneditedString = '';
 var currentVer = 'Note v' + Note.version + '\nPublic Domain';
-var noteText, currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
-var lastLine, itemToEdit, itemTotal, statusTimer;
+var timer = 0;
+var lastScrollPos = 0;
+var currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
+var lastLine, itemToEdit, itemTotal, statusTimer, prevNote;
+var done;
 
 
 // ------- declare functions ----------
@@ -119,6 +123,7 @@ function applyOptions() {
 }
   document.body.style.backgroundColor = bgColor;
   document.body.style.color = fgColor;
+  document.getElementById('clock').style.color = fgColor;
   switch (Opt3) {
     case "uf0":
       noteFont = Opt5;
@@ -150,9 +155,6 @@ function applyOptions() {
 
 function saveOptions() {
   // save options to disk on change
-  // option 1 - time stamp
-  if (document.getElementsByName('timeStamp')[1].checked) { Opt1='show'; }
-  else { Opt1 = 'hide'; }
   // option 2 - background color
   if (document.getElementsByName('bg')[0].checked) { Opt2 = 'gray' }
   else if (document.getElementsByName('bg')[1].checked) { Opt2 = 'yellow'; }
@@ -214,8 +216,6 @@ function showOptions() {
       document.getElementsByTagName('td')[i].style.width = (document.documentElement.clientWidth / 3);
     }
   }
-  if (Opt1 == 'show') { document.getElementsByName('timeStamp')[1].checked=true; }
-  else { document.getElementsByName('timeStamp')[0].checked=true; }
   switch (Opt2) {
     case "gray":
       document.getElementsByName('bg')[0].checked=true;
@@ -298,17 +298,21 @@ function clearAll() {
 }
 
 function showNotes(cNote) {
+  // load note file
   clearAll();
+  prevNote = currentNote;
   currentNote = cNote;
   editing = false;
   window[currentNote].className='noteButton activeNote';
-  noteText='';
-  noteText = getLines(currentNote);
   var currentNoteDisplay = currentNote;
   if (currentNote == "&") { currentNoteDisplay = "&#38;"; }    // to deal w/ & as only char in title
   noteTitle.innerHTML = "<div id='delBox'>" + renButtonHTML + delButtonHTML + "</div>" + currentNoteDisplay;
-  noteBody.innerHTML = noteText;
-  noteBody.scrollTop = 0;
+  getLines(currentNote);
+  if (currentNote == prevNote) {
+    // if reloading the same note
+    noteBody.scrollTop = lastScrollPos;
+  }
+  else { noteBody.scrollTop = 0; }
   var firstBut = document.getElementById('u0');
   var lastBut = window['d' + (lastLine-1)];
   if (firstBut != null) {
@@ -326,8 +330,8 @@ function showNotes(cNote) {
 }
 
 function getLines(thisNote) {
-  // loop through file, get each line from note and add X to it, return HTML as noteText
-  var notesHTML="<div><table id='itemTable'>";
+  // loop through file, get each line from note and add X and arrow buttons to it, wrap it in a <tr> and add it to the HTML
+  noteBody.innerHTML = noteBody.innerHTML + "<div><table id='itemTable'>";
   var currentLine;
   var noteNum = 0;
   lastLine = 0;
@@ -345,14 +349,14 @@ function getLines(thisNote) {
       // check input string for < or >, repl w/ &gt; or &lt;
       currentLine = currentLine.replace(/</g, "&lt;");
       currentLine = currentLine.replace(/>/g, "&gt;");
-      notesHTML = notesHTML + "<tr class='" + currentClasses + "' id='item" + noteNum + "'" + localFontHTML + "><td>" + xElBeg + noteNum + xElEnd + "&nbsp;&nbsp;" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartHTML + "</td><td id='text" + noteNum + "' ondblclick='goEdit(this);'>" + currentLine + "</td></tr>";
+      noteBody.innerHTML = noteBody.innerHTML + "<tr class='" + currentClasses + "' id='item" + noteNum + "'" + localFontHTML + "><td>" + xElBeg + noteNum + xElEnd + "&nbsp;&nbsp;" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartHTML + "</td><td id='text" + noteNum + "' ondblclick='goEdit(this);'>" + currentLine + "</td></tr>";
+	  checkOverflow("item" + noteNum);
       noteNum++;
     }
   }
   itemTotal = noteNum;
   CloseRFile(currentNote);
-  notesHTML=notesHTML + "</table></div>";
-  return notesHTML;
+  noteBody.innerHTML = noteBody.innerHTML + "</table></div>";
 }
 
 function onSubmitted(tempVar) {
@@ -469,7 +473,7 @@ function displayAbout() {
 }
 
 function checkCoords() {
-  // check current coordinates, also check current size to adjust div heights, also check status timer
+  // check current coordinates, also check current size to adjust div heights
   if ((screen.availHeight > 650) && (document.documentElement.clientHeight > 380)) {
     noteBody.style.height = document.documentElement.clientHeight - 350;
     optionsDiv.style.height = document.documentElement.clientHeight - 300;
@@ -500,10 +504,18 @@ function checkCoords() {
     }
   }
   else { firstCoordCheck = false; }
-  if ((Opt12 == 'show') && (statusBar.innerHTML != statusBarHTML)) {
+}
+
+function checkTimer() {
+  // check status timer & clock
+  if (statusBarText.innerHTML != statusBarHTML) {
     statusTimer = statusTimer + 0.5;
     if (statusTimer > 6.5) { clearStatus(); }
   }
+  timer = timer + 0.5;
+  if (timer % 10 == 0) { getTime(); }
+  if (timer >= 1000) { timer = 0; }
+  checkCoords();
 }
 
 function getCoords() {
@@ -513,7 +525,7 @@ function getCoords() {
 
 function showCoords() {
   getCoords();
-  coords.innerText = "(x: " + (currentX - offsetX) + ", y: " + (currentY - offsetY) + ")";
+  coords.innerText = "[" + (currentX - offsetX) + ", " + (currentY - offsetY) + "]";
 }
 
 function getOffset() {
@@ -562,17 +574,15 @@ function insertItem() {
 function showStatus(statusStr) {
   // show a status message at bottom of window
   if (Opt12 == 'show') {
-    statusBar.innerHTML = '<hr>' + statusStr;
+    statusBarText.innerHTML = statusStr;
     statusTimer = 0;
   }
 }
 
 function clearStatus() {
   // clear status bar
-  if (Opt12 == 'show') {
-    statusBar.innerHTML = statusBarHTML;
-    statusTimer = 0;
-  }
+  statusBarText.innerHTML = statusBarHTML;
+  statusTimer = 0;
 }
 
 function focusInput() {
@@ -609,6 +619,22 @@ function dispBackupDiv() {
 function abbrevBackup(rawText) {
   // abbreviate backup file path for display
   return rawText.slice(0, 23) + " ... " + rawText.slice(rawText.length-24);
+}
+
+function getTime() {
+  // get current time & display it
+  var nowDate = new Date();
+  var nowTime = nowDate.toLocaleTimeString();
+  var timeSections = nowTime.split(":");
+  document.getElementById('clock').innerHTML = timeSections[0] + ":" + timeSections[1] + " " + "<span id='clockText'>" + timeSections[2].slice(-2) + "</span>";
+}
+
+function checkOverflow(thisLine) {
+  // check to see if just-added line causes horizontal scroll
+  if (noteBody.scrollWidth > noteBody.offsetWidth) {
+	document.getElementById(thisLine).className = document.getElementById(thisLine).className + " overflowClass";
+  }
+  
 }
 
 
@@ -661,6 +687,9 @@ for (i=0;i<localFontBox.length;i++) {
   }
 }
 
+// to get current scroll position:
+noteBody.attachEvent('onscroll', function() { setTimeout(function(){lastScrollPos = noteBody.scrollTop;}, 250); });
+
 
 // --------- execution -----------------
 
@@ -668,4 +697,5 @@ clearAll();
 getOffset();
 applyOptions();
 setPos();
-var checkCoordsInt = setInterval(checkCoords, 500);
+var checkTimerInt = setInterval(checkTimer, 500);
+getTime();
