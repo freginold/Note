@@ -108,6 +108,9 @@ h4 {
   padding-right: 0.2em;
   vertical-align: middle;
 }
+.moveButtons:hover {
+  background: #dbdbdb;
+}
 .uBut {
   margin-left: 1px;
   margin-right: 2px;

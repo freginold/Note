@@ -15,6 +15,7 @@ var coords = document.getElementById('coords');
 var undeleteButton = document.getElementById('undeleteButton');
 var statusBar = document.getElementById('statusBar');
 var statusBarText = document.getElementById('statusBarText');
+var defSize = document.getElementById('defSize');
 var localFontDiv = [
   document.getElementById('localFontDiv0'),
   document.getElementById('localFontDiv1'),
@@ -81,6 +82,7 @@ var uneditedString = '';
 var currentVer = 'Note v' + Note.version + '\nPublic Domain';
 var timer = 0;
 var lastScrollPos = 0;
+var firstCall = true;
 var currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
 var lastLine, itemToEdit, itemTotal, statusTimer, prevNote;
 var done;
@@ -191,7 +193,8 @@ function saveOptions() {
   else { Opt9 = 'mm'; Opt10 = 0; Opt11 = 0; }
   if (document.getElementsByName('statusOption')[0].checked) { Opt12 = 'hide'; }
   else { Opt12 = 'show'; }
-  WriteOptions()
+
+  WriteOptions();
   applyOptions();
   showOptions();
 }
@@ -206,6 +209,12 @@ function savePos() {
   if (optionsDiv.style.display != 'none') { showOptions(); }
 }
 
+function saveSize() {
+  // stripped-down save function to only save screen size -- will combine this w/ savePos in the future
+  WriteOptions();
+  if (optionsDiv.style.display != 'none') { showOptions(); }
+}
+
 function showOptions() {
   clearAll();
   noteBody.style.display='none';
@@ -213,7 +222,7 @@ function showOptions() {
   optionsDiv.style.display='block';
   for (i = 0; i<document.getElementsByTagName('td').length; i++) {
     if (document.getElementsByTagName('td')[i].className == 'optionsColumn') {
-      document.getElementsByTagName('td')[i].style.width = (document.documentElement.clientWidth / 3);
+      document.getElementsByTagName('td')[i].style.width = (document.body.clientWidth / 3);
     }
   }
   switch (Opt2) {
@@ -270,12 +279,18 @@ function showOptions() {
   else { document.getElementsByName('screenPos')[0].checked = true; }
   if (Opt12 == 'hide') { document.getElementsByName('statusOption')[0].checked = true; }
   else { document.getElementsByName('statusOption')[1].checked = true; }
+  if (Opt14 == NoteWidth && Opt15 == NoteHeight) {
+    // default width and height
+	document.getElementById('screenSizeResetButton').disabled = true;
+  }
   checkCoords();
   showCoords();
 }
 
 function clearAll() {
   // clear all text/fields
+  firstCall = false;
+  setTimeout(function(){ firstCall = true; } , 250);
   GetFileList()
   newNoteDiv.style.display = 'none';
   optionsDiv.style.display='none';
@@ -303,7 +318,7 @@ function showNotes(cNote) {
   prevNote = currentNote;
   currentNote = cNote;
   editing = false;
-  window[currentNote].className='noteButton activeNote';
+  window[currentNote].className = 'noteButton activeNote';
   var currentNoteDisplay = currentNote;
   if (currentNote == "&") { currentNoteDisplay = "&#38;"; }    // to deal w/ & as only char in title
   noteTitle.innerHTML = "<div id='delBox'>" + renButtonHTML + delButtonHTML + "</div>" + currentNoteDisplay;
@@ -390,6 +405,7 @@ function createNewNote(newNoteName) {
   newNoteName = checkForLeadingSpaces(newNoteName);
   newNoteName = checkForTrailingSpaces(newNoteName);
   if (newNoteName == '') { showNewNoteBox(); showStatus("No text entered"); return; }
+  if (checkFor1stCharNum(newNoteName.slice(0,1))) { return; }  // if 1st char is a number
   var fileCreated = CreateNewFile(newNoteName)
   if (!!fileCreated) { showNotes(newNoteName); showStatus("New note, " + AbbrevText(newNoteName) + " created"); }
   else { newNoteInputBox.value = ''; }
@@ -631,11 +647,86 @@ function getTime() {
 
 function checkOverflow(thisLine) {
   // check to see if just-added line causes horizontal scroll
-  if (noteBody.scrollWidth > noteBody.offsetWidth) {
+  if (noteBody.scrollWidth >= noteBody.offsetWidth) {
 	document.getElementById(thisLine).className = document.getElementById(thisLine).className + " overflowClass";
   }
-  
 }
+
+function getCurrentSize() {
+  // get current size w/ document.documentElement
+  var tempRect = document.documentElement.getBoundingClientRect();
+  Opt14 = tempRect.right - tempRect.left;
+  Opt15 = tempRect.bottom - tempRect.top;
+  if ((Opt14 == NoteWidth) && (Opt15 == NoteHeight)) { document.getElementById('screenSizeResetButton').disabled = true; }
+  else { document.getElementById('screenSizeResetButton').disabled = false; }
+}
+
+function checkSize() {
+  // get current window size
+  if (!firstCall) { return; }
+  firstCall = false;
+  var oldW = Opt14;
+  var oldH = Opt15;
+  getCurrentSize();
+  if ((oldW != Opt14) || (oldH != Opt15)) {
+    // size has changed
+    saveSize();
+    firstCall = true;
+  }
+  else { firstCall = true; }
+}
+
+function getDefaultSize() {
+  // get default width & height
+  window.resizeTo(NoteWidth, NoteHeight);
+  var tempRect = document.documentElement.getBoundingClientRect();
+//  NoteWidth = NoteWidth + (tempRect.right - tempRect.left - NoteWidth);
+//  NoteHeight = NoteHeight + (tempRect.bottom - tempRect.top - NoteHeight);
+  var percentW = (NoteWidth / (tempRect.right - tempRect.left));
+  var percentH = (NoteHeight / (tempRect.bottom - tempRect.top));  
+  newOpt14 = Math.floor(NoteWidth * percentW);
+  newOpt15 = Math.floor(NoteHeight * percentH);
+}
+
+function resetSize() {
+  // reset window size
+//  Opt14 = NoteWidth;
+//  Opt15 = NoteHeight;
+  getDefaultSize();
+  correctSize();
+  window.resizeTo(NoteWidth, NoteHeight);
+  Opt14 = newOpt14;
+  Opt15 = newOpt15;
+  saveSize();
+  document.getElementById('screenSizeResetButton').disabled = true;
+  firstCall = true;
+}
+
+function correctSize() {
+  // to correct for getBoundingClientRect() and resizeTo() not matching up exactly
+  var tempRect = document.documentElement.getBoundingClientRect();
+//  Opt14 = tempRect.right - tempRect.left;
+//  Opt15 = tempRect.bottom - tempRect.top;
+//  Opt14 = Opt14 + (Opt14 - tempRect.right - tempRect.left);
+//  Opt15 = Opt15 + (Opt15 - tempRect.bottom - tempRect.top);
+  var percentW = (Opt14 / (tempRect.right - tempRect.left));
+  var percentH = (Opt15 / (tempRect.bottom - tempRect.top));  
+  newOpt14 = Math.floor(Opt14 * percentW);
+  newOpt15 = Math.floor(Opt15 * percentH);
+  window.resizeTo(newOpt14, newOpt15);		// set initial size
+}
+
+function checkFor1stCharNum(thisChar) {
+  // to see if 1st char of file name is a number
+  if (!isNaN(thisChar)) {
+  	alert('The note title can not start with a number.  If you want to use a number, you can prepend it with "#".');
+	return true;
+  }
+  else { return false; }
+}
+
+function showSize() { alert("O: " + Opt14 + " " + Opt15 + "\nDef: " + NoteWidth + " " + NoteHeight); }
+  // for testing
 
 
 // ----------- declare event handlers ----------
@@ -696,6 +787,14 @@ noteBody.attachEvent('onscroll', function() { setTimeout(function(){lastScrollPo
 clearAll();
 getOffset();
 applyOptions();
-setPos();
+getDefaultSize();
+//Opt14 = NoteWidth;
+//Opt15 = NoteHeight;
+window.resizeTo(Opt14, Opt15);		// set initial size
+correctSize();		// to get correct window size
+setPos();			// set initial position
 var checkTimerInt = setInterval(checkTimer, 500);
 getTime();
+setTimeout(function(){
+	window.attachEvent('onresize', checkSize);		// to get new size when edges are dragged
+}, 1000);

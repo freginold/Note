@@ -7,18 +7,20 @@
 ' 6. User Font 2
 ' 7. User Font 3
 ' 8. User Font 4
-' 9. Screen Postion: mm-centered/cc-custom
+' 9. Window Postion: mm-centered/cc-custom
 ' 10. Custom x coord
 ' 11. Custom y coord
 ' 12. Status Bar: hide/show
 ' 13. Backup Location: current folder or user choice
+' 14. Window width
+' 15. Window height
 
 
 ' ----- set up variables, constants, & objects ------
 
 Option Explicit
 Dim fs, NewFileWithPath, rfile, afile, tfile, rofile, line, BackupLoc
-Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9, Opt10, Opt11, Opt12, Opt13
+Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9, Opt10, Opt11, Opt12, Opt13, Opt14, Opt15
 Dim NoteWidth, NoteHeight, MidXPos, MidYPos
 Dim EditedString
 
@@ -38,6 +40,7 @@ Const Default10 = "0"
 Const Default11 = "0"
 Const Default12 = "show"
 Const Default13 = ".\"
+' no Default14/Default15; use NoteWidth & NoteHeight
 Const OptionsFile = "config.txt"
 Const EOFConst = "<<<EOF>>>"
 Const BackupPrefix = "backup_notes_"
@@ -46,6 +49,13 @@ Const NotesFolderErrorMsg = "<br /><p style='vertical-align: middle; text-align:
 Const OptionsFileErrorMsg = "<br /><p style='vertical-align: middle; text-align: center;'>File System Access Error... can not create/access configuration file.</p>"
 Const InvalidFNMsg1 = "Invalid File Name."
 Const InvalidFNMsg2 = "The following characters are prohibited:"
+
+NewFileWithPath = ""
+NoteWidth = round(screen.availWidth/1.5)
+NoteHeight = round(screen.availHeight/1.31)
+MidXPos = screen.availWidth/2 - NoteWidth/2
+MidYPos = screen.availHeight/2 - NoteHeight/2
+EditedString = ""
 
 Opt1 = Default1
 Opt2 = Default2
@@ -60,12 +70,8 @@ Opt10 = Default10
 Opt11 = Default11
 Opt12 = Default12
 Opt13 = Default13
-NewFileWithPath = ""
-NoteWidth = screen.availWidth/1.6
-NoteHeight = screen.availHeight/1.41
-MidXPos = screen.availWidth/2 - NoteWidth/2
-MidYPos = screen.availHeight/2 - NoteHeight/2
-EditedString = ""
+Opt14 = NoteWidth      ' <-- get the correct values later, after determine default h&w
+Opt15 = NoteHeight
 
 
 ' ------ subroutines & functions -----------
@@ -138,9 +144,9 @@ Function GetLine(dummyVar)
       line = rfile.Readline
       if LCase(Opt1) = "hide" then line = HideStamp(line)
       ' preserve spacing but don't prevent line breaking
-      line = Replace(line, "    ", "&emsp;&ensp;")
-      line = Replace(line, "   ", "&emsp;")
-      line = Replace(line, "  ", "&ensp;")
+      line = Replace(line, "    ", "  ")
+      line = Replace(line, "   ", " ")
+      line = Replace(line, "  ", " ")
     Case Else
       line = EOFConst
   End Select
@@ -234,6 +240,14 @@ Sub GetOptions(dummyVar)
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(12) : Exit Sub
     Opt13 = rofile.Readline
     if Opt13 = "" then Opt13 = Default13
+    ' get option 14 - window width
+    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(13) : Exit Sub
+    Opt14 = int(rofile.Readline)
+	if Opt14 = "" then Opt14 = NoteWidth
+    ' get option 15 - window height
+    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(14) : Exit Sub
+    Opt15 = int(rofile.Readline)
+    if Opt15 = "" then Opt15 = NoteHeight
     ' close file
     rofile.close
   Else
@@ -256,12 +270,16 @@ Function GetOption(ThisOption)
   if ThisOption = "11" then GetOption = Opt11
   if ThisOption = "12" then GetOption = Opt12
   if ThisOption = "13" then GetOption = Opt13
+  if ThisOption = "14" then GetOption = Opt14
+  if ThisOption = "15" then GetOption = Opt15    
 End Function
 
 Sub OptionsCorrupted(numCorr)
   ' if options file not present or not formatted correctly, pass in any missing values & recreate it
   ' numCorr = number of options loaded succesfully
-  if numCorr < 13 then Opt12 = Default13
+  if numCorr < 15 then Opt15 = NoteHeight
+  if numCorr < 14 then Opt14 = NoteWidth 
+  if numCorr < 13 then Opt13 = Default13
   if numCorr < 12 then Opt12 = Default12
   if numCorr < 11 then Opt11 = Default11
   if numCorr < 10 then Opt10 = Default10
@@ -296,6 +314,8 @@ Sub WriteOptions
   tfile.WriteLine(Opt11)
   tfile.WriteLine(Opt12)
   tfile.WriteLine(Opt13)
+  tfile.WriteLine(Opt14)
+  tfile.WriteLine(Opt15)    
   tfile.close
   if fs.FileExists(OptionsFile) then fs.DeleteFile(OptionsFile)
   fs.MoveFile TempFile, OptionsFile  
@@ -428,6 +448,8 @@ Sub RenameThisNote()
   NewName = checkForTrailingSpaces(NewName)
   if NewName = "" then showStatus("No text entered") : exit sub
   if NewName = currentNote then showStatus("New name is same as current name") : exit sub
+  if IsNumeric(NewName) then checkFor1stCharNum(NewName) : exit sub
+  if checkFor1stCharNum(mid(NewName,1,1)) then exit sub
   if CreateNewFile(NewName) = false then exit sub
   OpenRFile(currentNote)
   On Error Resume Next
@@ -580,7 +602,5 @@ End Function
 
 ' ---------- execution --------------
 
-window.resizeTo NoteWidth, NoteHeight
 CheckForNotesFolder()
-CheckForOptionsFile()
 GetFileList()
