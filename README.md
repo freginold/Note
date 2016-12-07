@@ -26,6 +26,8 @@ Note files (and configuration settings) can be backed up to any accessible folde
 
 An undelete feature has been added, to restore the last deleted item.  The restore button can be found on the Options screen. If the note that contained the deleted item has since been deleted itself, or if the program has been closed and reopened, you won't be able to restore a deleted item.
 
+As of v3.0.3, Note is versioned using [Semantic Versioning] (http://semver.org/).
+
 ### Limitations:
 - Note files must be kept in the `notes` subfolder, with a `.txt` file extension, to be recognized.  When a new note is created, it is automatically saved there.
 - Note may not run correctly on Windows Vista PCs.  (Seems to be an issue with something in the VBScript code.) It has been tested successfully on Windows 7 and Windows 10 PCs.
