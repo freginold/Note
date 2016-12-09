@@ -111,8 +111,19 @@ function applyOptions() {
     case "blue":
       bgColor = "#a9d6df";
       break;
+	case "orange":
+	  bgColor = "#FFCF5F";
+	  break;
     case "charcoal":
       bgColor = "#555555";
+      fgColor = "#ffffff";
+      break;
+    case "forestgreen":
+      bgColor = "#228542";
+      fgColor = "#ffffff";
+      break;
+    case "brown":
+      bgColor = "#A88042";
       fgColor = "#ffffff";
       break;
     case "black":
@@ -164,8 +175,11 @@ function saveOptions() {
   else if (document.getElementsByName('bg')[3].checked) { Opt2 = 'pink'; }
   else if (document.getElementsByName('bg')[4].checked) { Opt2 = 'green'; }
   else if (document.getElementsByName('bg')[5].checked) { Opt2 = 'blue'; }
-  else if (document.getElementsByName('bg')[6].checked) { Opt2 = 'charcoal'; }
-  else if (document.getElementsByName('bg')[7].checked) { Opt2 = 'black'; }
+  else if (document.getElementsByName('bg')[6].checked) { Opt2 = 'orange'; }  
+  else if (document.getElementsByName('bg')[7].checked) { Opt2 = 'charcoal'; }
+  else if (document.getElementsByName('bg')[8].checked) { Opt2 = 'forestgreen'; }
+  else if (document.getElementsByName('bg')[9].checked) { Opt2 = 'brown'; }    
+  else if (document.getElementsByName('bg')[10].checked) { Opt2 = 'black'; }
   // option 3 - font
   Opt3 = 'p1';
   if (localFontCheckBox[0].checked) { Opt3 = 'uf0'; }
@@ -226,9 +240,6 @@ function showOptions() {
     }
   }
   switch (Opt2) {
-    case "gray":
-      document.getElementsByName('bg')[0].checked=true;
-      break;
     case "yellow":
       document.getElementsByName('bg')[1].checked=true;
       break;
@@ -244,12 +255,23 @@ function showOptions() {
     case "blue":
       document.getElementsByName('bg')[5].checked=true;
       break;
-    case "charcoal":
+    case "orange":
       document.getElementsByName('bg')[6].checked=true;
-      break;
-    case "black":
+      break;	  
+    case "charcoal":
       document.getElementsByName('bg')[7].checked=true;
       break;
+    case "forestgreen":
+      document.getElementsByName('bg')[8].checked=true;
+      break;
+    case "brown":
+      document.getElementsByName('bg')[9].checked=true;
+      break;
+    case "black":
+      document.getElementsByName('bg')[10].checked=true;
+      break;
+	default:
+	  document.getElementsByName('bg')[0].checked=true;
   }
   var fonts = document.getElementsByName('font');
   // populate user font boxes, if they've been saved
@@ -276,7 +298,10 @@ function showOptions() {
     if (sizes[i].value == Opt4) { sizes[i].checked=true; }
   }
   if (Opt9 == 'cc') { document.getElementsByName('screenPos')[1].checked = true; }
-  else { document.getElementsByName('screenPos')[0].checked = true; }
+  else {
+    document.getElementsByName('screenPos')[0].checked = true;
+	document.getElementById('screenPosResetButton').disabled = true;
+  }
   if (Opt12 == 'hide') { document.getElementsByName('statusOption')[0].checked = true; }
   else { document.getElementsByName('statusOption')[1].checked = true; }
   if (Opt14 == NoteWidth && Opt15 == NoteHeight) {
@@ -284,7 +309,6 @@ function showOptions() {
 	document.getElementById('screenSizeResetButton').disabled = true;
   }
   checkCoords();
-  showCoords();
 }
 
 function clearAll() {
@@ -503,18 +527,25 @@ function checkCoords() {
   }
   noteBody.style.width = document.documentElement.clientWidth * 0.96;
   var tempSize = 100 - (((NoteWidth - document.documentElement.clientWidth) / NoteWidth) * 100);
-  if (tempSize > 100) { tempSize = 100; }
   inputBox.size = tempSize;
+  if (!!document.getElementById('editBox')) {
+    // set edit text box size
+  	document.getElementById('editBox').size = inputBox.size * 0.8;
+    if (noteBody.scrollWidth >= (noteBody.offsetWidth - 5)) { 
+      document.getElementById('editBox').size = inputBox.size * 0.5;
+	}
+  }
   oldX = currentX;
   oldY = currentY;
   getCoords();
   if (!firstCoordCheck) {
     if ((oldX != currentX) || (oldY != currentY)) {
-      if (Opt9 == 'cc') { showCoords(); savePos(); }
+      if (Opt9 == 'cc') { 	document.getElementById('screenPosResetButton').disabled = false; getCoords(); savePos(); }
       else {
         Opt9 = 'cc';
+		document.getElementById('screenPosResetButton').disabled = false;
         document.getElementsByName('screenPos')[1].checked = true;
-        showCoords();
+        getCoords();
         savePos();
       }
     }
@@ -539,11 +570,6 @@ function getCoords() {
   currentY = window.screenTop;
 }
 
-function showCoords() {
-  getCoords();
-  coords.innerText = "[" + (currentX - offsetX) + ", " + (currentY - offsetY) + "]";
-}
-
 function getOffset() {
   // determine x & y offset amt at start
   var nowX = window.screenLeft;
@@ -561,6 +587,7 @@ function goEdit(itemObj) {
   editing = true;
   var editBoxHTML = "<form name='editForm' onsubmit='event.returnValue=false;SubmitEdit(editBox.value);' action='#'><input type='text' size=50 id='editBox' /><input type='submit' style='color: green; margin-left: 2px;' value='Change' /><input type='button' style='color: red; margin-left: 2px;' value='Cancel' onclick='canceledEdit();' /></form>";
   document.getElementById(itemToEdit).innerHTML = editBoxHTML;
+  checkCoords();   // to set editBox size right away
   document.getElementById('editBox').value = uneditedString;
   document.getElementById('editBox').focus();
   document.getElementById('editBox').select();
@@ -671,6 +698,7 @@ function checkSize() {
   if ((oldW != Opt14) || (oldH != Opt15)) {
     // size has changed
     saveSize();
+	document.getElementById('screenPosResetButton').disabled = false;
     firstCall = true;
   }
   else { firstCall = true; }
@@ -690,8 +718,6 @@ function getDefaultSize() {
 
 function resetSize() {
   // reset window size
-//  Opt14 = NoteWidth;
-//  Opt15 = NoteHeight;
   getDefaultSize();
   correctSize();
   window.resizeTo(NoteWidth, NoteHeight);
@@ -705,10 +731,6 @@ function resetSize() {
 function correctSize() {
   // to correct for getBoundingClientRect() and resizeTo() not matching up exactly
   var tempRect = document.documentElement.getBoundingClientRect();
-//  Opt14 = tempRect.right - tempRect.left;
-//  Opt15 = tempRect.bottom - tempRect.top;
-//  Opt14 = Opt14 + (Opt14 - tempRect.right - tempRect.left);
-//  Opt15 = Opt15 + (Opt15 - tempRect.bottom - tempRect.top);
   var percentW = (Opt14 / (tempRect.right - tempRect.left));
   var percentH = (Opt15 / (tempRect.bottom - tempRect.top));  
   newOpt14 = Math.floor(Opt14 * percentW);
@@ -723,6 +745,14 @@ function checkFor1stCharNum(thisChar) {
 	return true;
   }
   else { return false; }
+}
+
+function resetPos() {
+  // reset and center window position
+  Opt9 = "mm";
+  setPos();
+  savePos();
+  document.getElementById('screenPosResetButton').disabled = true;  
 }
 
 function showSize() { alert("O: " + Opt14 + " " + Opt15 + "\nDef: " + NoteWidth + " " + NoteHeight); }
@@ -749,12 +779,6 @@ for (i=0; i<inputs.length; i++) {
         inputs[i].attachEvent('onclick', function() { checkLocal(3); });
         break;
     }
-  }
-  else if (inputs[i].value == "mm") {
-    inputs[i].attachEvent('onclick', function() { showCoords(); savePos(); setPos(); showCoords(); });
-  }
-  else if (inputs[i].value == "cc") {
-    inputs[i].attachEvent('onclick', function() { showCoords(); savePos(); });
   }
   else if (inputs[i].className == "optionInput") {
     inputs[i].attachEvent('onclick', saveOptions);

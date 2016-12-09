@@ -7,6 +7,17 @@ h4 {
   margin-bottom: 2px;
   text-decoration: underline;
 }
+input[name=screenPos] {
+  display: none;
+}
+button:hover,
+input[type=button]:hover,
+input[type=submit]:hover {
+  background: #dbdbdb;
+}
+button[disabled]:hover {
+  background: #efefef;
+}
 .upperRightButton {
   position: relative;
   float: left;
@@ -108,9 +119,6 @@ h4 {
   padding-right: 0.2em;
   vertical-align: middle;
 }
-.moveButtons:hover {
-  background: #dbdbdb;
-}
 .uBut {
   margin-left: 1px;
   margin-right: 2px;
@@ -128,6 +136,9 @@ h4 {
 }
 .overflowClass {
   word-break: break-all;
+}
+.optButton {
+  margin-bottom: 2px;
 }
 #noteList {
   display: block;

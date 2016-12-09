@@ -1,6 +1,6 @@
 ' Settings (saved in config file):
 ' 1. Time Stamp: hide/show
-' 2. Background Color: gray/yellow/white/pink/green/blue/charcoal/black
+' 2. Background Color: gray/yellow/white/pink/green/blue/orange/charcoal/forestgreen/brown/black
 ' 3. Note Font: p1-serif/p2-sans serif/uf0/uf1/uf2/uf3
 ' 4. Note Font Size: small/medium/large
 ' 5. User Font 1
@@ -53,8 +53,6 @@ Const InvalidFNMsg2 = "The following characters are prohibited:"
 NewFileWithPath = ""
 NoteWidth = round(screen.availWidth/1.5)
 NoteHeight = round(screen.availHeight/1.31)
-MidXPos = screen.availWidth/2 - NoteWidth/2
-MidYPos = screen.availHeight/2 - NoteHeight/2
 EditedString = ""
 
 Opt1 = Default1
@@ -541,6 +539,8 @@ Sub SetPos
     Case "cc"
       window.moveTo currentX, currentY
     Case Else
+	  MidXPos = screen.availWidth/2 - Opt14/2
+	  MidYPos = screen.availHeight/2 - Opt15/2
       window.moveTo MidXPos, MidYPos
   End Select
 End Sub

@@ -9,7 +9,7 @@
   Scroll = no
   Icon = "note_icon.ico"
   navigable = no
-  version = "3.1.0"
+  version = "3.1.1"
 >
 <title>Note</title>
 <link href='_note.css' rel='stylesheet' type='text/css'>
@@ -54,8 +54,6 @@
   <br />
   <table><tr>
   <td class='optionsColumn'>
-  <button id='undeleteButton' onclick='Undelete()' disabled=true>Restore last deleted item</button><br />
-  <button id='backupButton' onclick='dispBackupDiv();'>Backup...</button>
   <h4>Background Color:</h4>
   <label><input type='radio' name='bg' class='optionInput' value='gray' /> Gray &nbsp;<span class='goItalic'>(default)</span></label><br />
   <label><input type='radio' name='bg' class='optionInput' value='yellow' /> Yellow</label><br />
@@ -63,8 +61,11 @@
   <label><input type='radio' name='bg' class='optionInput' value='pink' /> Pink</label><br />
   <label><input type='radio' name='bg' class='optionInput' value='green' /> Green</label><br />
   <label><input type='radio' name='bg' class='optionInput' value='blue' /> Blue</label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='charcoal' /> Charcoal <span class='smallFont'>(white text)</span></label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='black' /> Black <span class='smallFont'>(white text)</span></label>
+  <label><input type='radio' name='bg' class='optionInput' value='orange' /> Orange</label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='charcoal' /> Charcoal <span class='smallFont'>(w/ white text)</span></label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='forestgreen' /> Forest Green <span class='smallFont'>(w/ white text)</span></label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='brown' /> Brown <span class='smallFont'>(w/ white text)</span></label><br />
+  <label><input type='radio' name='bg' class='optionInput' value='black' /> Black <span class='smallFont'>(w/ white text)</span></label>
   </td>
   <td class='optionsColumn'>
   <h4>Note Font:</h4>
@@ -121,10 +122,12 @@
   <label class='largeFont'><input type='radio' name='textSize' class='optionInput' value='large'> Large</label>
   </td>
   <td class='optionsColumn'>
-  <h4>Screen Position:</h4>
-  <label><input type='radio' name='screenPos' class='optionInput' value='mm'> Centered &nbsp;<span class='goItalic'>(default)</span></label><br />
-  <label><input type='radio' name='screenPos' class='optionInput' value='cc'> Custom: <span id='coords' class='smallFont'></span>
-    <br /><span class='smallFont'>&ensp;&emsp;&emsp;(Drag to desired position)</span></label>
+  <input type='radio' name='screenPos' class='optionInput' value='mm'>
+  <input type='radio' name='screenPos' class='optionInput' value='cc'>
+  <button class='optButton' id='undeleteButton' onclick='Undelete()' disabled=true>Restore last deleted item</button><br />
+  <button class='optButton' id='screenPosResetButton' onclick='resetPos();'>Reset Window Position</button><br />
+  <button class='optButton' id='screenSizeResetButton' onclick='resetSize();'>Reset Window Size</button><br />
+  <button class='optButton' id='backupButton' onclick='dispBackupDiv();'>Backup...</button><br />
   <h4>Status Bar:</h4>
   <label><input type='radio' name='statusOption' class='optionInput' value='Hide' /> Hide</label><br />
   <label><input type='radio' name='statusOption' class='optionInput' value='Show' /> Show&nbsp;<span class='goItalic'>(default)</span></label>
@@ -149,6 +152,7 @@
 
 <script language='vbscript' src='_note.vbs'></script>
 <script language='javascript' src='_note.js'></script>
+<script language='javascript' src='_temp.js'></script>
 
 </body>
 </html>
