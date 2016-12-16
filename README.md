@@ -16,13 +16,13 @@ On a Windows computer with Internet Explorer (or Edge) installed:
   - Unzip the files into the folder of your choice
   - Double-click the `note.hta` file to run the program
 
-(If you get the "Unknown Publisher" message, click *Run* to bypass it.  You can uncheck the box marked "Always ask before opening this file" so the message won't appear again.)
+If you get the "Unknown Publisher" message, click *Run* to bypass it.  You can uncheck the box marked "Always ask before opening this file" so the message won't appear again.
 
 The only necessary files are `note.hta`, `_note.js`, `_note.vbs`, and `_note.css`.  The others can be deleted if you want.  The icon file, `note_icon.ico`, will be used if it's there, but Note will run fine without it.
 
 To edit a note item, double click on it.  To insert a new note item into an existing list (rather than add it to the bottom) type the text that you want to add, then click "*Insert Above...*" and select where you would like to insert the new item.
 
-Note files (and configuration settings) can be backed up to any accessible folder.  Selecting the *Backup...* button on the Options screen allows you to choose a backup location (or keep the default location -- the current Note source directory) and perform a backup.
+Notes and user configuration settings can be backed up to any accessible local or network folder.  Selecting the *Backup...* button on the Options screen allows you to choose a backup location (or keep the default location -- the current Note source directory) and perform a backup.
 
 An undelete feature has been added, to restore the last deleted item.  The restore button can be found on the Options screen. If the note that contained the deleted item has since been deleted itself, or if the program has been closed and reopened, you won't be able to restore a deleted item.
 
