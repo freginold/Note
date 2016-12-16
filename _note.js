@@ -15,7 +15,6 @@ var coords = document.getElementById('coords');
 var undeleteButton = document.getElementById('undeleteButton');
 var statusBar = document.getElementById('statusBar');
 var statusBarText = document.getElementById('statusBarText');
-var defSize = document.getElementById('defSize');
 var localFontDiv = [
   document.getElementById('localFontDiv0'),
   document.getElementById('localFontDiv1'),
@@ -64,7 +63,8 @@ var uFont = ['', '', '', ''];
 var delItem = {
   text: '',
   num: '',
-  note: '' }
+  note: '',
+  scroll: 0 }
 var xElBeg = "<button class='x smallFont moveButtons' onclick='DelLine(this)' id='X";
 var xElEnd = "'>X</button>";
 var renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'>Rename</button>";
@@ -85,7 +85,6 @@ var lastScrollPos = 0;
 var firstCall = true;
 var currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
 var lastLine, itemToEdit, itemTotal, statusTimer, prevNote;
-var done;
 
 
 // ------- declare functions ----------
@@ -401,18 +400,7 @@ function getLines(thisNote) {
 function onSubmitted(tempVar) {
   event.returnValue = false;
   AddNote(tempVar)
-}
-
-function showX(self) {
-  // show X to right of each item, on mouseover
-  thisX = "X" + self.id.slice(4);
-  document.getElementById(thisX).style.visibility = 'visible';
-}
-
-function hideX(self) {
-  // hide X on mouseout
-  thisX = "X" + self.id.slice(4);
-  document.getElementById(thisX).style.visibility = 'hidden';
+  noteBody.scrollTop = noteBody.scrollHeight;
 }
 
 function showNewNoteBox() {
@@ -675,7 +663,19 @@ function getTime() {
 function checkOverflow(thisLine) {
   // check to see if just-added line causes horizontal scroll
   if (noteBody.scrollWidth >= noteBody.offsetWidth) {
-	document.getElementById(thisLine).className = document.getElementById(thisLine).className + " overflowClass";
+	// loop through line, if not a group of 10 or more chars w/o a space or hyphen, don't add overflowClass
+	var strLength = 0;
+	var thisLineText = document.getElementById(thisLine).innerText;
+	for (var aa = 6; aa < thisLineText.length; aa++) {
+		if ((thisLineText.slice(aa, aa + 1) == " ") || (thisLineText.slice(aa, aa + 1) == "-")) {
+			strLength = 0;
+		}
+		else { strLength++; }
+		if (strLength > 19) { 
+			document.getElementById(thisLine).className = document.getElementById(thisLine).className + " overflowClass";
+			break;
+		}
+	}
   }
 }
 

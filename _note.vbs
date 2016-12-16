@@ -401,6 +401,7 @@ Sub DelLine(ThisLine)
   delItem.text = document.getElementById(TempEl).innerText
   delItem.num = LineNum
   delItem.note = currentNote
+  delItem.scroll = noteBody.scrollTop
   undeleteButton.disabled = false
   OpenRFile(currentNote)
   TempFile = MakeTempFile
@@ -566,6 +567,7 @@ Sub Undelete
   WriteModifiedFile int(delItem.num), -1
   undeleteButton.disabled = true
   showNotes(currentNote)
+  noteBody.scrollTop = delItem.scroll
   highlight(delItem.num)
   showStatus("Restored item #" & (int(delItem.num)+1) & ", " & AbbrevText(delItem.text) & ", to " &_
     AbbrevText(delItem.note))

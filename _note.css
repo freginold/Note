@@ -49,7 +49,7 @@ button[disabled]:hover {
   line-height: 1.1em;
   margin-bottom: 0.4em;
   hyphen: auto;
-  word-wrap: break-word;
+  word-wrap: normal;
   word-break: break-word;
 }
 .optionsColumn {
