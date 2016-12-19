@@ -29,6 +29,7 @@ An undelete feature has been added, to restore the last deleted item.  The resto
 
 Note allows up to four user-defined local fonts to be specified.  Any font installed on the local computer can be used.  All four selections, once made, will be saved.  Spelling counts but capitalization does not.
 
+To move or resize Note, simply drag it around the screen or drag the corners and edges to position it how you want it.  Any changes will be saved and remembers the next time you launch Note.  You can change the background color, font, and text size on the Options screen (accessed by clicking the <b>Options</b> button in the upper right corner).
 As of v3.0.3, Note is versioned using [Semantic Versioning] (http://semver.org/).
 
 ### Limitations:
