@@ -41,6 +41,7 @@ button[disabled]:hover {
 }
 .activeNote {
   font-weight: bold;
+  font-style: italic;
   border: 2px solid black;
   backgroundColor: gray;
 }

@@ -132,7 +132,7 @@ function applyOptions() {
     default:
       bgColor = "lightgray";
       break;
-}
+  }
   document.body.style.backgroundColor = bgColor;
   document.body.style.color = fgColor;
   document.getElementById('clock').style.color = fgColor;
@@ -514,6 +514,16 @@ function checkCoords() {
     statusBar.style.display = 'none';
   }
   noteBody.style.width = document.documentElement.clientWidth * 0.96;
+  if (opt12 == 'show') {
+    // check if too thin for status bar
+	if (noteBody.style.width.slice(0, -2) < (NoteWidth / 5)) { statusBar.style.display = 'none'; }
+	else {
+		statusBar.style.display = 'inline-block';
+	    // check if too thin for status bar text
+    	if (noteBody.style.width.slice(0, -2) < (NoteWidth / 2.5)) { statusBarText.style.visibility = 'hidden'; }
+	    else { statusBarText.style.visibility = 'visible'; }
+	}
+  }
   var tempSize = 100 - (((NoteWidth - document.documentElement.clientWidth) / NoteWidth) * 100);
   inputBox.size = tempSize;
   if (!!document.getElementById('editBox')) {
