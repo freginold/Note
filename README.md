@@ -31,9 +31,15 @@ To move or resize Note, simply drag it around the screen or drag the corners and
 
 As of v3.0.3, Note is versioned using [Semantic Versioning] (http://semver.org/).
 
+### Tested on:
+Note has been tested and runs on:
+- Windows 7 32-bit / IE 11
+- Windows 7 64-bit / IE 11
+- Windows 10 64-bit / Edge
+
 ### Limitations:
 - Note files must be kept in the `notes` subfolder, with a `.txt` file extension, to be recognized.  When a new note is created, it is automatically saved there.
-- Note may not run correctly on Windows Vista PCs.  (Seems to be an issue with something in the VBScript code.) It has been tested successfully on Windows 7 and Windows 10 PCs.
+- Note may not run correctly on Windows Vista PCs.  (Seems to be an issue with something in the VBScript code.)
 
 
 *Side note:* HTA files run as "trusted" programs in Windows.  They are good for sysadmin work and local scripting, but be aware of the security concerns before making use of an HTA file, especially one downloaded from an unfamiliar source.
