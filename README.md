@@ -35,7 +35,7 @@ As of v3.0.3, Note is versioned using [Semantic Versioning] (http://semver.org/)
 Note has been tested and runs on:
 - Windows 7 32-bit / IE 11
 - Windows 7 64-bit / IE 11
-- Windows 10 64-bit / Edge
+- Windows 10 64-bit / EdgeHTML 14
 
 ### Limitations:
 - Note files must be kept in the `notes` subfolder, with a `.txt` file extension, to be recognized.  When a new note is created, it is automatically saved there.
