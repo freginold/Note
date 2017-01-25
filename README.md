@@ -10,7 +10,7 @@ Note saves all notes/tasks in a `notes` subfolder.  It uses a `config.txt` file 
 
 ### Installation:
 On a Windows computer with Internet Explorer (or Edge) installed:
-  - Download the [latest release] (https://github.com/freginold/Note/releases/latest) of Note, as either a tarball or zip file
+  - Download the [latest release of Note] (https://github.com/freginold/Note/releases/latest), as either a tarball or zip file
   - Unzip the files into the folder of your choice
   - Double-click the `note.hta` file to run the program
 
@@ -32,7 +32,7 @@ To move or resize Note, simply drag it around the screen or drag the corners and
 As of v3.0.3, Note is versioned using [Semantic Versioning] (http://semver.org/).
 
 ### Tested on:
-Note has been tested and runs on:
+Note has been tested and runs fine on:
 - Windows 7 32-bit / IE 11
 - Windows 7 64-bit / IE 11
 - Windows 10 64-bit / EdgeHTML 14
