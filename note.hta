@@ -9,7 +9,7 @@
   Scroll = no
   Icon = "note_icon.ico"
   navigable = no
-  version = "3.1.4"
+  version = "3.2"
 >
 <title>Note</title>
 <link href='_note.css' rel='stylesheet' type='text/css'>
@@ -42,7 +42,7 @@
       <td>
         <input type='text' size=100 id='inputBox' />
       </td><td>
-        <input type='submit' class='smallFont' value='Add at Bottom' /><br />
+        <input type='submit' class='smallFont' value='Add to Bottom' /><br />
       </td></tr><tr><td></td><td>
         <input type='button' class='smallFont' value='Insert Above ...' onclick='insertItem();' />
       </td>
@@ -54,21 +54,21 @@
   <br />
   <table><tr>
   <td class='optionsColumn'>
-  <h4>Background Color:</h4>
-  <label><input type='radio' name='bg' class='optionInput' value='gray' /> Gray &nbsp;<span class='goItalic'>(default)</span></label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='yellow' /> Yellow</label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='white' /> White</label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='pink' /> Pink</label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='green' /> Green</label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='blue' /> Blue</label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='orange' /> Orange</label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='charcoal' /> Charcoal <span class='smallFont'>(w/ white text)</span></label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='forestgreen' /> Forest Green <span class='smallFont'>(w/ white text)</span></label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='brown' /> Brown <span class='smallFont'>(w/ white text)</span></label><br />
-  <label><input type='radio' name='bg' class='optionInput' value='black' /> Black <span class='smallFont'>(w/ white text)</span></label>
+  <h3>Background Color:</h3>
+  <label id='ltgrayL'><input type='radio' name='bg' class='optionInput' value='gray' /> Light Gray &nbsp;<span class='goItalic'>(default)</span> </label><br />
+  <label id='yellowL'><input type='radio' name='bg' class='optionInput' value='yellow' /> Yellow </label><br />
+  <label id='whiteL'><input type='radio' name='bg' class='optionInput' value='white' /> White </label><br />
+  <label id='pinkL'><input type='radio' name='bg' class='optionInput' value='pink' /> Pink </label><br />
+  <label id='ltgreenL'><input type='radio' name='bg' class='optionInput' value='green' /> Light Green </label><br />
+  <label id='ltblueL'><input type='radio' name='bg' class='optionInput' value='blue' /> Light Blue </label><br />
+  <label id='orangeL'><input type='radio' name='bg' class='optionInput' value='orange' /> Orange </label><br />
+  <label id='charcoalL'><input type='radio' name='bg' class='optionInput' value='charcoal' /> Charcoal </label><br />
+  <label id='fgreenL'><input type='radio' name='bg' class='optionInput' value='forestgreen' /> Forest Green </label><br />
+  <label id='brownL'><input type='radio' name='bg' class='optionInput' value='brown' /> Brown </label><br />
+  <label id='blackL'><input type='radio' name='bg' class='optionInput' value='black' /> Black </label>
   </td>
   <td class='optionsColumn'>
-  <h4>Note Font:</h4>
+  <h3>Note Font:</h3>
   <label><input type='radio' name='font' id='localFontCheckBox0' class='optionInput' value='uf0' />
     <div id='localFontDiv0' class='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
     <form name='localFontForm0' class='localFontForm' id='localFontForm0' onsubmit='setLocalFont(0);' action='#' >
@@ -115,8 +115,8 @@
   </label>
   <label class='sans'><input type='radio' name='font' class='optionInput' id='sansRadio' value='p1' /> Sans Serif</label><br />
   <label class='serif'><input type='radio' name='font' class='optionInput' value='p2' /> Serif &nbsp;<span class='goItalic'>(default)</span></label>
-  <br /><br />
-  <h4>Note Font Size:</h4>
+  <br /><br /><br />
+  <h3>Note Font Size:</h3>
   <label class='smallFont'><input type='radio' name='textSize' class='optionInput' value='small'> Small</label><br />
   <label class='mediumFont'><input type='radio' name='textSize' class='optionInput' value='medium'> Medium &nbsp;<span class='goItalic'>(default)</span></label><br />
   <label class='largeFont'><input type='radio' name='textSize' class='optionInput' value='large'> Large</label>
@@ -125,12 +125,17 @@
   <input type='radio' name='screenPos' class='optionInput' value='mm'>
   <input type='radio' name='screenPos' class='optionInput' value='cc'>
   <button class='optButton' id='undeleteButton' onclick='Undelete()' disabled=true>Restore last deleted item</button><br />
+  <span class='btn-spacer'></span>
   <button class='optButton' id='screenPosResetButton' onclick='resetPos();'>Reset Window Position</button><br />
   <button class='optButton' id='screenSizeResetButton' onclick='resetSize();'>Reset Window Size</button><br />
+  <span class='btn-spacer'></span>
   <button class='optButton' id='backupButton' onclick='dispBackupDiv();'>Backup...</button><br />
-  <h4>Status Bar:</h4>
+  <br /><br />
+  <h3>Status Bar:</h3>
   <label><input type='radio' name='statusOption' class='optionInput' value='Hide' /> Hide</label><br />
-  <label><input type='radio' name='statusOption' class='optionInput' value='Show' /> Show&nbsp;<span class='goItalic'>(default)</span></label>
+  <label><input type='radio' name='statusOption' class='optionInput' value='Show' /> Show&nbsp;<span class='goItalic'>(default)</span></label><br />
+  <br /><br />
+  <button class='optButton' id='defaultButton' onclick='resetDefault();'>Restore All Default Settings</button>
   </td>
   </tr></table>
 </div>

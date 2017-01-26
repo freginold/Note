@@ -51,7 +51,7 @@ Const InvalidFNMsg1 = "Invalid File Name."
 Const InvalidFNMsg2 = "The following characters are prohibited:"
 
 NewFileWithPath = ""
-NoteWidth = round(screen.availWidth/1.5)
+NoteWidth = round(screen.availWidth/1.47)
 NoteHeight = round(screen.availHeight/1.31)
 EditedString = ""
 
@@ -600,6 +600,15 @@ Function ShowDefaultBackup
   ' get path of default backup location for display
   ShowDefaultBackup = fs.GetFolder(Opt13) & "\"
 End Function
+
+Sub DelOptionsFile
+  ' delete config file to reset options back to default values
+  if fs.FileExists(OptionsFile) then
+    fs.DeleteFile(OptionsFile)
+  Else
+    msgbox "File Error: Operation could not be performed", 48
+  End If
+End Sub
 
 
 ' ---------- execution --------------

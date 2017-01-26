@@ -206,7 +206,6 @@ function saveOptions() {
   else { Opt9 = 'mm'; Opt10 = 0; Opt11 = 0; }
   if (document.getElementsByName('statusOption')[0].checked) { Opt12 = 'hide'; }
   else { Opt12 = 'show'; }
-
   WriteOptions();
   applyOptions();
   showOptions();
@@ -501,7 +500,8 @@ function displayAbout() {
 }
 
 function checkCoords() {
-  // check current coordinates, also check current size to adjust div heights
+  // check current coordinates, also check window size to adjust element sizes
+  // check current app height to adjust div heights
   if ((screen.availHeight > 650) && (document.documentElement.clientHeight > 380)) {
     noteBody.style.height = document.documentElement.clientHeight - 350;
     optionsDiv.style.height = document.documentElement.clientHeight - 300;
@@ -513,6 +513,7 @@ function checkCoords() {
     noteList.style.display = 'none';
     statusBar.style.display = 'none';
   }
+  // set noteBody width
   noteBody.style.width = document.documentElement.clientWidth * 0.96;
   if (opt12 == 'show') {
     // check if too thin for status bar
@@ -524,6 +525,7 @@ function checkCoords() {
 	    else { statusBarText.style.visibility = 'visible'; }
 	}
   }
+  // set inputBox length
   var tempSize = 100 - (((NoteWidth - document.documentElement.clientWidth) / NoteWidth) * 100);
   inputBox.size = tempSize;
   if (!!document.getElementById('editBox')) {
@@ -583,7 +585,7 @@ function goEdit(itemObj) {
   uneditedString = itemObj.innerText;
   if (!!editing) { showNotes(currentNote); } 
   editing = true;
-  var editBoxHTML = "<form name='editForm' onsubmit='event.returnValue=false;SubmitEdit(editBox.value);' action='#'><input type='text' size=50 id='editBox' /><input type='submit' style='color: green; margin-left: 2px;' value='Change' /><input type='button' style='color: red; margin-left: 2px;' value='Cancel' onclick='canceledEdit();' /></form>";
+  var editBoxHTML = "<form name='editForm' onsubmit='event.returnValue=false;SubmitEdit(editBox.value);' action='#'><input type='text' size=50 id='editBox' /><input type='submit' style='color: green; margin-left: 2px;' value='&#10004; Change' /><input type='button' style='color: red; margin-left: 2px;' value='&#10008; Cancel' onclick='canceledEdit();' /></form>";
   document.getElementById(itemToEdit).innerHTML = editBoxHTML;
   checkCoords();   // to set editBox size right away
   document.getElementById('editBox').value = uneditedString;
@@ -765,8 +767,19 @@ function resetPos() {
   document.getElementById('screenPosResetButton').disabled = true;  
 }
 
-function showSize() { alert("O: " + Opt14 + " " + Opt15 + "\nDef: " + NoteWidth + " " + NoteHeight); }
-  // for testing
+function resetDefault() {
+  // restore all settings back to default values
+  var beSure = confirm('Are you sure you want to reset all settings?\nAll options will go back to their default values.\
+  	\nThis change can not be undone.');
+  if (!!beSure) {
+  	DelOptionsFile();
+	OptionsCorrupted(0);
+	resetPos();
+	resetSize();
+	applyOptions();
+	showOptions();
+  }
+}
 
 
 // ----------- declare event handlers ----------
@@ -822,8 +835,6 @@ clearAll();
 getOffset();
 applyOptions();
 getDefaultSize();
-//Opt14 = NoteWidth;
-//Opt15 = NoteHeight;
 window.resizeTo(Opt14, Opt15);		// set initial size
 correctSize();		// to get correct window size
 setPos();			// set initial position

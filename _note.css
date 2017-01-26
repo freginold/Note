@@ -3,9 +3,10 @@ body {
   font-family: serif;
   color: black;
 }
-h4 {
-  margin-bottom: 2px;
+h3 {
+  margin-bottom: 5px;
   text-decoration: underline;
+  font-family: Georgia, Cambria, serif;
 }
 input[name=screenPos] {
   display: none;
@@ -141,6 +142,10 @@ button[disabled]:hover {
 .optButton {
   margin-bottom: 2px;
 }
+.btn-spacer {
+  display: block;
+  margin-top: 0.8em;
+}
 #noteList {
   display: block;
   margin: 5px;
@@ -236,4 +241,49 @@ button[disabled]:hover {
 #clockText {
   font-size: 0.8em;
   font-family: serif;
+}
+
+#ltgrayL {
+  background-color: lightgray;
+  color: black;
+}
+#yellowL {
+  background-color: #f0f0b3;
+  color: black;
+}
+#whiteL {
+  background-color: #fefefe;
+  color: black;
+}
+#pinkL {
+  background-color: #ff90aa;
+  color: black;
+}
+#ltgreenL {
+  background-color: #bfe9bf;
+  color: black;
+}
+#ltblueL {
+  background-color: #a9d6df;
+  color: black;
+}
+#orangeL {
+  background-color: #ffcf5f;
+  color: black;
+}
+#charcoalL {
+  background-color: #555555;
+  color: #ffffff;
+}
+#fgreenL {
+  background-color: #228542;
+  color: #ffffff;
+}
+#brownL {
+  background-color: #a88042;
+  color: #ffffff;
+}
+#blackL {
+  background-color: #222222;
+  color: #eeeeee;
 }
