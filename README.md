@@ -21,7 +21,7 @@ To create a new note, click the <b>New Note</b> button in the upper right corner
 
 You can edit an existing note item by double clicking on it.  Make the changes you want, then click <b>Change</b>.  Changes are saved immediately.
 
-Notes and user configuration settings can be backed up to any accessible local or network folder.  Selecting the *Backup...* button on the Options screen allows you to choose a backup location (or keep the default location -- the current Note source directory) and perform a backup.
+Notes and user configuration settings can be backed up to any accessible local or network folder.  Clicking the <b>Backup...</b> button on the Options screen allows you to choose a backup location (or keep the default location -- the current Note source directory) and perform a backup.
 
 An undelete feature has been added, to restore the last deleted item.  The restore button can be found on the Options screen. If the note that contained the deleted item has since been deleted itself, or if the program has been closed and reopened, you won't be able to restore a deleted item.
 
