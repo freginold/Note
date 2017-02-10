@@ -83,6 +83,9 @@ var currentVer = 'Note v' + Note.version + '\nPublic Domain';
 var timer = 0;
 var lastScrollPos = 0;
 var firstCall = true;
+var small = 0.8;
+var medium = 1;
+var large = 1.3;
 var currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
 var lastLine, itemToEdit, itemTotal, statusTimer, prevNote;
 
@@ -119,6 +122,10 @@ function applyOptions() {
       break;
     case "forestgreen":
       bgColor = "#228542";
+      fgColor = "#ffffff";
+      break;
+    case "navyblue":
+      bgColor = "#000060";
       fgColor = "#ffffff";
       break;
     case "brown":
@@ -177,8 +184,9 @@ function saveOptions() {
   else if (document.getElementsByName('bg')[6].checked) { Opt2 = 'orange'; }  
   else if (document.getElementsByName('bg')[7].checked) { Opt2 = 'charcoal'; }
   else if (document.getElementsByName('bg')[8].checked) { Opt2 = 'forestgreen'; }
-  else if (document.getElementsByName('bg')[9].checked) { Opt2 = 'brown'; }    
-  else if (document.getElementsByName('bg')[10].checked) { Opt2 = 'black'; }
+  else if (document.getElementsByName('bg')[9].checked) { Opt2 = 'navyblue'; }
+  else if (document.getElementsByName('bg')[10].checked) { Opt2 = 'brown'; }    
+  else if (document.getElementsByName('bg')[11].checked) { Opt2 = 'black'; }
   // option 3 - font
   Opt3 = 'p1';
   if (localFontCheckBox[0].checked) { Opt3 = 'uf0'; }
@@ -262,11 +270,14 @@ function showOptions() {
     case "forestgreen":
       document.getElementsByName('bg')[8].checked=true;
       break;
-    case "brown":
+    case "navyblue":
       document.getElementsByName('bg')[9].checked=true;
       break;
-    case "black":
+    case "brown":
       document.getElementsByName('bg')[10].checked=true;
+      break;
+    case "black":
+      document.getElementsByName('bg')[11].checked=true;
       break;
 	default:
 	  document.getElementsByName('bg')[0].checked=true;
@@ -781,6 +792,18 @@ function resetDefault() {
   }
 }
 
+function collapse(num) {
+	// collapse options section
+	document.getElementById('section' + num).style.display = "none";
+	document.getElementById('symbol' + num).innerHTML = "&#10133;";
+}
+
+function expand(num) {
+	// expand options section
+	document.getElementById('section' + num).style.display = "inline";
+	document.getElementById('symbol' + num).innerHTML = "&#10134;";
+}
+
 
 // ----------- declare event handlers ----------
 
@@ -823,6 +846,19 @@ for (i=0;i<localFontBox.length;i++) {
       localFontBox[i].attachEvent('onkeyup', function() { checkLocalFontInput(3); });
       break;
   }
+}
+
+for (var i = 0; i < document.getElementsByTagName('label').length; i++) {
+	// add click handlers to option headings for expanding/collapsing
+	var thisId = document.getElementsByTagName('label')[i].id;
+	if (thisId.slice(0, 6) === "header") {
+		document.getElementById(thisId).onclick = function() {
+			var thisNum = this.id.slice(this.id.length - 2, this.id.length);
+			var thisSection = "section" + thisNum;
+			if (document.getElementById(thisSection).style.display !== "none") { collapse(thisNum); }
+			else { expand(thisNum); }
+		};
+	}
 }
 
 // to get current scroll position:

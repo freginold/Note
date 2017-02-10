@@ -3,9 +3,8 @@ body {
   font-family: serif;
   color: black;
 }
-h3 {
+h3, h2 {
   margin-bottom: 5px;
-  text-decoration: underline;
   font-family: Georgia, Cambria, serif;
 }
 input[name=screenPos] {
@@ -141,10 +140,14 @@ button[disabled]:hover {
 }
 .optButton {
   margin-bottom: 2px;
+  margin-left: 8px;
+  margin-top: 1px;
 }
-.btn-spacer {
-  display: block;
-  margin-top: 0.8em;
+.optionSections {
+  display: inline;
+}
+.uline {
+  text-decoration: underline;
 }
 #noteList {
   display: block;
@@ -195,12 +198,9 @@ button[disabled]:hover {
   padding-left: 10px;
   margin-left: 25px;
 }
-#optionsSpacer {
-  margin-top: 1em;
-  padding: 1px;
-}
 #backupButton {
-  margin: 1px 0px 3px 0px;
+  margin-top: 1px;
+  margin-bottom: 3px;
 }
 #statusBar {
   display: inline-block;
@@ -277,6 +277,10 @@ button[disabled]:hover {
 }
 #fgreenL {
   background-color: #228542;
+  color: #ffffff;
+}
+#nblueL {
+  background-color: #000060;
   color: #ffffff;
 }
 #brownL {

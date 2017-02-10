@@ -16,16 +16,17 @@
 </head>
 <body>
 
-<div id='upperRightBox'>
-<button id='aboutButton' class='upperRightButton' onclick='displayAbout();'>About</button>
-<button id='optionsButton' class='upperRightButton' onclick='showOptions();'>Options</button>
-<button id='newButton' class='upperRightButton' onclick='showNewNoteBox();'>New Note</button>
+<div id='upperRightBox'> 
+  <button id='aboutButton' class='upperRightButton' onclick='displayAbout();'>About</button>
+  <button id='optionsButton' class='upperRightButton' onclick='showOptions();'>Options</button>
+  <button id='newButton' class='upperRightButton' onclick='showNewNoteBox();'>New 
+  Note</button>
 </div>
 
 <div id='noteList'></div>
 
 <hr>
-<h3 id='noteTitle'></h3>
+<h2 id='noteTitle'></h2>
 <div id='noteBody'></div>
 
 <div id='newNoteDiv'>
@@ -54,7 +55,8 @@
   <br />
   <table><tr>
   <td class='optionsColumn'>
-  <h3>Background Color:</h3>
+  <label id='header01'><h3><span id='symbol01'>&#10134;</span> <span class='uline'>Background Color:</span></h3></label>
+  <div id='section01' class='optionSections'>
   <label id='ltgrayL'><input type='radio' name='bg' class='optionInput' value='gray' /> Light Gray &nbsp;<span class='goItalic'>(default)</span> </label><br />
   <label id='yellowL'><input type='radio' name='bg' class='optionInput' value='yellow' /> Yellow </label><br />
   <label id='whiteL'><input type='radio' name='bg' class='optionInput' value='white' /> White </label><br />
@@ -64,11 +66,13 @@
   <label id='orangeL'><input type='radio' name='bg' class='optionInput' value='orange' /> Orange </label><br />
   <label id='charcoalL'><input type='radio' name='bg' class='optionInput' value='charcoal' /> Charcoal </label><br />
   <label id='fgreenL'><input type='radio' name='bg' class='optionInput' value='forestgreen' /> Forest Green </label><br />
+  <label id='nblueL'><input type='radio' name='bg' class='optionInput' value='navyblue' /> Navy Blue </label><br />
   <label id='brownL'><input type='radio' name='bg' class='optionInput' value='brown' /> Brown </label><br />
-  <label id='blackL'><input type='radio' name='bg' class='optionInput' value='black' /> Black </label>
+  <label id='blackL'><input type='radio' name='bg' class='optionInput' value='black' /> Black </label></div>
   </td>
   <td class='optionsColumn'>
-  <h3>Note Font:</h3>
+  <label id='header02'><h3><span id='symbol02'>&#10134;</span> <span class='uline'>Note Font:</span></h3></label>
+  <div id='section02' class='optionSections'>
   <label><input type='radio' name='font' id='localFontCheckBox0' class='optionInput' value='uf0' />
     <div id='localFontDiv0' class='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
     <form name='localFontForm0' class='localFontForm' id='localFontForm0' onsubmit='setLocalFont(0);' action='#' >
@@ -115,27 +119,36 @@
   </label>
   <label class='sans'><input type='radio' name='font' class='optionInput' id='sansRadio' value='p1' /> Sans Serif</label><br />
   <label class='serif'><input type='radio' name='font' class='optionInput' value='p2' /> Serif &nbsp;<span class='goItalic'>(default)</span></label>
+  </div>
   <br /><br /><br />
-  <h3>Note Font Size:</h3>
+  <label id='header03'><h3><span id='symbol03'>&#10134;</span> <span class='uline'>Note Font Size:</span></h3></label>
+  <div id='section03' class='optionSections'>
   <label class='smallFont'><input type='radio' name='textSize' class='optionInput' value='small'> Small</label><br />
   <label class='mediumFont'><input type='radio' name='textSize' class='optionInput' value='medium'> Medium &nbsp;<span class='goItalic'>(default)</span></label><br />
   <label class='largeFont'><input type='radio' name='textSize' class='optionInput' value='large'> Large</label>
+  </div>
   </td>
   <td class='optionsColumn'>
+  <label id='header04'><h3><span id='symbol04'>&#10134;</span> <span class='uline'>Size & Position</span></h3></label>
+  <div id='section04' class='optionSections'>
   <input type='radio' name='screenPos' class='optionInput' value='mm'>
   <input type='radio' name='screenPos' class='optionInput' value='cc'>
-  <button class='optButton' id='undeleteButton' onclick='Undelete()' disabled=true>Restore last deleted item</button><br />
-  <span class='btn-spacer'></span>
   <button class='optButton' id='screenPosResetButton' onclick='resetPos();'>Reset Window Position</button><br />
-  <button class='optButton' id='screenSizeResetButton' onclick='resetSize();'>Reset Window Size</button><br />
-  <span class='btn-spacer'></span>
+  <button class='optButton' id='screenSizeResetButton' onclick='resetSize();'>Reset Window Size</button>
+  </div>
+  <br /><br />
+  <label id='header05'><h3><span id='symbol05'>&#10134;</span> <span class='uline'>Backup / Restore</span></h3></label>
+  <div id='section05' class='optionSections'>
+  <button class='optButton' id='undeleteButton' onclick='Undelete()' disabled=true>Restore last deleted item</button><br />
   <button class='optButton' id='backupButton' onclick='dispBackupDiv();'>Backup...</button><br />
-  <br /><br />
-  <h3>Status Bar:</h3>
-  <label><input type='radio' name='statusOption' class='optionInput' value='Hide' /> Hide</label><br />
-  <label><input type='radio' name='statusOption' class='optionInput' value='Show' /> Show&nbsp;<span class='goItalic'>(default)</span></label><br />
-  <br /><br />
   <button class='optButton' id='defaultButton' onclick='resetDefault();'>Restore All Default Settings</button>
+  </div>
+  <br /><br />
+  <label id='header06'><h3><span id='symbol06'>&#10134;</span> <span class='uline'>Status Bar:</span></h3></label>
+  <div id='section06' class='optionSections'>
+  <label><input type='radio' name='statusOption' class='optionInput' value='Hide' /> Hide</label><br />
+  <label><input type='radio' name='statusOption' class='optionInput' value='Show' /> Show &nbsp;<span class='goItalic'>(default)</span></label><br />
+  </div>
   </td>
   </tr></table>
 </div>
@@ -150,10 +163,10 @@
   <span id='backupText'>Location of backup folder:</span><br /><br />
   <div id='backupDispDiv'></div><button onclick='ChangeBackup()'>Change...</button>
   <br /><br /><br />
-  <button onclick='Backup()'>Backup</button><br />
+  <button onclick='Backup()' style='font-size: 1.15em;'>Backup</button><br />
 </div>
 
-<div id='statusBar'><hr><div id='statusBarText'>&nbsp;</div><div id='clock'></div></div>
+<div id='statusBar'><hr><div id='statusBarText'> </div><div id='clock'></div></div>
 
 <script language='vbscript' src='_note.vbs'></script>
 <script language='javascript' src='_note.js'></script>
