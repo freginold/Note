@@ -17,7 +17,7 @@ On a Windows computer with Internet Explorer (or Edge) installed:
 If you get the "Unknown Publisher" message, click <b>Run</b> to bypass it.  You can uncheck the box marked "Always ask before opening this file" so the message won't appear again.
 
 ### Usage:
-To create a new note, click the <b>New Note</b> button in the upper right corner.  Notes are saved as plain text files.  To add list items to a note, open that note by clicking on its name along the top of the window, then type in the text you want to add and either press the <b>ENTER</b> key or click <b>Add at Bottom</b>.  To insert a new note item into an existing list (rather than add it to the bottom) type the text that you want to add, then click <b>Insert Above...</b> and select where you would like to insert the new item.
+To create a new note, click the <b>New Note</b> button in the upper right corner.  Notes are saved as plain text files.  To add list items to a note, open that note by clicking on its name along the top of the window, then type in the text you want to add and either press <kbd>ENTER</kbd> or click <b>Add at Bottom</b>.  To insert a new note item into an existing list (rather than add it to the bottom) type the text that you want to add, then click <b>Insert Above...</b> and select where you would like to insert the new item.
 
 You can edit an existing note item by double clicking on it.  Make the changes you want, then click <b>Change</b>.  Changes are saved immediately.
 
