@@ -1,5 +1,5 @@
-Version: 
+<b>Version:</b> 
 
-Operating System: 
+<b>Operating System:</b> 
 
-Issue: 
+<b>Issue:</b> 
