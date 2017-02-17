@@ -32,7 +32,7 @@ To move or resize Note, simply drag it around the screen or drag the corners and
 As of v3.0.3, Note is versioned using [Semantic Versioning] (http://semver.org/).
 
 ### Tested on:
-Note has been tested and runs fine on:
+Note has been tested and runs well on:
 - Windows 7 32-bit / IE 11
 - Windows 7 64-bit / IE 11
 - Windows 10 64-bit / EdgeHTML 14
