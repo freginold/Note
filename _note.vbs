@@ -579,7 +579,7 @@ End Sub
 Function AbbrevText(AbbrStr)
   ' abbreviate note text for status bar, add quotes and apply non-italic class
   if len(AbbrStr) > 30 then AbbrStr = mid(AbbrStr, 1, 27) & "..."
-  AbbrevText = "<span class='nonItalic'>'" & AbbrStr & "'</span>"
+  AbbrevText = "<span class='nonItalic'>'" & remHTML(AbbrStr) & "'</span>"
 End Function
 
 Sub ChangeBackup

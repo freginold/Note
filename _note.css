@@ -1,4 +1,4 @@
-body {
+html {
   font-size: 1em;
   font-family: serif;
   color: black;
@@ -197,6 +197,7 @@ button[disabled]:hover {
 #aboutDiv {
   padding-left: 10px;
   margin-left: 25px;
+  vert-align: middle;
 }
 #backupButton {
   margin-top: 1px;

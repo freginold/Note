@@ -79,15 +79,19 @@ var fgColor = 'black';
 var firstCoordCheck = true;
 var selectedFlag = [false, false, false, false];
 var uneditedString = '';
-var currentVer = 'Note v' + Note.version + '\nPublic Domain';
+var currentVer = 'Note v' + Note.version;
+var license = 'Public Domain';
 var timer = 0;
 var lastScrollPos = 0;
 var firstCall = true;
 var small = 0.8;
 var medium = 1;
 var large = 1.3;
+var aboutInterval = false;
+var flip = false;
+var defTextSize = 1;
 var currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
-var lastLine, itemToEdit, itemTotal, statusTimer, prevNote;
+var lastLine, itemToEdit, itemTotal, statusTimer, prevNote, aboutCounter;
 
 
 // ------- declare functions ----------
@@ -394,10 +398,7 @@ function getLines(thisNote) {
       lastLine = noteNum;
     }
     else if (currentLine != "") {
-      // check input string for < or >, repl w/ &gt; or &lt;
-      currentLine = currentLine.replace(/</g, "&lt;");
-      currentLine = currentLine.replace(/>/g, "&gt;");
-      noteBody.innerHTML = noteBody.innerHTML + "<tr class='" + currentClasses + "' id='item" + noteNum + "'" + localFontHTML + "><td>" + xElBeg + noteNum + xElEnd + "&nbsp;&nbsp;" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartHTML + "</td><td id='text" + noteNum + "' ondblclick='goEdit(this);'>" + currentLine + "</td></tr>";
+      noteBody.innerHTML = noteBody.innerHTML + "<tr class='" + currentClasses + "' id='item" + noteNum + "'" + localFontHTML + "><td>" + xElBeg + noteNum + xElEnd + "&nbsp;&nbsp;" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartHTML + "</td><td id='text" + noteNum + "' ondblclick='goEdit(this);'>" + remHTML(currentLine) + "</td></tr>";
 	  checkOverflow("item" + noteNum);
       noteNum++;
     }
@@ -507,7 +508,33 @@ function displayAbout() {
   noteBody.style.display='none';
   noteTitle.innerText = "About Note";
   aboutDiv.style.display = 'block';
-  document.getElementById('versionInfo').innerText = currentVer;
+  document.getElementById('versionInfo').innerHTML = "<span id='line1'>" + currentVer + "</span><br><span id='line2'>" + license + "</span>";
+  if (!aboutInterval) {
+      aboutCounter = 0;
+	  setTimeout(function() {
+	    aboutInterval = setInterval(aboutChangeSize, 4);
+	  }, 160);
+  }
+}
+
+function aboutChangeSize() {
+  // change text size in About div
+  if (flip) { aboutCounter = aboutCounter - 0.01; }
+  else { aboutCounter = aboutCounter + 0.01; }    
+  document.getElementById('line1').style.fontSize = (defTextSize + aboutCounter) + "em";
+  document.getElementById('line2').style.fontSize = (defTextSize - aboutCounter) + "em";
+  if (aboutCounter > 0.57) {
+    flip = true;
+  }
+  if (aboutCounter < -0.57) {
+    flip = false;
+  }
+  if (aboutDiv.style.display == "none") {
+    clearInterval(aboutInterval);
+	aboutInterval = false;
+	flip = false;
+	aboutDiv.style.fontSize = defTextSize + "em";
+  }
 }
 
 function checkCoords() {
@@ -637,6 +664,18 @@ function clearStatus() {
   // clear status bar
   statusBarText.innerHTML = statusBarHTML;
   statusTimer = 0;
+}
+
+function remHTML(str) {
+  // remove characters that could execute code
+  // repl < or > w/ &gt; or &lt;
+  str = str.replace(/&/g, "&amp;");
+  str = str.replace(/</g, "&lt;");
+  str = str.replace(/>/g, "&gt;");
+  str = str.replace(/"/g, "&quot;");
+  str = str.replace(/'/g, "&#x27;");
+  str = str.replace(/\//g, "&#x2F;");        
+  return str;
 }
 
 function focusInput() {
