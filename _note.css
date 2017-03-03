@@ -1,4 +1,4 @@
-html {
+body {
   font-size: 1em;
   font-family: serif;
   color: black;
@@ -13,7 +13,7 @@ input[name=screenPos] {
 button:hover,
 input[type=button]:hover,
 input[type=submit]:hover {
-  background: #dbdbdb;
+  background-color: #dbdbdb;
 }
 button[disabled]:hover {
   background: #efefef;
@@ -149,6 +149,18 @@ button[disabled]:hover {
 .uline {
   text-decoration: underline;
 }
+.delBox {
+  position: relative;
+  float: right;
+  width: 110px;
+  padding-bottom: 4px;
+}
+.optionsButtonBox {
+  position: relative;
+  float: right;
+  width: 170px;
+  padding-bottom: 4px;
+}
 #noteList {
   display: block;
   margin: 5px;
@@ -171,7 +183,12 @@ button[disabled]:hover {
   padding-bottom: 4px;
 }
 #newNoteDiv {
-  display: none;
+  position: absolute;
+  text-align: center;
+  top: 30%;
+}
+#newNoteForm {
+  position: relative;
 }
 #noteTitle {
   text-align: center;
@@ -179,20 +196,12 @@ button[disabled]:hover {
   margin-top: 4px;
 }
 #inputDiv {
-  display: none;
   margin-left: 10px;
 }
 #optionsDiv {
-  display: none;
   font-family: serif;
   font-size: 1em;
   overflow: auto;
-}
-#delBox {
-  position: relative;
-  float: right;
-  width: 110px;
-  padding-bottom: 4px;
 }
 #aboutDiv {
   padding-left: 10px;

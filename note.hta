@@ -9,7 +9,7 @@
   Scroll = no
   Icon = "note_icon.ico"
   navigable = no
-  version = "3.2.2"
+  version = "3.2.3"
 >
 <title>Note</title>
 <link href='_note.css' rel='stylesheet' type='text/css'>
@@ -30,7 +30,7 @@
 <div id='noteBody'></div>
 
 <div id='newNoteDiv'>
-  <form name='newNoteForm' onsubmit='createNewNote(newNoteInputBox.value);' action='#' >
+  <form id='newNoteForm' name='newNoteForm' onsubmit='createNewNote(newNoteInputBox.value);' action='#' >
     <input type='text' size=20 id='newNoteInputBox' />
     <input type='submit' value='Create' />
   </form>
@@ -55,7 +55,7 @@
   <br />
   <table><tr>
   <td class='optionsColumn'>
-  <label id='header01'><h3><span id='symbol01'>&#10134;</span> <span class='uline'>Background Color:</span></h3></label>
+  <label id='header01'><h3><span id='symbol01'>&#9662;</span> <span class='uline'>Background Color</span></h3></label>
   <div id='section01' class='optionSections'>
   <label id='ltgrayL'><input type='radio' name='bg' class='optionInput' value='gray' /> Light Gray &nbsp;<span class='goItalic'>(default)</span> </label><br />
   <label id='yellowL'><input type='radio' name='bg' class='optionInput' value='yellow' /> Yellow </label><br />
@@ -71,7 +71,7 @@
   <label id='blackL'><input type='radio' name='bg' class='optionInput' value='black' /> Black </label></div>
   </td>
   <td class='optionsColumn'>
-  <label id='header02'><h3><span id='symbol02'>&#10134;</span> <span class='uline'>Note Font:</span></h3></label>
+  <label id='header02'><h3><span id='symbol02'>&#9662;</span> <span class='uline'>Note Font</span></h3></label>
   <div id='section02' class='optionSections'>
   <label><input type='radio' name='font' id='localFontCheckBox0' class='optionInput' value='uf0' />
     <div id='localFontDiv0' class='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
@@ -121,7 +121,7 @@
   <label class='serif'><input type='radio' name='font' class='optionInput' value='p2' /> Serif &nbsp;<span class='goItalic'>(default)</span></label>
   </div>
   <br /><br /><br />
-  <label id='header03'><h3><span id='symbol03'>&#10134;</span> <span class='uline'>Note Font Size:</span></h3></label>
+  <label id='header03'><h3><span id='symbol03'>&#9662;</span> <span class='uline'>Note Font Size</span></h3></label>
   <div id='section03' class='optionSections'>
   <label class='smallFont'><input type='radio' name='textSize' class='optionInput' value='small'> Small</label><br />
   <label class='mediumFont'><input type='radio' name='textSize' class='optionInput' value='medium'> Medium &nbsp;<span class='goItalic'>(default)</span></label><br />
@@ -129,22 +129,22 @@
   </div>
   </td>
   <td class='optionsColumn'>
-  <label id='header04'><h3><span id='symbol04'>&#10134;</span> <span class='uline'>Size & Position</span></h3></label>
+  <label id='header04'><h3><span id='symbol04'>&#9662;</span> <span class='uline'>Size & Position</span></h3></label>
   <div id='section04' class='optionSections'>
   <input type='radio' name='screenPos' class='optionInput' value='mm'>
   <input type='radio' name='screenPos' class='optionInput' value='cc'>
   <button class='optButton' id='screenPosResetButton' onclick='resetPos();'>Reset Window Position</button><br />
   <button class='optButton' id='screenSizeResetButton' onclick='resetSize();'>Reset Window Size</button>
   </div>
-  <br /><br />
-  <label id='header05'><h3><span id='symbol05'>&#10134;</span> <span class='uline'>Backup / Restore</span></h3></label>
+  <br /><br /><br />
+  <label id='header05'><h3><span id='symbol05'>&#9662;</span> <span class='uline'>Backup / Restore</span></h3></label>
   <div id='section05' class='optionSections'>
   <button class='optButton' id='undeleteButton' onclick='Undelete()' disabled=true>Restore Last Deleted Item</button><br />
   <button class='optButton' id='backupButton' onclick='dispBackupDiv();'>Backup...</button><br />
-  <button class='optButton' id='defaultButton' onclick='resetDefault();'>Restore All Default Settings</button>
+  <button class='optButton' id='defaultButton' onclick='resetDefault();'>Restore Default Settings</button>
   </div>
-  <br /><br />
-  <label id='header06'><h3><span id='symbol06'>&#10134;</span> <span class='uline'>Status Bar:</span></h3></label>
+  <br /><br /><br />
+  <label id='header06'><h3><span id='symbol06'>&#9662;</span> <span class='uline'>Status Bar</span></h3></label>
   <div id='section06' class='optionSections'>
   <label><input type='radio' name='statusOption' class='optionInput' value='Hide' /> Hide</label><br />
   <label><input type='radio' name='statusOption' class='optionInput' value='Show' /> Show &nbsp;<span class='goItalic'>(default)</span></label><br />

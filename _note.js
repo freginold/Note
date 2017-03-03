@@ -5,6 +5,7 @@ var noteBody = document.getElementById('noteBody');
 var inputDiv = document.getElementById('inputDiv');
 var inputBox = document.getElementById('inputBox');
 var newNoteDiv = document.getElementById('newNoteDiv');
+var newNoteForm = document.getElementById('newNoteForm');
 var noteTitle = document.getElementById('noteTitle');
 var optionsDiv = document.getElementById('optionsDiv');
 var aboutDiv = document.getElementById('aboutDiv');
@@ -74,6 +75,8 @@ var moveButtonsHTMLMid = "' onclick='MoveUp(this)'>&uarr;</button> <button class
 var moveButtonsHTMLEnd = "' onclick='MoveDown(this)'>&darr;</button>";
 var lineStartHTML = "<span class='serif'>&sdot; </span>";
 var statusBarHTML = "&nbsp;";
+var expandAllButtonHTML = "<button class='upperRightButton' id='expandAllButton' onclick='expandAll()'>&#9196; Expand All</button>";
+var collapseAllButtonHTML = "<button class='upperRightButton' id='collapseAllButton' onclick='collapseAll();'>&#9195; Collapse All</button>";
 var noteFont = 'serif';
 var fgColor = 'black';
 var firstCoordCheck = true;
@@ -90,6 +93,8 @@ var large = 1.3;
 var aboutInterval = false;
 var flip = false;
 var defTextSize = 1;
+var sectionsCollapsed = 0;
+var sectionsTotal = 0;
 var currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
 var lastLine, itemToEdit, itemTotal, statusTimer, prevNote, aboutCounter;
 
@@ -241,9 +246,9 @@ function saveSize() {
 
 function showOptions() {
   clearAll();
-  noteBody.style.display='none';
-  noteTitle.innerText = 'Options:';
-  optionsDiv.style.display='block';
+  noteTitle.innerHTML = "<div class='optionsButtonBox'>" + expandAllButtonHTML + collapseAllButtonHTML + "</div>" + 'Options:';
+  checkCollapseExpandButtons();
+  optionsDiv.style.display = 'block';
   for (i = 0; i<document.getElementsByTagName('td').length; i++) {
     if (document.getElementsByTagName('td')[i].className == 'optionsColumn') {
       document.getElementsByTagName('td')[i].style.width = (document.body.clientWidth / 3);
@@ -330,11 +335,11 @@ function clearAll() {
   setTimeout(function(){ firstCall = true; } , 250);
   GetFileList()
   newNoteDiv.style.display = 'none';
-  optionsDiv.style.display='none';
+  optionsDiv.style.display = 'none';
   inputDiv.style.display = 'none';
   aboutDiv.style.display = 'none';
   backupDiv.style.display = 'none';
-  noteBody.style.display='block';
+  noteBody.style.display = 'none';
   noteBody.innerText = '';
   noteTitle.innerText = '';
   newNoteInputBox.value = '';
@@ -352,13 +357,14 @@ function clearAll() {
 function showNotes(cNote) {
   // load note file
   clearAll();
+  noteBody.style.display = 'block';
   prevNote = currentNote;
   currentNote = cNote;
   editing = false;
   window[currentNote].className = 'noteButton activeNote';
   var currentNoteDisplay = currentNote;
   if (currentNote == "&") { currentNoteDisplay = "&#38;"; }    // to deal w/ & as only char in title
-  noteTitle.innerHTML = "<div id='delBox'>" + renButtonHTML + delButtonHTML + "</div>" + currentNoteDisplay;
+  noteTitle.innerHTML = "<div class='delBox'>" + renButtonHTML + delButtonHTML + "</div>" + currentNoteDisplay;
   getLines(currentNote);
   if (currentNote == prevNote) {
     // if reloading the same note
@@ -377,7 +383,7 @@ function showNotes(cNote) {
     window['d' + (lastLine-1)].style.filter = "alpha(opacity = 25)";
     window['d' + (lastLine-1)].style.opacity = .25;
   }
-  inputDiv.style.display='block';
+  inputDiv.style.display = 'block';
   inputBox.focus();
 }
 
@@ -416,9 +422,9 @@ function onSubmitted(tempVar) {
 
 function showNewNoteBox() {
   clearAll();
-  noteBody.style.display='none';
   noteTitle.innerText = 'Name for new note:';
   newNoteDiv.style.display = 'block';
+  centerNewNoteForm();
   newNoteInputBox.focus();
 }
 
@@ -432,6 +438,11 @@ function createNewNote(newNoteName) {
   var fileCreated = CreateNewFile(newNoteName)
   if (!!fileCreated) { showNotes(newNoteName); showStatus("New note, " + AbbrevText(newNoteName) + " created"); }
   else { newNoteInputBox.value = ''; }
+}
+
+function centerNewNoteForm() {
+  // manually center the input box on the new note screen
+  newNoteForm.style.left = document.documentElement.clientWidth / 2 - (newNoteForm.firstChild.size * 6 + 10);
 }
 
 function getLocalFont(n) {
@@ -505,7 +516,6 @@ function deleteNote() {
 function displayAbout() {
   // display license info/help file
   clearAll();
-  noteBody.style.display='none';
   noteTitle.innerText = "About Note";
   aboutDiv.style.display = 'block';
   document.getElementById('versionInfo').innerHTML = "<span id='line1'>" + currentVer + "</span><br><span id='line2'>" + license + "</span>";
@@ -700,7 +710,6 @@ function highlight(tempNum) {
 function dispBackupDiv() {
   // show backup div: backup button, current backup dir, button to change dir
   clearAll();
-  noteBody.style.display='none';
   noteTitle.innerText = "Backup";
   backupDiv.style.display = 'block';
   var Opt13Display = Opt13;
@@ -764,6 +773,7 @@ function checkSize() {
     firstCall = true;
   }
   else { firstCall = true; }
+  if (newNoteDiv.style.display != "none") { centerNewNoteForm(); }
 }
 
 function getDefaultSize() {
@@ -834,13 +844,53 @@ function resetDefault() {
 function collapse(num) {
 	// collapse options section
 	document.getElementById('section' + num).style.display = "none";
-	document.getElementById('symbol' + num).innerHTML = "&#10133;";
+	document.getElementById('symbol' + num).innerHTML = "&#9654;";
+	sectionsCollapsed++;
+	checkCollapseExpandButtons();
 }
 
 function expand(num) {
 	// expand options section
 	document.getElementById('section' + num).style.display = "inline";
-	document.getElementById('symbol' + num).innerHTML = "&#10134;";
+	document.getElementById('symbol' + num).innerHTML = "&#9662;";
+	sectionsCollapsed--;
+	checkCollapseExpandButtons();
+}
+
+function expandAll() {
+	// expand all options settings
+	for (var i = 0; i < document.getElementsByTagName('label').length; i++) {
+		var thisId = document.getElementsByTagName('label')[i].id;
+		if (thisId.slice(0, 6) === "header") {
+			var thisNum = thisId.slice(thisId.length - 2, thisId.length);
+			var thisSection = "section" + thisNum;
+			if (document.getElementById(thisSection).style.display == "none") { expand(thisNum); }
+		}
+	}
+	sectionsCollapsed = 0;
+	checkCollapseExpandButtons();
+}
+
+function collapseAll() {
+	// collapse all options settings
+	for (var i = 0; i < document.getElementsByTagName('label').length; i++) {
+		var thisId = document.getElementsByTagName('label')[i].id;
+		if (thisId.slice(0, 6) === "header") {
+			var thisNum = thisId.slice(thisId.length - 2, thisId.length);
+			var thisSection = "section" + thisNum;
+			if (document.getElementById(thisSection).style.display !== "none") { collapse(thisNum); }
+		}
+	}
+	sectionsCollapsed = sectionsTotal;
+	checkCollapseExpandButtons();
+}
+
+function checkCollapseExpandButtons() {
+	// if all options either collapsed or expanded, disable the corresponding button
+	if (sectionsCollapsed === sectionsTotal) { document.getElementById('collapseAllButton').disabled = true; }
+	else { document.getElementById('collapseAllButton').disabled = false; }
+	if (sectionsCollapsed === 0) { document.getElementById('expandAllButton').disabled = true; }
+	else { document.getElementById('expandAllButton').disabled = false; }	
 }
 
 
@@ -891,6 +941,7 @@ for (var i = 0; i < document.getElementsByTagName('label').length; i++) {
 	// add click handlers to option headings for expanding/collapsing
 	var thisId = document.getElementsByTagName('label')[i].id;
 	if (thisId.slice(0, 6) === "header") {
+		sectionsTotal++;
 		document.getElementById(thisId).onclick = function() {
 			var thisNum = this.id.slice(this.id.length - 2, this.id.length);
 			var thisSection = "section" + thisNum;
