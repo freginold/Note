@@ -23,7 +23,7 @@ You can edit an existing note item by double clicking on it.  Make the changes y
 
 Notes and user configuration settings can be backed up to any accessible local or network folder.  Clicking the <b>Backup...</b> button on the Options screen allows you to choose a backup location (or keep the default location -- the current Note source directory) and perform a backup.
 
-An undelete feature has been added, to restore the last deleted item.  The restore button can be found on the Options screen. If the note that contained the deleted item has since been deleted itself, or if the program has been closed and reopened, you won't be able to restore a deleted item.
+An undelete feature has been added, to restore the last deleted item.  The restore button can be found on the Options screen.  If the note that contained the deleted item has since been deleted itself, or if Note has been closed and reopened, you won't be able to restore a deleted item.
 
 Note allows up to four user-defined local fonts to be specified.  Any font installed on the local computer can be used.  All four selections, once made, will be saved.  Spelling counts but capitalization does not.
 
