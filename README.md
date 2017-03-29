@@ -5,8 +5,7 @@ You can create new notes -- each one saved as a separate text file -- and add in
 
 Note saves all notes/tasks in a `notes` subfolder.  It uses a `config.txt` file to store configuration settings; background color, text font, text size, window position, window size, status bar display, and backup folder location. If either the `notes` subfolder or the `config.txt` file are not present, Note will create one on launch.
 
-![screen shot]
-(https://github.com/freginold/Note/blob/master/note_ss.png)
+![screen shot](https://github.com/freginold/Note/blob/master/note_ss.png)
 
 ### Installation:
 On a Windows computer with Internet Explorer (or Edge) installed:
