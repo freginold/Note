@@ -9,7 +9,7 @@ Note saves all notes/tasks in a `notes` subfolder.  It uses a `config.txt` file 
 
 ### Installation:
 On a Windows computer with Internet Explorer (or Edge) installed:
-  - Download the [latest release of Note] (https://github.com/freginold/Note/releases/latest), as either a tarball or zip file
+  - Download the [latest release of Note](https://github.com/freginold/Note/releases/latest), as either a tarball or zip file
   - Unzip the files into the folder of your choice
   - Double-click the `note.hta` file to run the program
 
@@ -28,7 +28,7 @@ Note allows up to four user-defined local fonts to be specified.  Any font inst
 
 To move or resize Note, simply drag it around the screen or drag the corners and edges to position it how you want it.  Any changes will be saved and remembered the next time you launch Note.  You can change the background color, font, and text size on the Options screen (accessed by clicking the <b>Options</b> button in the upper right corner).
 
-As of v3.0.3, Note is versioned using [Semantic Versioning] (http://semver.org/).
+As of v3.0.3, Note is versioned using [Semantic Versioning](http://semver.org/).
 
 ### Tested on:
 Note has been tested and runs well on:
