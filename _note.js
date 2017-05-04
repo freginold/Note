@@ -68,8 +68,8 @@ var delItem = {
   scroll: 0 }
 var xElBeg = "<button class='x smallFont moveButtons' onclick='DelLine(this)' id='X";
 var xElEnd = "'>X</button>";
-var renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'>Rename</button>";
-var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'>Delete</button>";
+var renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'><span class='btnIcon'>&#9998;</span>Rename</button>";
+var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'><span class='btnIcon'>&#x2702;</span>Delete</button>";
 var moveButtonsHTMLBeg = "<button class='moveButtons smallFont uBut' id='u";
 var moveButtonsHTMLMid = "' onclick='MoveUp(this)'>&uarr;</button> <button class='moveButtons smallFont dBut' id='d";
 var moveButtonsHTMLEnd = "' onclick='MoveDown(this)'>&darr;</button>";
@@ -125,7 +125,7 @@ function applyOptions() {
 	case "orange":
 	  bgColor = "#FFCF5F";
 	  break;
-    case "charcoal":
+    case "charcoalgray":
       bgColor = "#555555";
       fgColor = "#ffffff";
       break;
@@ -191,7 +191,7 @@ function saveOptions() {
   else if (document.getElementsByName('bg')[4].checked) { Opt2 = 'green'; }
   else if (document.getElementsByName('bg')[5].checked) { Opt2 = 'blue'; }
   else if (document.getElementsByName('bg')[6].checked) { Opt2 = 'orange'; }  
-  else if (document.getElementsByName('bg')[7].checked) { Opt2 = 'charcoal'; }
+  else if (document.getElementsByName('bg')[7].checked) { Opt2 = 'charcoalgray'; }
   else if (document.getElementsByName('bg')[8].checked) { Opt2 = 'forestgreen'; }
   else if (document.getElementsByName('bg')[9].checked) { Opt2 = 'navyblue'; }
   else if (document.getElementsByName('bg')[10].checked) { Opt2 = 'brown'; }    
@@ -273,7 +273,7 @@ function showOptions() {
     case "orange":
       document.getElementsByName('bg')[6].checked=true;
       break;	  
-    case "charcoal":
+    case "charcoalgray":
       document.getElementsByName('bg')[7].checked=true;
       break;
     case "forestgreen":
@@ -364,7 +364,7 @@ function showNotes(cNote) {
   window[currentNote].className = 'noteButton activeNote';
   var currentNoteDisplay = currentNote;
   if (currentNote == "&") { currentNoteDisplay = "&#38;"; }    // to deal w/ & as only char in title
-  noteTitle.innerHTML = "<div class='delBox'>" + renButtonHTML + delButtonHTML + "</div>" + currentNoteDisplay;
+  noteTitle.innerHTML = "<div class='delBox'>" + renButtonHTML + delButtonHTML + "</div>" + "<span ondblclick='document.selection.empty(); RenameThisNote()'>" + currentNoteDisplay + "</span>";
   getLines(currentNote);
   if (currentNote == prevNote) {
     // if reloading the same note
@@ -635,6 +635,9 @@ function goEdit(itemObj) {
   editing = true;
   var editBoxHTML = "<form name='editForm' onsubmit='event.returnValue=false;SubmitEdit(editBox.value);' action='#'><input type='text' size=50 id='editBox' /><input type='submit' style='color: green; margin-left: 2px;' value='&#10004; Change' /><input type='button' style='color: red; margin-left: 2px;' value='&#10008; Cancel' onclick='canceledEdit();' /></form>";
   document.getElementById(itemToEdit).innerHTML = editBoxHTML;
+  document.getElementById('editBox').attachEvent('onkeydown', function(e) {
+  	if (e.keyCode == 27) { canceledEdit(); }	// if ESC key pressed while editing
+  });
   checkCoords();   // to set editBox size right away
   document.getElementById('editBox').value = uneditedString;
   document.getElementById('editBox').focus();

@@ -22,6 +22,17 @@ button[disabled]:hover {
   position: relative;
   float: left;
   margin-left: 10px;
+  text-align: left;
+  width: 87%;
+}
+.btnIcon {
+  padding: 0px 4px 0px 4px;
+  position: relative;
+}
+.bottomButton {
+  text-align: left;
+  width: 100%;
+  padding: 1px 0.7em 1px 0.7em;
 }
 .noteButton {
   padding: 6px;
@@ -43,7 +54,7 @@ button[disabled]:hover {
   font-weight: bold;
   font-style: italic;
   border: 2px solid black;
-  backgroundColor: gray;
+  background-color: #lightgray;
 }
 .item {
   display: inline-block;
@@ -300,4 +311,10 @@ button[disabled]:hover {
 #blackL {
   background-color: #222222;
   color: #eeeeee;
+}
+#expandAllButton, #collapseAllButton {
+  width: 80%;
+  text-align: center;
+  margin: 0px 3px 1px 1px;
+  float: right;
 }

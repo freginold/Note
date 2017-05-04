@@ -9,7 +9,7 @@
   Scroll = no
   Icon = "note_icon.ico"
   navigable = no
-  version = "3.2.3"
+  version = "3.2.4"
 >
 <title>Note</title>
 <link href='_note.css' rel='stylesheet' type='text/css'>
@@ -17,10 +17,9 @@
 <body>
 
 <div id='upperRightBox'> 
-  <button id='aboutButton' class='upperRightButton' onclick='displayAbout();'>About</button>
-  <button id='optionsButton' class='upperRightButton' onclick='showOptions();'>Options</button>
-  <button id='newButton' class='upperRightButton' onclick='showNewNoteBox();'>New 
-  Note</button>
+  <button id='newButton' class='upperRightButton' onclick='showNewNoteBox();'><span class='btnIcon'>&#128220</span>&nbsp;New</button>
+  <button id='optionsButton' class='upperRightButton' onclick='showOptions();'><span class='btnIcon'>&#9874</span>&nbsp;Settings</button>
+  <button id='aboutButton' class='upperRightButton' onclick='displayAbout();'><span class='btnIcon'>&#8505</span>&nbsp;&nbsp;About</button>
 </div>
 
 <div id='noteList'></div>
@@ -43,9 +42,9 @@
       <td>
         <input type='text' size=100 id='inputBox' />
       </td><td>
-        <input type='submit' class='smallFont' value='Add to Bottom' /><br />
+        <input type='submit' class='smallFont bottomButton' value='&#8659;&nbsp;&nbsp;Add to Bottom' /><br />
       </td></tr><tr><td></td><td>
-        <input type='button' class='smallFont' value='Insert Above ...' onclick='insertItem();' />
+        <input type='button' class='smallFont bottomButton' value='&#8662;&nbsp;&nbsp;Insert Above ...' onclick='insertItem();' />
       </td>
     </tr></table>
   </form>
@@ -64,7 +63,7 @@
   <label id='ltgreenL'><input type='radio' name='bg' class='optionInput' value='green' /> Light Green </label><br />
   <label id='ltblueL'><input type='radio' name='bg' class='optionInput' value='blue' /> Light Blue </label><br />
   <label id='orangeL'><input type='radio' name='bg' class='optionInput' value='orange' /> Orange </label><br />
-  <label id='charcoalL'><input type='radio' name='bg' class='optionInput' value='charcoal' /> Charcoal </label><br />
+  <label id='charcoalL'><input type='radio' name='bg' class='optionInput' value='charcoalgray' /> Charcoal Gray </label><br />
   <label id='fgreenL'><input type='radio' name='bg' class='optionInput' value='forestgreen' /> Forest Green </label><br />
   <label id='nblueL'><input type='radio' name='bg' class='optionInput' value='navyblue' /> Navy Blue </label><br />
   <label id='brownL'><input type='radio' name='bg' class='optionInput' value='brown' /> Brown </label><br />

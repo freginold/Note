@@ -1,6 +1,6 @@
 ' Settings (saved in config file):
 ' 1. Time Stamp: hide/show
-' 2. Background Color: gray/yellow/white/pink/green/blue/orange/charcoal/forestgreen/navyblue/brown/black
+' 2. Background Color: gray/yellow/white/pink/green/blue/orange/charcoalgray/forestgreen/navyblue/brown/black
 ' 3. Note Font: p1-serif/p2-sans serif/uf0/uf1/uf2/uf3
 ' 4. Note Font Size: small/medium/large
 ' 5. User Font 1
