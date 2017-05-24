@@ -40,5 +40,8 @@ Note has been tested and runs well on:
 - Note files must be kept in the `notes` subfolder, with a `.txt` file extension, to be recognized.  When a new note is created, it is automatically saved there.
 - Note may not run correctly on Windows Vista PCs.  (Seems to be an issue with something in the VBScript code.)
 
+### Troubleshooting:
+If Note gets corrupted, or a weird setting persists and won't change, delete the `config.txt` file and relaunch Note.  It will behave as if it is a fresh install.
+
 
 *Side note:* HTA files run as "trusted" programs in Windows.  They are good for sysadmin work and local scripting, but be aware of the security concerns before making use of an HTA file, especially one downloaded from an unfamiliar source.
