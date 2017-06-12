@@ -3,7 +3,7 @@ Note is a very basic Windows GUI note/task app.  It is free, open source, and in
 
 You can create new notes -- each one saved as a separate text file -- and add individual note items to each note/file.  New note items can be added at the bottom of the list, or inserted anywhere in an existing note list.  Each note item can be deleted individually (i.e. for a to-do list).  Individual note items can be moved up or down on the list.  They can also be edited in-line.  Note files can be renamed or deleted.
 
-Note saves all notes/tasks in a `notes` subfolder.  It uses a `config.txt` file to store configuration settings; background color, text font, text size, window position, window size, status bar display, and backup folder location. If either the `notes` subfolder or the `config.txt` file are not present, Note will create one on launch.
+Note saves all notes/tasks in a `notes` subfolder.  It uses a `config.txt` file to store configuration settings; background color, text font, text size, window position, window size, status bar display, backup folder location, and pinned note name. If either the `notes` subfolder or the `config.txt` file are not present, Note will create one on launch.
 
 ![screen shot](https://github.com/freginold/Note/blob/master/note_ss.png)
 
@@ -27,6 +27,8 @@ An undelete feature has been added, to restore the last deleted item.  The resto
 Note allows up to four user-defined local fonts to be specified.  Any font installed on the local computer can be used.  All four selections, once made, will be saved.  Spelling counts but capitalization does not.
 
 To move or resize Note, simply drag it around the screen or drag the corners and edges to position it how you want it.  Any changes will be saved and remembered the next time you launch Note.  You can change the background color, font, and text size on the Options screen (accessed by clicking the <b>Options</b> button in the upper right corner).
+
+If there are more notes than will fit across the list bar at the top, you can scroll side to side between notes.  You can "pin" one note, so that its button will always be displayed in the upper left corner and you won't have to scroll to find it.  To pin a note, select that note and click the <b>Pin</b> button to the left of the note's title.  Click <b>Unpin</b> to unpin the note, or you can replace it with another note by selecting a different note and clicking the <b>Pin</b> option for that note.
 
 As of v3.0.3, Note is versioned using [Semantic Versioning](http://semver.org/).
 
