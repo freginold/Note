@@ -14,13 +14,14 @@
 ' 13. Backup Location: current folder or user choice
 ' 14. Window width
 ' 15. Window height
+' 16. Pinned note: <note name>/%none%
 
 
 ' ----- set up variables, constants, & objects ------
 
 Option Explicit
 Dim fs, NewFileWithPath, rfile, afile, tfile, rofile, line, BackupLoc
-Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9, Opt10, Opt11, Opt12, Opt13, Opt14, Opt15
+Dim Opt1, Opt2, Opt3, Opt4, Opt5, Opt6, Opt7, Opt8, Opt9, Opt10, Opt11, Opt12, Opt13, Opt14, Opt15, Opt16
 Dim NoteWidth, NoteHeight, MidXPos, MidYPos
 Dim EditedString
 
@@ -41,6 +42,7 @@ Const Default11 = "0"
 Const Default12 = "show"
 Const Default13 = ".\"
 ' no Default14/Default15; use NoteWidth & NoteHeight
+Const Default16 = "%none%"
 Const OptionsFile = "config.txt"
 Const EOFConst = "<<<EOF>>>"
 Const BackupPrefix = "backup_notes_"
@@ -70,16 +72,19 @@ Opt12 = Default12
 Opt13 = Default13
 Opt14 = NoteWidth      ' <-- get the correct values later, after determine default h&w
 Opt15 = NoteHeight
+Opt16 = Default16
 
 
 ' ------ subroutines & functions -----------
 
 Sub GetFileList
   Dim file
-  NoteList.innerHtml = ""
+  NoteList.innerHTML = ""
   for each file in fs.GetFolder(notesDir).Files
     if fs.GetExtensionName(file) = "txt" then
-      NoteList.innerHtml = NoteList.innerHTML + "<button class='noteButton' id='" + fs.GetBaseName(file) + "' onclick='showNotes(this.id)'>" + fs.GetBaseName(file) + "</button>"
+	  if NOT fs.GetBaseName(file) = Opt16 then
+	      NoteList.innerHTML = NoteList.innerHTML + "<button class='noteButton' id='" + fs.GetBaseName(file) + "' onclick='showNotes(this.id)'>" + fs.GetBaseName(file) + "</button>"
+	  end if
     end if
   next
 End Sub
@@ -246,6 +251,10 @@ Sub GetOptions(dummyVar)
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(14) : Exit Sub
     Opt15 = int(rofile.Readline)
     if Opt15 = "" then Opt15 = NoteHeight
+    ' get option 16 - pinned note
+    if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(15) : Exit Sub
+    Opt16 = Lcase(rofile.Readline)
+    if Opt16 = "" then Opt16 = Default16
     ' close file
     rofile.close
   Else
@@ -269,12 +278,14 @@ Function GetOption(ThisOption)
   if ThisOption = "12" then GetOption = Opt12
   if ThisOption = "13" then GetOption = Opt13
   if ThisOption = "14" then GetOption = Opt14
-  if ThisOption = "15" then GetOption = Opt15    
+  if ThisOption = "15" then GetOption = Opt15
+  if ThisOption = "16" then GetOption = Opt16
 End Function
 
 Sub OptionsCorrupted(numCorr)
   ' if options file not present or not formatted correctly, pass in any missing values & recreate it
   ' numCorr = number of options loaded succesfully
+  if numCorr < 16 then Opt16 = Default16
   if numCorr < 15 then Opt15 = NoteHeight
   if numCorr < 14 then Opt14 = NoteWidth 
   if numCorr < 13 then Opt13 = Default13
@@ -313,7 +324,8 @@ Sub WriteOptions
   tfile.WriteLine(Opt12)
   tfile.WriteLine(Opt13)
   tfile.WriteLine(Opt14)
-  tfile.WriteLine(Opt15)    
+  tfile.WriteLine(Opt15)
+  tfile.WriteLine(Opt16)
   tfile.close
   if fs.FileExists(OptionsFile) then fs.DeleteFile(OptionsFile)
   fs.MoveFile TempFile, OptionsFile  
@@ -440,7 +452,10 @@ Sub DeleteAFile(thisFile)
 End Sub
 
 Sub RenameThisNote()
-  Dim NewName, OldName
+  Dim NewName, OldName, RenamedPinnedNote
+  RenamedPinnedNote = ""
+  document.selection.empty()
+  if editing = true then canceledEdit()
   NewName = InputBox("New name for this note:", "Note", currentNote, screen.availWidth/.45, screen.availWidth/.45)
   if NewName = "" then showStatus("No text entered") : exit sub
   NewName = checkForLeadingSpaces(NewName)
@@ -450,6 +465,7 @@ Sub RenameThisNote()
   if IsNumeric(NewName) then checkFor1stCharNum(NewName) : exit sub
   if checkFor1stCharNum(mid(NewName,1,1)) then exit sub
   if CreateNewFile(NewName) = false then exit sub
+  if Opt16 = currentNote then RenamedPinnedNote = Opt16 : unpin()		' if pinned note is being deleted, unpin it first
   OpenRFile(currentNote)
   On Error Resume Next
   set tfile = fs.OpenTextFile(NewFileWithPath, 2, True)
@@ -465,6 +481,7 @@ Sub RenameThisNote()
   DeleteThisNote
   OldName = currentNote
   currentNote = NewName
+  if RenamedPinnedNote <> "" then Opt16 = currentNote : pin(Opt16) : WriteOptions		' if pinned note is being deleted, unpin it first
   showNotes(currentNote)
   showStatus(AbbrevText(OldName) & " renamed to " & AbbrevText(NewName))
 End Sub

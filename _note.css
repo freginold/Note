@@ -25,6 +25,13 @@ button[disabled]:hover {
   text-align: left;
   width: 87%;
 }
+.upperLeftButton {
+  position: relative;
+  float: left;
+  margin-left: 5px;
+  text-align: left;
+  width: 74%;
+}
 .btnIcon {
   padding: 0px 4px 0px 4px;
   position: relative;
@@ -35,8 +42,8 @@ button[disabled]:hover {
   padding: 1px 0.7em 1px 0.7em;
 }
 .noteButton {
-  padding: 6px;
-  margin: 2px;
+  padding: 6px 3px;
+  margin: 1px;
   font-size: 1.2em;
 }
 .optionInput {
@@ -317,4 +324,22 @@ button[disabled]:hover {
   text-align: center;
   margin: 0px 3px 1px 1px;
   float: right;
+}
+#pinButton {
+  position: relative;
+  float: left;
+  width: 110px;
+  padding-bottom: 4px;
+}
+#pinBox {
+  display: none;
+  position: relative;
+  float: left;
+  border-right-style: groove; 
+  margin: 5px;
+  padding: 2px 4px 2px 2px;
+  height: 80px;
+  overflow: hidden;
+  white-space: pre;
+
 }

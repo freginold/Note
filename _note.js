@@ -16,6 +16,7 @@ var coords = document.getElementById('coords');
 var undeleteButton = document.getElementById('undeleteButton');
 var statusBar = document.getElementById('statusBar');
 var statusBarText = document.getElementById('statusBarText');
+var pinBox = document.getElementById('pinBox');
 var localFontDiv = [
   document.getElementById('localFontDiv0'),
   document.getElementById('localFontDiv1'),
@@ -70,6 +71,8 @@ var xElBeg = "<button class='x smallFont moveButtons' onclick='DelLine(this)' id
 var xElEnd = "'>X</button>";
 var renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'><span class='btnIcon'>&#9998;</span>Rename</button>";
 var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'><span class='btnIcon'>&#x2702;</span>Delete</button>";
+var pinButtonHTML = "<button class='upperLeftButton' onclick='pinBox.innerHTML = \"\"; pin();'><span class='btnIcon'>&#9734;</span> Pin</button>";
+var unpinButtonHTML = "<button class='upperLeftButton' onclick='unpin();'><span class='btnIcon'>&#9733;</span>Unpin</button>";
 var moveButtonsHTMLBeg = "<button class='moveButtons smallFont uBut' id='u";
 var moveButtonsHTMLMid = "' onclick='MoveUp(this)'>&uarr;</button> <button class='moveButtons smallFont dBut' id='d";
 var moveButtonsHTMLEnd = "' onclick='MoveDown(this)'>&darr;</button>";
@@ -96,7 +99,7 @@ var defTextSize = 1;
 var sectionsCollapsed = 0;
 var sectionsTotal = 0;
 var currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
-var lastLine, itemToEdit, itemTotal, statusTimer, prevNote, aboutCounter;
+var lastLine, itemToEdit, itemTotal, statusTimer, prevNote, aboutCounter, pinned, pinOrUnpinHTML;
 
 
 // ------- declare functions ----------
@@ -179,6 +182,7 @@ function applyOptions() {
   if (Opt9 == 'cc') { currentX = Opt10; currentY = Opt11; }
   if (Opt12 == 'hide') { statusBar.style.display = 'none'; }
   else { statusBar.style.display = 'inline-block'; }
+  pinned = getPinned();
 }
 
 function saveOptions() {
@@ -334,6 +338,7 @@ function clearAll() {
   firstCall = false;
   setTimeout(function(){ firstCall = true; } , 250);
   GetFileList()
+  if (Opt16 != Default16) { pinBox.style.display = "none"; pinBox.firstChild.className = "noteButton"; pin(Opt16); }
   newNoteDiv.style.display = 'none';
   optionsDiv.style.display = 'none';
   inputDiv.style.display = 'none';
@@ -364,7 +369,8 @@ function showNotes(cNote) {
   window[currentNote].className = 'noteButton activeNote';
   var currentNoteDisplay = currentNote;
   if (currentNote == "&") { currentNoteDisplay = "&#38;"; }    // to deal w/ & as only char in title
-  noteTitle.innerHTML = "<div class='delBox'>" + renButtonHTML + delButtonHTML + "</div>" + "<span ondblclick='document.selection.empty(); RenameThisNote()'>" + currentNoteDisplay + "</span>";
+  noteTitle.innerHTML = "<div id='pinButton'></div><div class='delBox'>" + renButtonHTML + delButtonHTML + "</div>" + "<span ondblclick='RenameThisNote()'>" + currentNoteDisplay + "</span>";
+  showPinButton();
   getLines(currentNote);
   if (currentNote == prevNote) {
     // if reloading the same note
@@ -509,7 +515,10 @@ function checkLocalFontInput(n) {
 function deleteNote() {
   // confirm, then call a sub in VBScript to delete currentNote
   var conf='';  
-  if (confirm("Are you sure you want to delete\n" + currentNote + "?", conf)) { DeleteThisNote() }
+  if (confirm("Are you sure you want to delete\n" + currentNote + "?", conf)) {
+		if (Opt16 == currentNote) { unpin(); }		// if pinned note is being deleted, unpin it first
+  		DeleteThisNote();
+	}
   else { return; }
 }
 
@@ -896,6 +905,65 @@ function checkCollapseExpandButtons() {
 	else { document.getElementById('expandAllButton').disabled = false; }	
 }
 
+function pin() {
+	// pin current active note (if another note pinned, unpin it first)
+	if (pinned) { pinBox.style.display = "none"; }
+	var activeNote;
+	var cond = 'active';
+	if (!!arguments[0]) { cond = 'init'; }
+	var buttons = document.getElementsByTagName('button');
+	for (var i = 0; i < buttons.length; i++) {
+		if (cond == 'init') {		// show pinned note on initialization; not the active note
+			if (buttons[i].innerText == Opt16) {
+				activeNote = buttons[i];
+				break;
+			}
+		}
+		else {
+			if (buttons[i].className == 'noteButton activeNote') {
+				activeNote = buttons[i];
+				break;
+			}
+		}
+	}
+	if (activeNote == undefined) { Opt16 = Default16; return; }	// if pinned note is no longer there
+	pinBox.style.display = 'inline-block';
+	pinBox.appendChild(activeNote);
+	pinned = true;
+	if (cond == 'active') {
+		Opt16 = activeNote.innerText;
+		WriteOptions();
+		showPinButton();
+	}
+	getFileList();
+}
+
+function unpin() {
+	// unpin current pinned note
+	pinBox.innerHTML = "";
+	pinBox.style.display = "none";
+	pinned = false;
+	Opt16 = Default16;
+	showPinButton();
+	WriteOptions();
+	GetFileList();
+	showNotes(currentNote);
+}
+
+function getPinned() {
+	// return the currently-pinned note, or false if none
+	if (Opt16 == "") { Opt16 = Default16; }
+	if (Opt16 == Default16 || pinBox.innerHTML == "") { return false; }
+	else {return Opt16; }	// loop through notes here; verify Opt16 is a valid note
+}
+
+function showPinButton() {
+	// show either pin or unpin button
+	pinned = getPinned();
+	(pinned == currentNote) ? (pinOrUnpinHTML = unpinButtonHTML) : (pinOrUnpinHTML = pinButtonHTML);
+	document.getElementById('pinButton').innerHTML = pinOrUnpinHTML;
+}
+
 
 // ----------- declare event handlers ----------
 
@@ -963,6 +1031,7 @@ noteBody.attachEvent('onscroll', function() { setTimeout(function(){lastScrollPo
 clearAll();
 getOffset();
 applyOptions();
+if (Opt16 != Default16) { pin(Opt16); }		// show pinned note if one has been set
 getDefaultSize();
 window.resizeTo(Opt14, Opt15);		// set initial size
 correctSize();		// to get correct window size
