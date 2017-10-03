@@ -70,9 +70,9 @@ var delItem = {
 var xElBeg = "<button class='x smallFont moveButtons' onclick='DelLine(this)' id='X";
 var xElEnd = "'>X</button>";
 var renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'><span class='btnIcon'>&#9998;</span>Rename</button>";
-var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'><span class='btnIcon'>&#x2702;</span>Delete</button>";
-var pinButtonHTML = "<button class='upperLeftButton' onclick='pinBox.innerHTML = \"\"; pin();'><span class='btnIcon'>&#9734;</span> Pin</button>";
-var unpinButtonHTML = "<button class='upperLeftButton' onclick='unpin();'><span class='btnIcon'>&#9733;</span>Unpin</button>";
+var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'><span class='btnIcon'>&#10799;</span> Delete</button>";
+var pinButtonHTML = "<button class='upperLeftButton' onclick='pinBox.innerHTML = \"\"; pin();'><span class='btnIcon'>&#8888;</span> Pin</button>";
+var unpinButtonHTML = "<button class='upperLeftButton' onclick='unpin();'><span class='btnIcon overlayIcon'>&#10672;</span><span class='btnIcon'>&#8888;</span>Unpin</button>";
 var moveButtonsHTMLBeg = "<button class='moveButtons smallFont uBut' id='u";
 var moveButtonsHTMLMid = "' onclick='MoveUp(this)'>&uarr;</button> <button class='moveButtons smallFont dBut' id='d";
 var moveButtonsHTMLEnd = "' onclick='MoveDown(this)'>&darr;</button>";
@@ -402,6 +402,7 @@ function getLines(thisNote) {
   var FileEnd = false;
   var localFontHTML = " style='font-family: &#34;" + noteFont + "&#34;, serif;'";
   var currentClasses = 'item ' + Opt4 + 'Font';
+  var lineVar, lineStartVar;
   OpenRFile(thisNote)
   while (!FileEnd) {
     currentLine = GetLine(dummyVar)
@@ -410,7 +411,15 @@ function getLines(thisNote) {
       lastLine = noteNum;
     }
     else if (currentLine != "") {
-      noteBody.innerHTML = noteBody.innerHTML + "<tr class='" + currentClasses + "' id='item" + noteNum + "'" + localFontHTML + "><td>" + xElBeg + noteNum + xElEnd + "&nbsp;&nbsp;" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartHTML + "</td><td id='text" + noteNum + "' ondblclick='goEdit(this);'>" + remHTML(currentLine) + "</td></tr>";
+	  if (currentLine == "---") {
+	  	lineVar = "'><hr style='display: inline; width: 85%; text-align: left;'>";
+		lineStartVar = "<span>&nbsp;&nbsp;</span>";
+	  }
+      else {
+	  	lineVar = "' ondblclick='goEdit(this);'>" + remHTML(currentLine);
+		lineStartVar = lineStartHTML;
+	  }
+	  noteBody.innerHTML = noteBody.innerHTML + "<tr class='" + currentClasses + "' id='item" + noteNum + "'" + localFontHTML + "><td>" + xElBeg + noteNum + xElEnd + "&nbsp;&nbsp;" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartVar + "</td><td id='text" + noteNum + lineVar + "</td></tr>";
 	  checkOverflow("item" + noteNum);
       noteNum++;
     }
@@ -654,6 +663,8 @@ function goEdit(itemObj) {
 }
 
 function canceledEdit() {
+  // edit canceled, either by clicking Cancel or pressing ESC key
+  document.getElementById('editBox').outerHTML = document.getElementById('editBox').outerHTML;		// remove event listener
   showNotes(currentNote);
   showStatus("Edit canceled");
 }
@@ -745,7 +756,7 @@ function getTime() {
 
 function checkOverflow(thisLine) {
   // check to see if just-added line causes horizontal scroll
-  if (noteBody.scrollWidth >= noteBody.offsetWidth) {
+  if (noteBody.scrollWidth >= (noteBody.offsetWidth * 0.98)) {
 	// loop through line, if not a group of 10 or more chars w/o a space or hyphen, don't add overflowClass
 	var strLength = 0;
 	var thisLineText = document.getElementById(thisLine).innerText;

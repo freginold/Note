@@ -580,6 +580,7 @@ Sub Undelete
   ' need to save item text, currentNote, line #
   ' on restore, add item to line where it was or at bottom, then show that note
   EditedString = delItem.text
+  if EditedString = "" then EditedString = "---"	' if undeleting an <hr> line
   currentNote = delItem.note
   WriteModifiedFile int(delItem.num), -1
   undeleteButton.disabled = true

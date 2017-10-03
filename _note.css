@@ -1,3 +1,4 @@
+
 body {
   font-size: 1em;
   font-family: serif;
@@ -179,6 +180,10 @@ button[disabled]:hover {
   width: 170px;
   padding-bottom: 4px;
 }
+.overlayIcon {
+  z-index: 25;
+  position: absolute;
+}
 #noteList {
   display: block;
   margin: 5px;
@@ -328,7 +333,7 @@ button[disabled]:hover {
 #pinButton {
   position: relative;
   float: left;
-  width: 110px;
+  width: 100px;
   padding-bottom: 4px;
 }
 #pinBox {
