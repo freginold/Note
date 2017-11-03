@@ -48,7 +48,9 @@ Const EOFConst = "<<<EOF>>>"
 Const BackupPrefix = "backup_notes_"
 Const BadCharString = "':*?;<>|{}[]%$/\""()"
 Const NotesFolderErrorMsg = "<br /><p style='vertical-align: middle; text-align: center;'>File System Access Error... can not create/access notes subfolder.</p>"
-Const OptionsFileErrorMsg = "<br /><p style='vertical-align: middle; text-align: center;'>File System Access Error... can not create/access configuration file.</p>"
+Const OptionsFileErrorMsg1 = "File System Access Error..."
+Const OptionsFileErrorMsg2 = "Can not create/access configuration file."
+Const OptionsFileErrorMsg3 = "Default configuration will be used."
 Const InvalidFNMsg1 = "Invalid File Name."
 Const InvalidFNMsg2 = "The following characters are prohibited:"
 
@@ -106,8 +108,7 @@ Function CheckForOptionsFile
   OptionsCorrupted(0)
   ' verify options file was created; if not, may have access/permission issues
   if fs.FileExists(OptionsFile) then exit function
-  document.getElementById("noteBody").innerHTML = OptionsFileErrorMsg
-  document.getElementById("optionsDiv").innerHTML = OptionsFileErrorMsg
+  msgbox OptionsFileErrorMsg1 + VbCrLf + OptionsFileErrorMsg2 + VbCrLf + VbCrLf + OptionsFileErrorMsg3, 48
   CheckForOptionsFile = false
   document.getElementById("optionsButton").disabled = true
 End Function
@@ -130,13 +131,20 @@ End Function
 
 Sub OpenRFile(FileName)
   FileName = NotesDir + FileName + ".txt"
-  if fs.FileExists(FileName) then set rfile=fs.opentextfile(FileName, 1)
-  if NOT fs.FileExists(FileName) then msgbox FileName & " not there", 48
+  if fs.FileExists(FileName) then
+  	set rfile=fs.opentextfile(FileName, 1)
+  else
+  	ShowFNFMsg(FileName)
+  end if
 End Sub
 
 Sub CloseRFile(FileName)
   FileName = NotesDir + FileName + ".txt"
   rfile.close
+End Sub
+
+Sub ShowFNFMsg(MissingFile)
+  msgbox MissingFile & " was not found.", 48
 End Sub
 
 Function GetLine(dummyVar)
@@ -435,9 +443,8 @@ Sub DeleteThisNote
   ' delete the current note, when Delete button is clicked and confirmed
   DeleteAFile(currentNote)
   if delItem.note = currentNote then undeleteButton.disabled = true
-  GetFileList()
-  clearAll()
   showStatus(AbbrevText(currentNote) & " has been deleted")
+  onStart
 End Sub
 
 Sub DeleteAFile(thisFile)
@@ -557,8 +564,8 @@ Sub SetPos
     Case "cc"
       window.moveTo currentX, currentY
     Case Else
-	  MidXPos = screen.availWidth/2 - Opt14/2
-	  MidYPos = screen.availHeight/2 - Opt15/2
+      MidXPos = screen.availWidth/2 - Opt14/2
+      MidYPos = screen.availHeight/2 - Opt15/2
       window.moveTo MidXPos, MidYPos
   End Select
 End Sub

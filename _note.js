@@ -107,7 +107,6 @@ var lastLine, itemToEdit, itemTotal, statusTimer, prevNote, aboutCounter, pinned
 function applyOptions() {
   // apply options on load & on change
   if (!!CheckForOptionsFile()) { GetOptions(dummyVar) }
-  else { return; }
   fgColor = 'black';
   switch (Opt2) {
     case "yellow":
@@ -253,7 +252,7 @@ function showOptions() {
   noteTitle.innerHTML = "<div class='optionsButtonBox'>" + expandAllButtonHTML + collapseAllButtonHTML + "</div>" + 'Options:';
   checkCollapseExpandButtons();
   optionsDiv.style.display = 'block';
-  for (i = 0; i<document.getElementsByTagName('td').length; i++) {
+  for (i = 0; i < document.getElementsByTagName('td').length; i++) {
     if (document.getElementsByTagName('td')[i].className == 'optionsColumn') {
       document.getElementsByTagName('td')[i].style.width = (document.body.clientWidth / 3);
     }
@@ -336,7 +335,7 @@ function showOptions() {
 function clearAll() {
   // clear all text/fields
   firstCall = false;
-  setTimeout(function(){ firstCall = true; } , 250);
+  setTimeout(function() { firstCall = true; } , 250);
   GetFileList()
   if (Opt16 != Default16) { pinBox.style.display = "none"; pinBox.firstChild.className = "noteButton"; pin(Opt16); }
   newNoteDiv.style.display = 'none';
@@ -348,13 +347,13 @@ function clearAll() {
   noteBody.innerText = '';
   noteTitle.innerText = '';
   newNoteInputBox.value = '';
-  inputBox.value='';
+  inputBox.value = '';
   items[0] = 'clear';
   for (i in items) {
     items[i] = '';
   }
   for (i = 0; i < localFontBox.length; i++) {
-    localFontBox[i].value=uFont[i];
+    localFontBox[i].value = uFont[i];
   }
   itemTotal = 0;
 }
@@ -366,6 +365,7 @@ function showNotes(cNote) {
   prevNote = currentNote;
   currentNote = cNote;
   editing = false;
+  if (!window[currentNote]) { ShowFNFMsg(currentNote); onStart(); return; }
   window[currentNote].className = 'noteButton activeNote';
   var currentNoteDisplay = currentNote;
   if (currentNote == "&") { currentNoteDisplay = "&#38;"; }    // to deal w/ & as only char in title
@@ -378,16 +378,17 @@ function showNotes(cNote) {
   }
   else { noteBody.scrollTop = 0; }
   var firstBut = document.getElementById('u0');
-  var lastBut = window['d' + (lastLine-1)];
+  var lastBut = window['d' + (lastLine - 1)];
+  // disable & darken 1st 'move up' button & last 'move down' button
   if (firstBut != null) {
     document.getElementById('u0').disabled = true;
     document.getElementById('u0').style.filter = "alpha(opacity = 25)";
     document.getElementById('u0').style.opacity = .25;
   }
   if (lastBut != null) {
-    window['d' + (lastLine-1)].disabled = true;
-    window['d' + (lastLine-1)].style.filter = "alpha(opacity = 25)";
-    window['d' + (lastLine-1)].style.opacity = .25;
+    window['d' + (lastLine - 1)].disabled = true;
+    window['d' + (lastLine - 1)].style.filter = "alpha(opacity = 25)";
+    window['d' + (lastLine - 1)].style.opacity = .25;
   }
   inputDiv.style.display = 'block';
   inputBox.focus();
@@ -449,7 +450,7 @@ function createNewNote(newNoteName) {
   newNoteName = checkForLeadingSpaces(newNoteName);
   newNoteName = checkForTrailingSpaces(newNoteName);
   if (newNoteName == '') { showNewNoteBox(); showStatus("No text entered"); return; }
-  if (checkFor1stCharNum(newNoteName.slice(0,1))) { return; }  // if 1st char is a number
+  if (checkFor1stCharNum(newNoteName.slice(0, 1))) { return; }  // if 1st char is a number
   var fileCreated = CreateNewFile(newNoteName)
   if (!!fileCreated) { showNotes(newNoteName); showStatus("New note, " + AbbrevText(newNoteName) + " created"); }
   else { newNoteInputBox.value = ''; }
@@ -461,10 +462,10 @@ function centerNewNoteForm() {
 }
 
 function getLocalFont(n) {
-  localFontShow[n].style.display='none';
-  localFontDiv[n].style.display='inline';
-  localFontCheckBox[n].onclick='setLocalFont(' + n + ');';
-  localFontBox[n].value=uFont[n];
+  localFontShow[n].style.display = 'none';
+  localFontDiv[n].style.display = 'inline';
+  localFontCheckBox[n].onclick = 'setLocalFont(' + n + ');';
+  localFontBox[n].value = uFont[n];
   localFontBox[n].select();
   selectedFlag[n] = true;
   checkLocalFontInput(n);
@@ -484,25 +485,25 @@ function setLocalFont(n) {
   localFontBox[n].value = checkForLeadingSpaces(localFontBox[n].value);
   localFontBox[n].value = checkForTrailingSpaces(localFontBox[n].value);
   if (localFontBox[n].value != '') {
-    uFont[n]=localFontBox[n].value;
-    localFontCheckBox[n].checked=true;
+    uFont[n] = localFontBox[n].value;
+    localFontCheckBox[n].checked = true;
     saveOptions();
   }
 }
 
 function checkForLeadingSpaces(str) {
-  while (str.slice(0,1)==" ") {
+  while (str.slice(0, 1) == " ") {
     // remove any spaces from before text
-    if (str.length > 1) { str=str.slice(1); }
+    if (str.length > 1) { str = str.slice(1); }
     else { str = ''; break; }
   }
   return str;
 }
 
 function checkForTrailingSpaces(str) {
-  while (str.slice(-1)==" ") {
+  while (str.slice(-1) == " ") {
     // remove any spaces from after text
-    if (str.length > 1) { str=str.slice(0,-1); }
+    if (str.length > 1) { str = str.slice(0, -1); }
     else { str = ''; break; }
   }
   return str;
@@ -523,7 +524,7 @@ function checkLocalFontInput(n) {
 
 function deleteNote() {
   // confirm, then call a sub in VBScript to delete currentNote
-  var conf='';  
+  var conf = '';  
   if (confirm("Are you sure you want to delete\n" + currentNote + "?", conf)) {
 		if (Opt16 == currentNote) { unpin(); }		// if pinned note is being deleted, unpin it first
   		DeleteThisNote();
@@ -673,7 +674,7 @@ function insertItem() {
   // let user pick where to insert new note
   var insertClass = 'insertBlack';
   if (fgColor != 'black') { insertClass = 'insertWhite'; }
-  for (i=0; i<itemTotal; i++) {
+  for (i = 0; i < itemTotal; i++) {
     // add "insert" class to item text <td> elements, and onclick handler for insertion
     document.getElementById('text' + i).className = insertClass;
     document.getElementById('text' + i).onclick = function() {
@@ -701,7 +702,6 @@ function clearStatus() {
 
 function remHTML(str) {
   // remove characters that could execute code
-  // repl < or > w/ &gt; or &lt;
   str = str.replace(/&/g, "&amp;");
   str = str.replace(/</g, "&lt;");
   str = str.replace(/>/g, "&gt;");
@@ -718,13 +718,13 @@ function focusInput() {
 
 function highlight(tempNum) {
   // highlight recently-restored note item for a couple seconds
-  var tempHL = document.getElementById(('text'+tempNum));
+  var tempHL = document.getElementById(('text' + tempNum));
   tempHL.style.backgroundColor = 'yellow';
   if (fgColor != 'black') {
     var tempColor = fgColor;
     tempHL.style.color = 'black';
   }
-  setTimeout(function(){
+  setTimeout(function() {
     tempHL.style.backgroundColor = bgColor;
     tempHL.style.color = fgColor;
   }, 2000);
@@ -743,7 +743,7 @@ function dispBackupDiv() {
 
 function abbrevBackup(rawText) {
   // abbreviate backup file path for display
-  return rawText.slice(0, 23) + " ... " + rawText.slice(rawText.length-24);
+  return rawText.slice(0, 23) + " ... " + rawText.slice(rawText.length - 24);
 }
 
 function getTime() {
@@ -836,7 +836,7 @@ function correctSize() {
 function checkFor1stCharNum(thisChar) {
   // to see if 1st char of file name is a number
   if (!isNaN(thisChar)) {
-  	alert('The note title can not start with a number.  If you want to use a number, you can prepend it with "#".');
+  	alert('The note title can not start with a number.\nTo use a number, prepend it with "#".');
 	return true;
   }
   else { return false; }
@@ -921,11 +921,12 @@ function pin() {
 	if (pinned) { pinBox.style.display = "none"; }
 	var activeNote;
 	var cond = 'active';
+	var Opt16lc = Opt16.toLowerCase();
 	if (!!arguments[0]) { cond = 'init'; }
 	var buttons = document.getElementsByTagName('button');
 	for (var i = 0; i < buttons.length; i++) {
 		if (cond == 'init') {		// show pinned note on initialization; not the active note
-			if (buttons[i].innerText == Opt16) {
+			if (buttons[i].innerText.toLowerCase() == Opt16lc) {
 				activeNote = buttons[i];
 				break;
 			}
@@ -973,6 +974,13 @@ function showPinButton() {
 	pinned = getPinned();
 	(pinned == currentNote) ? (pinOrUnpinHTML = unpinButtonHTML) : (pinOrUnpinHTML = pinButtonHTML);
 	document.getElementById('pinButton').innerHTML = pinOrUnpinHTML;
+}
+
+function onStart() {
+	// load whatever will be displayed on launch: pinned note, splash screen, etc.
+	// (coming soon)
+	clearAll();
+
 }
 
 
@@ -1052,3 +1060,4 @@ getTime();
 setTimeout(function(){
 	window.attachEvent('onresize', checkSize);		// to get new size when edges are dragged
 }, 1000);
+onStart();

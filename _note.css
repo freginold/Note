@@ -225,6 +225,7 @@ button[disabled]:hover {
   font-family: serif;
   font-size: 1em;
   overflow: auto;
+  display: none;
 }
 #aboutDiv {
   padding-left: 10px;
