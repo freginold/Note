@@ -8,7 +8,7 @@ Note saves all notes/tasks in a `notes` subfolder.  It uses a `config.txt` file 
 ![screen shot](https://github.com/freginold/Note/blob/master/note_ss.png)
 
 ### Installation:
-On a Windows computer with Internet Explorer (or Edge) installed:
+On a Windows computer with Internet Explorer or Edge installed:
   - Download the [latest release of Note](https://github.com/freginold/Note/releases/latest), as either a tarball or zip file
   - Unzip the files into the folder of your choice
   - Double-click the `note.hta` file to run the program
