@@ -30,6 +30,20 @@ To move or resize Note, simply drag it around the screen or drag the corners and
 
 If there are more notes than will fit across the list bar at the top, you can scroll side to side between notes.  You can "pin" one note, so that its button will always be displayed in the upper left corner and you won't have to scroll to find it.  To pin a note, select that note and click the <b>Pin</b> button to the left of the note's title.  Click <b>Unpin</b> to unpin the note, or you can replace it with another note by selecting a different note and clicking the <b>Pin</b> option for that note.
 
+Note supports (very) basic markup formatting:
+- \`test\` will be displayed as `test` (minus the change in background color)
+- \*test\* will be displayed as *test*
+- \*\*test\*\* will be displayed as **test**
+- \*\*\*test\*\*\* will be displayed as ***test***
+
+To use a `` ` `` or `*` without causing a change in formatting, escape the character by preceeding it with a backslash (` \ `) like so:
+
+>This is \\\*a\\\* test
+
+which will render as:
+
+>This is \*a\* test
+
 Note now allows the use of horizontal divider lines between items.  To insert or append a divider line, type `---` as the text for that line.
 
 As of v3.0.3, Note is versioned using [Semantic Versioning](http://semver.org/).
