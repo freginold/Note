@@ -85,7 +85,6 @@ var fgColor = 'black';
 var firstCoordCheck = true;
 var selectedFlag = [false, false, false, false];
 var uneditedString = '';
-var currentVer = 'Note v' + Note.version;
 var license = 'Public Domain';
 var timer = 0;
 var lastScrollPos = 0;
@@ -98,8 +97,9 @@ var flip = false;
 var defTextSize = 1;
 var sectionsCollapsed = 0;
 var sectionsTotal = 0;
-var currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY;
-var lastLine, itemToEdit, itemTotal, statusTimer, prevNote, aboutCounter, pinned, pinOrUnpinHTML;
+var origText = [];			// array to store unformatted text strings for user editing
+var currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY,
+	lastLine, itemToEdit, itemTotal, statusTimer, prevNote, aboutCounter, pinned, pinOrUnpinHTML;
 
 
 // ------- declare functions ----------
@@ -207,9 +207,9 @@ function saveOptions() {
   if (localFontCheckBox[3].checked) { Opt3 = 'uf3'; }
   if (document.getElementById('sansRadio').checked) { Opt3 = 'p2'; }
   // option 4 - font size
-  if (document.getElementsByName('textSize')[0].checked) { Opt4='small'; }
-  else if (document.getElementsByName('textSize')[1].checked) { Opt4='medium'; }
-  else if (document.getElementsByName('textSize')[2].checked) { Opt4='large'; }
+  if (document.getElementsByName('textSize')[0].checked) { Opt4 = 'small'; }
+  else if (document.getElementsByName('textSize')[1].checked) { Opt4 = 'medium'; }
+  else if (document.getElementsByName('textSize')[2].checked) { Opt4 = 'large'; }
   // option 5 - user font 0
   Opt5 = uFont[0];
   // option 6 - user font 1
@@ -259,64 +259,64 @@ function showOptions() {
   }
   switch (Opt2) {
     case "yellow":
-      document.getElementsByName('bg')[1].checked=true;
+      document.getElementsByName('bg')[1].checked = true;
       break;
     case "white":
-      document.getElementsByName('bg')[2].checked=true;
+      document.getElementsByName('bg')[2].checked = true;
       break;
     case "pink":
-      document.getElementsByName('bg')[3].checked=true;
+      document.getElementsByName('bg')[3].checked = true;
       break;
     case "green":
-      document.getElementsByName('bg')[4].checked=true;
+      document.getElementsByName('bg')[4].checked = true;
       break;
     case "blue":
-      document.getElementsByName('bg')[5].checked=true;
+      document.getElementsByName('bg')[5].checked = true;
       break;
     case "orange":
-      document.getElementsByName('bg')[6].checked=true;
+      document.getElementsByName('bg')[6].checked = true;
       break;	  
     case "charcoalgray":
-      document.getElementsByName('bg')[7].checked=true;
+      document.getElementsByName('bg')[7].checked = true;
       break;
     case "forestgreen":
-      document.getElementsByName('bg')[8].checked=true;
+      document.getElementsByName('bg')[8].checked = true;
       break;
     case "navyblue":
-      document.getElementsByName('bg')[9].checked=true;
+      document.getElementsByName('bg')[9].checked = true;
       break;
     case "brown":
-      document.getElementsByName('bg')[10].checked=true;
+      document.getElementsByName('bg')[10].checked = true;
       break;
     case "black":
-      document.getElementsByName('bg')[11].checked=true;
+      document.getElementsByName('bg')[11].checked = true;
       break;
 	default:
-	  document.getElementsByName('bg')[0].checked=true;
+	  document.getElementsByName('bg')[0].checked = true;
   }
   var fonts = document.getElementsByName('font');
   // populate user font boxes, if they've been saved
   var foundFont = false;
   for (i = 0; i < uFont.length; i++) {
-    if (fonts[i].value.toLowerCase() == Opt3) { fonts[i].checked=true; foundFont = true; }
-    if (uFont[i]=='') {
-      localFontShow[i].style.display='none';
-      localFontDiv[i].style.display='inline';
+    if (fonts[i].value.toLowerCase() == Opt3) { fonts[i].checked = true; foundFont = true; }
+    if (uFont[i] == '') {
+      localFontShow[i].style.display = 'none';
+      localFontDiv[i].style.display = 'inline';
     }
     else {
-      localFontDiv[i].style.display='none';
-      localFontShow[i].style.display='inline';
-      if (uFont[i].length>=14) { localFontShowP[i].innerText=uFont[i].slice(0,11)+"..."; }
-      else { localFontShowP[i].innerText=uFont[i]; }
-      localFontShowP[i].style.fontFamily="'"+uFont[i]+"', serif";
+      localFontDiv[i].style.display = 'none';
+      localFontShow[i].style.display = 'inline';
+      if (uFont[i].length >= 14) { localFontShowP[i].innerText = uFont[i].slice(0, 11) + "..."; }
+      else { localFontShowP[i].innerText = uFont[i]; }
+      localFontShowP[i].style.fontFamily = "'" + uFont[i] + "', serif";
     }
   }
-  if (Opt3 == 'p2') { fonts[4].checked=true; noteFont = 'sans-serif'; foundFont = true; }
-  if (!foundFont) { fonts[5].checked=true; noteFont = 'serif'; }
+  if (Opt3 == 'p2') { fonts[4].checked = true; noteFont = 'sans-serif'; foundFont = true; }
+  if (!foundFont) { fonts[5].checked = true; noteFont = 'serif'; }
   var sizes = document.getElementsByName('textSize');
   // ---- use this method for other options too ----
   for (i = 0; i < sizes.length; i++) {
-    if (sizes[i].value == Opt4) { sizes[i].checked=true; }
+    if (sizes[i].value == Opt4) { sizes[i].checked = true; }
   }
   if (Opt9 == 'cc') { document.getElementsByName('screenPos')[1].checked = true; }
   else {
@@ -356,6 +356,7 @@ function clearAll() {
     localFontBox[i].value = uFont[i];
   }
   itemTotal = 0;
+  origText = [];
 }
 
 function showNotes(cNote) {
@@ -403,7 +404,7 @@ function getLines(thisNote) {
   var FileEnd = false;
   var localFontHTML = " style='font-family: &#34;" + noteFont + "&#34;, serif;'";
   var currentClasses = 'item ' + Opt4 + 'Font';
-  var lineVar, lineStartVar;
+  var lineVar, lineStartVar, processedLine;
   OpenRFile(thisNote)
   while (!FileEnd) {
     currentLine = GetLine(dummyVar)
@@ -413,11 +414,14 @@ function getLines(thisNote) {
     }
     else if (currentLine != "") {
 	  if (currentLine == "---") {
-	  	lineVar = "'><hr style='display: inline; width: 85%; text-align: left;'>";
+	  	lineVar = "'><hr style='display: inline; width: 85%; text-align: left;'>";		// divider
 		lineStartVar = "<span>&nbsp;&nbsp;</span>";
 	  }
       else {
-	  	lineVar = "' ondblclick='goEdit(this);'>" + remHTML(currentLine);
+	  	processedLine = remHTML(currentLine);
+		// preserve original formatting so it's not lost on edit
+		origText[noteNum] = currentLine;
+	  	lineVar = "' ondblclick='goEdit(" + noteNum + ");'>" + applyFormatting(processedLine);
 		lineStartVar = lineStartHTML;
 	  }
 	  noteBody.innerHTML = noteBody.innerHTML + "<tr class='" + currentClasses + "' id='item" + noteNum + "'" + localFontHTML + "><td>" + xElBeg + noteNum + xElEnd + "&nbsp;&nbsp;" + moveButtonsHTMLBeg + noteNum + moveButtonsHTMLMid + noteNum + moveButtonsHTMLEnd + lineStartVar + "</td><td id='text" + noteNum + lineVar + "</td></tr>";
@@ -535,35 +539,11 @@ function deleteNote() {
 function displayAbout() {
   // display license info/help file
   clearAll();
-  noteTitle.innerText = "About Note";
+//  noteTitle.innerText = "About Note";
   aboutDiv.style.display = 'block';
-  document.getElementById('versionInfo').innerHTML = "<span id='line1'>" + currentVer + "</span><br><span id='line2'>" + license + "</span>";
-  if (!aboutInterval) {
-      aboutCounter = 0;
-	  setTimeout(function() {
-	    aboutInterval = setInterval(aboutChangeSize, 4);
-	  }, 160);
-  }
-}
-
-function aboutChangeSize() {
-  // change text size in About div
-  if (flip) { aboutCounter = aboutCounter - 0.01; }
-  else { aboutCounter = aboutCounter + 0.01; }    
-  document.getElementById('line1').style.fontSize = (defTextSize + aboutCounter) + "em";
-  document.getElementById('line2').style.fontSize = (defTextSize - aboutCounter) + "em";
-  if (aboutCounter > 0.57) {
-    flip = true;
-  }
-  if (aboutCounter < -0.57) {
-    flip = false;
-  }
-  if (aboutDiv.style.display == "none") {
-    clearInterval(aboutInterval);
-	aboutInterval = false;
-	flip = false;
-	aboutDiv.style.fontSize = defTextSize + "em";
-  }
+  document.getElementById('about_name').innerText = Note.ApplicationName;
+  document.getElementById('about_version').innerText = 'v' + Note.version;
+  document.getElementById('about_license').innerText = license;
 }
 
 function checkCoords() {
@@ -646,10 +626,10 @@ function getOffset() {
   offsetY = window.screenTop - nowY;
 }
 
-function goEdit(itemObj) {
+function goEdit(num) {
   // add an input box to edit current note item
-  itemToEdit = itemObj.id;
-  uneditedString = itemObj.innerText;
+  itemToEdit = "text" + num;
+  uneditedString = origText[num];
   if (!!editing) { showNotes(currentNote); } 
   editing = true;
   var editBoxHTML = "<form name='editForm' onsubmit='event.returnValue=false;SubmitEdit(editBox.value);' action='#'><input type='text' size=50 id='editBox' /><input type='submit' style='color: green; margin-left: 2px;' value='&#10004; Change' /><input type='button' style='color: red; margin-left: 2px;' value='&#10008; Cancel' onclick='canceledEdit();' /></form>";
@@ -707,7 +687,7 @@ function remHTML(str) {
   str = str.replace(/>/g, "&gt;");
   str = str.replace(/"/g, "&quot;");
   str = str.replace(/'/g, "&#x27;");
-  str = str.replace(/\//g, "&#x2F;");        
+  str = str.replace(/\//g, "&#x2F;");
   return str;
 }
 
@@ -948,6 +928,7 @@ function pin() {
 		showPinButton();
 	}
 	getFileList();
+	inputBox.focus();
 }
 
 function unpin() {
@@ -978,9 +959,56 @@ function showPinButton() {
 
 function onStart() {
 	// load whatever will be displayed on launch: pinned note, splash screen, etc.
-	// (coming soon)
-	clearAll();
+	// displayAbout calls clearAll internally; if showing something else, may need to call it here first
+	displayAbout();
+	
+}
 
+function applyFormatting(text) {
+	// apply any special formatting styles
+	return format(
+		format(
+			format(
+				format(
+					text, "\\*\\*\\*", 3, "<b><i>", "</i></b>"		// bold italic
+				),
+				"\\*\\*", 2, "<b>", "</b>"							// bold
+			),
+			"\\*", 1, "<i>", "</i>"									// italic
+		),
+		"\\`", 1, "<code>", "</code>");								// code
+}
+
+function format(text, char, len, tag1, tag2) {
+	// apply any format changes if designating characters are present
+	var patt = new RegExp(char, "g"),
+		locs = [],	// array to store index #s for found characters
+		newStr = text,
+		i = 0,
+		match, k, cnd1, cnd2, cnd3;
+	while (match = patt.exec(text)) {
+		// for each match, check for duplicate chars (``, ****, etc.) or escaped chars (\`, etc.)
+		if (match.index == 0) { cnd1 = true; }  // skip checking prev char if at beginning of string
+		else { cnd1 = (text.substr(match.index - 1, 1) != char.slice(-1)); }		// check for no duplicate char preceding
+		cnd2 = (text.substr(match.index + len, 1) != char.slice(-1)); 				// check for no duplicate char succeeding
+		cnd3 = (text.substr(match.index - 1, 1) != "\\");						// check for not an escaped char
+		if (cnd1 && cnd2 && cnd3) {
+			locs[i++] = match.index;
+		}
+	}	
+	if (locs.length % 2 > 0) { locs.pop(); }  // if an odd #, remove the last occurrence
+	if (locs.length > 1) {	// if still at least a pair of matching characters
+		newStr = text.slice(0, locs[0]);
+		for (k = 0; k < locs.length - 1; k += 2) {
+			// replace formatting chars w/ html tags
+			newStr += tag1 + text.slice(locs[k] + len, locs[k + 1]) + tag2;		// add text w/ html formatting added in
+			if (k < (locs.length - 2)) {
+				newStr += text.slice(locs[k + 1] + len, locs[k + 2]);			// add string of non-formatted text (if any)
+			}
+		}
+		newStr += text.slice(locs[k - 1] + len);
+	}
+	return newStr;
 }
 
 

@@ -228,9 +228,10 @@ button[disabled]:hover {
   display: none;
 }
 #aboutDiv {
-  padding-left: 10px;
-  margin-left: 25px;
-  vert-align: middle;
+  font-size: 1.2em;
+  text-align: center;
+  padding: 25px;
+  overflow: auto;
 }
 #backupButton {
   margin-top: 1px;
@@ -348,4 +349,9 @@ button[disabled]:hover {
   overflow: hidden;
   white-space: pre;
 
+}
+#about_name {
+  font-size: 3.2em;
+  font-family: Tahoma, Helvetica, sans-serif;
+  font-weight: 700;
 }
