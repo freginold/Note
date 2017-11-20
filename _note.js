@@ -74,8 +74,8 @@ var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'><s
 var pinButtonHTML = "<button class='upperLeftButton' onclick='pinBox.innerHTML = \"\"; pin();'><span class='btnIcon'>&#8888;</span> Pin</button>";
 var unpinButtonHTML = "<button class='upperLeftButton' onclick='unpin();'><span class='btnIcon overlayIcon'>&#10672;</span><span class='btnIcon'>&#8888;</span>Unpin</button>";
 var moveButtonsHTMLBeg = "<button class='moveButtons smallFont uBut' id='u";
-var moveButtonsHTMLMid = "' onclick='MoveUp(this)'>&uarr;</button> <button class='moveButtons smallFont dBut' id='d";
-var moveButtonsHTMLEnd = "' onclick='MoveDown(this)'>&darr;</button>";
+var moveButtonsHTMLMid = "' onclick='MoveItem(this, true)'>&uarr;</button> <button class='moveButtons smallFont dBut' id='d";
+var moveButtonsHTMLEnd = "' onclick='MoveItem(this, false)'>&darr;</button>";
 var lineStartHTML = "<span class='serif'>&sdot; </span>";
 var statusBarHTML = "&nbsp;";
 var expandAllButtonHTML = "<button class='upperRightButton' id='expandAllButton' onclick='expandAll()'>&#9196; Expand All</button>";
@@ -249,7 +249,7 @@ function saveSize() {
 
 function showOptions() {
   clearAll();
-  noteTitle.innerHTML = "<div class='optionsButtonBox'>" + expandAllButtonHTML + collapseAllButtonHTML + "</div>" + 'Options:';
+  noteTitle.innerHTML = "<div class='optionsButtonBox'>" + expandAllButtonHTML + collapseAllButtonHTML + "</div>" + "Options:";
   checkCollapseExpandButtons();
   optionsDiv.style.display = 'block';
   for (i = 0; i < document.getElementsByTagName('td').length; i++) {
@@ -366,7 +366,7 @@ function showNotes(cNote) {
   prevNote = currentNote;
   currentNote = cNote;
   editing = false;
-  if (!window[currentNote]) { ShowFNFMsg(currentNote); onStart(); return; }
+  if (!window[currentNote]) { ShowFNFMsg(currentNote); onStart(); return; }		// if current note clicked but file not found
   window[currentNote].className = 'noteButton activeNote';
   var currentNoteDisplay = currentNote;
   if (currentNote == "&") { currentNoteDisplay = "&#38;"; }    // to deal w/ & as only char in title
@@ -530,7 +530,7 @@ function deleteNote() {
   // confirm, then call a sub in VBScript to delete currentNote
   var conf = '';  
   if (confirm("Are you sure you want to delete\n" + currentNote + "?", conf)) {
-		if (Opt16 == currentNote) { unpin(); }		// if pinned note is being deleted, unpin it first
+		if (Opt16 == currentNote.toLowerCase()) { unpin(); }		// if pinned note is being deleted, unpin it first
   		DeleteThisNote();
 	}
   else { return; }
@@ -923,7 +923,7 @@ function pin() {
 	pinBox.appendChild(activeNote);
 	pinned = true;
 	if (cond == 'active') {
-		Opt16 = activeNote.innerText;
+		Opt16 = activeNote.innerText.toLowerCase();
 		WriteOptions();
 		showPinButton();
 	}
@@ -947,13 +947,13 @@ function getPinned() {
 	// return the currently-pinned note, or false if none
 	if (Opt16 == "") { Opt16 = Default16; }
 	if (Opt16 == Default16 || pinBox.innerHTML == "") { return false; }
-	else {return Opt16; }	// loop through notes here; verify Opt16 is a valid note
+	else {return Opt16.toLowerCase(); }	// loop through notes here; verify Opt16 is a valid note
 }
 
 function showPinButton() {
 	// show either pin or unpin button
 	pinned = getPinned();
-	(pinned == currentNote) ? (pinOrUnpinHTML = unpinButtonHTML) : (pinOrUnpinHTML = pinButtonHTML);
+	(pinned == currentNote.toLowerCase()) ? (pinOrUnpinHTML = unpinButtonHTML) : (pinOrUnpinHTML = pinButtonHTML);
 	document.getElementById('pinButton').innerHTML = pinOrUnpinHTML;
 }
 
@@ -970,11 +970,14 @@ function applyFormatting(text) {
 		format(
 			format(
 				format(
-					text, "\\*\\*\\*", 3, "<b><i>", "</i></b>"		// bold italic
+					format(
+						text, "\\*\\*\\*", 3, "<b><i>", "</i></b>"		// bold italic
+					),
+					"\\*\\*", 2, "<b>", "</b>"							// bold
 				),
-				"\\*\\*", 2, "<b>", "</b>"							// bold
+				"\\*", 1, "<i>", "</i>"									// italic
 			),
-			"\\*", 1, "<i>", "</i>"									// italic
+			"\\_", 1, "<u>", "</u>"									// underlined
 		),
 		"\\`", 1, "<code>", "</code>");								// code
 }

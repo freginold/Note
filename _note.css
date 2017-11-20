@@ -209,6 +209,7 @@ button[disabled]:hover {
   position: absolute;
   text-align: center;
   top: 30%;
+  display: none;
 }
 #newNoteForm {
   position: relative;
@@ -351,7 +352,7 @@ button[disabled]:hover {
 
 }
 #about_name {
-  font-size: 3.2em;
+  font-size: 2em;
   font-family: Tahoma, Helvetica, sans-serif;
   font-weight: 700;
 }

@@ -26,6 +26,7 @@ Dim NoteWidth, NoteHeight, MidXPos, MidYPos
 Dim EditedString
 
 Set fs = CreateObject("Scripting.FileSystemObject")
+
 const NotesDir = ".\notes\"
 Const NotesDirWOBSlash = "\notes"
 Const Default1 = "hide"
@@ -83,8 +84,8 @@ Sub GetFileList
   Dim file
   NoteList.innerHTML = ""
   for each file in fs.GetFolder(notesDir).Files
-    if fs.GetExtensionName(file) = "txt" then
-	  if NOT fs.GetBaseName(file) = Opt16 then
+    if lcase(fs.GetExtensionName(file)) = "txt" then
+	  if NOT lcase(fs.GetBaseName(file)) = lcase(Opt16) then
 	      NoteList.innerHTML = NoteList.innerHTML + "<button class='noteButton' id='" + fs.GetBaseName(file) + "' onclick='showNotes(this.id)'>" + fs.GetBaseName(file) + "</button>"
 	  end if
     end if
@@ -169,7 +170,7 @@ Sub AddNote(TempText)
   if TempText = "" then showStatus("Nothing to add") : focusInput : exit sub
   Dim Filename
   FileName = NotesDir + currentNote + ".txt"
-  Set afile=fs.openTextFile(FileName, 8, true)
+  Set afile = fs.openTextFile(FileName, 8, true)
   afile.WriteLine(GetTimeStampedLine(TempText))
   afile.close
   showNotes(currentNote)
@@ -339,24 +340,20 @@ Sub WriteOptions
   fs.MoveFile TempFile, OptionsFile  
 End Sub
 
-Sub MoveUp(ThisButton)
-  ' move an item up one line, save, then re-display
+Sub MoveItem(ThisButton, SwapDir)
+  ' move an item up or down one line, save, then re-display
+  ' up = true; down = false
   Dim NumToSwap, NumToBeSwapped
   ThisButton.disabled = true
   NumToSwap = GetLineNum(ThisButton)
-  NumToBeSwapped = NumToSwap - 1
-  WriteModifiedFile NumToBeSwapped, NumToSwap
+  if SwapDir = true then				' if moving up
+  	NumToBeSwapped = NumToSwap - 1
+	WriteModifiedFile NumToBeSwapped, NumToSwap
+  else									' if moving down
+	NumToBeSwapped = NumToSwap + 1
+	WriteModifiedFile NumToSwap, NumToBeSwapped
+  end if
   showStatus("Items #" & cstr(int(NumToBeSwapped)+1) & " and #" & cstr(int(NumToSwap)+1) & " swapped")
-End Sub
-
-Sub MoveDown(ThisButton)
-  ' move an item down one line, save, then re-display
-  Dim NumToSwap, NumToBeSwapped
-  ThisButton.disabled = true
-  NumToSwap = GetLineNum(ThisButton)
-  NumToBeSwapped = NumToSwap + 1
-  WriteModifiedFile NumToSwap, NumToBeSwapped
-  showStatus("Items #" & cstr(int(NumToSwap)+1) & " and #" & cstr(int(NumToBeSwapped)+1) & " swapped")
 End Sub
 
 Sub WriteModifiedFile(Swap1, Swap2)
@@ -472,7 +469,7 @@ Sub RenameThisNote()
   if IsNumeric(NewName) then checkFor1stCharNum(NewName) : exit sub
   if checkFor1stCharNum(mid(NewName,1,1)) then exit sub
   if CreateNewFile(NewName) = false then exit sub
-  if Opt16 = currentNote then RenamedPinnedNote = Opt16 : unpin()		' if pinned note is being deleted, unpin it first
+  if Lcase(Opt16) = Lcase(currentNote) then RenamedPinnedNote = Opt16 : unpin()		' if pinned note is being deleted, unpin it first
   OpenRFile(currentNote)
   On Error Resume Next
   set tfile = fs.OpenTextFile(NewFileWithPath, 2, True)
@@ -555,7 +552,7 @@ End Function
 
 Function GetLineNum(TempStr)
   ' get line # from an element w/ 1 leading letter in id
-  GetLineNum = int(mid(TempStr.id,2))
+  GetLineNum = int(mid(TempStr.id, 2))
 End Function
 
 Sub SetPos
@@ -574,12 +571,12 @@ Sub SubmitEdit(NewStr)
   ' save edited note & redisplay
   if NewStr = uneditedString then showNotes(currentNote) : showStatus("No changes made") : exit sub
   Dim Temp1, Temp2
-  Temp1 = Mid(itemToEdit,5)
+  Temp1 = Mid(itemToEdit, 5)
   Temp2 = Temp1
   EditedString = NewStr
   WriteModifiedFile Temp1, Temp2
   showNotes(currentNote)
-  showStatus("Item #" & (int(Temp1)+1) & " edited")
+  showStatus("Item #" & (int(Temp1) + 1) & " edited")
 End Sub
 
 Sub Undelete
@@ -594,7 +591,7 @@ Sub Undelete
   showNotes(currentNote)
   noteBody.scrollTop = delItem.scroll
   highlight(delItem.num)
-  showStatus("Restored item #" & (int(delItem.num)+1) & ", " & AbbrevText(delItem.text) & ", to " &_
+  showStatus("Restored item #" & (int(delItem.num) + 1) & ", " & AbbrevText(delItem.text) & ", to " &_
     AbbrevText(delItem.note))
   delItem.text = ""
   delItem.num = ""
