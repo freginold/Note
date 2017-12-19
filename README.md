@@ -1,8 +1,8 @@
 # Note
 
-![GitHub release](https://img.shields.io/github/release/freginold/Note.svg)
+[![HitCount](http://hits.dwyl.com/freginold/Note.svg)](http://hits.dwyl.com/freginold/Note)
 
-[![GitHub release](https://img.shields.io/github/release/freginold/Note.svg)]
+![GitHub release](https://img.shields.io/github/release/freginold/Note.svg)
 
 [![GitHub Release Date](https://img.shields.io/github/release-date/freginold/Note.svg)](https://img.shields.io/github/release-date/freginold/Note.svg)
 
