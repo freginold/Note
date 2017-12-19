@@ -1,6 +1,6 @@
 # Note
 
-[![GitHub release](https://img.shields.io/github/release/freginold/Note.svg)](https://github.com/freginold/Note/) [![GitHub Release Date](https://img.shields.io/github/release-date/freginold/Note.svg)](https://github.com/freginold/Note/) [![GitHub top language](https://img.shields.io/github/languages/top/freginold/Note.svg)](https://github.com/freginold/Note/)
+[![GitHub release](https://img.shields.io/github/release/freginold/Note.svg)](https://img.shields.io/github/release/freginold/Note.svg) [![GitHub Release Date](https://img.shields.io/github/release-date/freginold/Note.svg)](https://img.shields.io/github/release-date/freginold/Note.svg) [![GitHub top language](https://img.shields.io/github/languages/top/freginold/Note.svg)](https://github.com/freginold/Note/)
 
 Note is a very basic Windows GUI note/task app.  It is free, open source, and in the public domain.  It uses VBScript and JavaScript/JScript with an .HTA interface.
 
