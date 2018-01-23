@@ -81,7 +81,8 @@ var statusBarHTML = "&nbsp;";
 var expandAllButtonHTML = "<button class='upperRightButton' id='expandAllButton' onclick='expandAll()'>&#9196; Expand All</button>";
 var collapseAllButtonHTML = "<button class='upperRightButton' id='collapseAllButton' onclick='collapseAll();'>&#9195; Collapse All</button>";
 var noteFont = 'serif';
-var fgColor = 'black';
+var fgColor = 'black';		// default foreground color
+var bgColor = "lightgray";	// default background color
 var firstCoordCheck = true;
 var selectedFlag = [false, false, false, false];
 var uneditedString = '';
@@ -98,62 +99,47 @@ var defTextSize = 1;
 var sectionsCollapsed = 0;
 var sectionsTotal = 0;
 var origText = [];			// array to store unformatted text strings for user editing
-var currentNote, dummyVar, bgColor, i, currentX, currentY, oldX, oldY, offsetX, offsetY,
-	lastLine, itemToEdit, itemTotal, statusTimer, prevNote, aboutCounter, pinned, pinOrUnpinHTML;
+var fColor = [
+	"black",	// black text for lightgray; default
+	"black",	// black text for yellow
+	"black",	// black text for white
+	"black",	// black text for pink
+	"black",	// black text for green
+	"black",	// black text for blue
+	"black",	// black text for orange
+	"#ffffff",	// white text for charcoalgray
+	"#ffffff",	// white text for forestgreen
+	"#ffffff",	// white text for navyblue
+	"#ffffff",	// white text for brown
+	"#eeeeee"	// duller white text for black
+	],
+bColor = [
+	"lightgray",// lightgray; default
+	"#f0f0b3",	// yellow
+	"#fefefe",	// white
+	"#ff90aa",	// pink
+	"#bfe9bf",	// green
+	"#a9d6df",	// blue
+	"#ffcf5f",	// orange
+	"#555555",	// charcoalgray
+	"#228542",	// forestgreen
+	"#000060",	// navyblue
+	"#a88042",	// brown
+	"#222222"	// black
+];
+var currentNote, dummyVar, i, currentX, currentY, oldX, oldY, offsetX, offsetY, lastLine,
+	itemToEdit, itemTotal, statusTimer, prevNote, aboutCounter, pinned, pinOrUnpinHTML;
 
 
 // ------- declare functions ----------
 
 function applyOptions() {
   // apply options on load & on change
-  if (!!CheckForOptionsFile()) { GetOptions(dummyVar) }
-  fgColor = 'black';
-  switch (Opt2) {
-    case "yellow":
-      bgColor = "#f0f0b3";
-      break;
-    case "white":
-      bgColor = "fefefe";
-      break;
-    case "pink":
-      bgColor = "#ff90aa";
-      break;
-    case "green":
-      bgColor = "#bfe9bf";
-      break;
-    case "blue":
-      bgColor = "#a9d6df";
-      break;
-	case "orange":
-	  bgColor = "#FFCF5F";
-	  break;
-    case "charcoalgray":
-      bgColor = "#555555";
-      fgColor = "#ffffff";
-      break;
-    case "forestgreen":
-      bgColor = "#228542";
-      fgColor = "#ffffff";
-      break;
-    case "navyblue":
-      bgColor = "#000060";
-      fgColor = "#ffffff";
-      break;
-    case "brown":
-      bgColor = "#A88042";
-      fgColor = "#ffffff";
-      break;
-    case "black":
-      bgColor = "#222222";
-      fgColor = "#eeeeee";
-      break;
-    default:
-      bgColor = "lightgray";
-      break;
+  if (!!CheckForOptionsFile()) {
+  	GetOptions(dummyVar);
+	if (Opt2 < 0 || Opt2 > bColor.length) { Opt2 = Default2; }
   }
-  document.body.style.backgroundColor = bgColor;
-  document.body.style.color = fgColor;
-  document.getElementById('clock').style.color = fgColor;
+  applyTheme();		// set foreground/background colors
   switch (Opt3) {
     case "uf0":
       noteFont = Opt5;
@@ -187,18 +173,18 @@ function applyOptions() {
 function saveOptions() {
   // save options to disk on change
   // option 2 - background color
-  if (document.getElementsByName('bg')[0].checked) { Opt2 = 'gray' }
-  else if (document.getElementsByName('bg')[1].checked) { Opt2 = 'yellow'; }
-  else if (document.getElementsByName('bg')[2].checked) { Opt2 = 'white'; }
-  else if (document.getElementsByName('bg')[3].checked) { Opt2 = 'pink'; }
-  else if (document.getElementsByName('bg')[4].checked) { Opt2 = 'green'; }
-  else if (document.getElementsByName('bg')[5].checked) { Opt2 = 'blue'; }
-  else if (document.getElementsByName('bg')[6].checked) { Opt2 = 'orange'; }  
-  else if (document.getElementsByName('bg')[7].checked) { Opt2 = 'charcoalgray'; }
-  else if (document.getElementsByName('bg')[8].checked) { Opt2 = 'forestgreen'; }
-  else if (document.getElementsByName('bg')[9].checked) { Opt2 = 'navyblue'; }
-  else if (document.getElementsByName('bg')[10].checked) { Opt2 = 'brown'; }    
-  else if (document.getElementsByName('bg')[11].checked) { Opt2 = 'black'; }
+  if (document.getElementsByName('bg')[0].checked) { Opt2 = 0 }
+  else if (document.getElementsByName('bg')[1].checked) { Opt2 = 1; }
+  else if (document.getElementsByName('bg')[2].checked) { Opt2 = 2; }
+  else if (document.getElementsByName('bg')[3].checked) { Opt2 = 3; }
+  else if (document.getElementsByName('bg')[4].checked) { Opt2 = 4; }
+  else if (document.getElementsByName('bg')[5].checked) { Opt2 = 5; }
+  else if (document.getElementsByName('bg')[6].checked) { Opt2 = 6; }  
+  else if (document.getElementsByName('bg')[7].checked) { Opt2 = 7; }
+  else if (document.getElementsByName('bg')[8].checked) { Opt2 = 8; }
+  else if (document.getElementsByName('bg')[9].checked) { Opt2 = 9; }
+  else if (document.getElementsByName('bg')[10].checked) { Opt2 = 10; }    
+  else if (document.getElementsByName('bg')[11].checked) { Opt2 = 11; }
   // option 3 - font
   Opt3 = 'p1';
   if (localFontCheckBox[0].checked) { Opt3 = 'uf0'; }
@@ -219,7 +205,7 @@ function saveOptions() {
   // option 8 - user font 3
   Opt8 = uFont[3];
   if (document.getElementsByName('screenPos')[1].checked) {
-    Opt9='cc';
+    Opt9 = 'cc';
     Opt10 = currentX - offsetX;
     Opt11 = currentY - offsetY;
   }
@@ -257,43 +243,7 @@ function showOptions() {
       document.getElementsByTagName('td')[i].style.width = (document.body.clientWidth / 3);
     }
   }
-  switch (Opt2) {
-    case "yellow":
-      document.getElementsByName('bg')[1].checked = true;
-      break;
-    case "white":
-      document.getElementsByName('bg')[2].checked = true;
-      break;
-    case "pink":
-      document.getElementsByName('bg')[3].checked = true;
-      break;
-    case "green":
-      document.getElementsByName('bg')[4].checked = true;
-      break;
-    case "blue":
-      document.getElementsByName('bg')[5].checked = true;
-      break;
-    case "orange":
-      document.getElementsByName('bg')[6].checked = true;
-      break;	  
-    case "charcoalgray":
-      document.getElementsByName('bg')[7].checked = true;
-      break;
-    case "forestgreen":
-      document.getElementsByName('bg')[8].checked = true;
-      break;
-    case "navyblue":
-      document.getElementsByName('bg')[9].checked = true;
-      break;
-    case "brown":
-      document.getElementsByName('bg')[10].checked = true;
-      break;
-    case "black":
-      document.getElementsByName('bg')[11].checked = true;
-      break;
-	default:
-	  document.getElementsByName('bg')[0].checked = true;
-  }
+  document.getElementsByName('bg')[Opt2].checked = true;
   var fonts = document.getElementsByName('font');
   // populate user font boxes, if they've been saved
   var foundFont = false;
@@ -357,6 +307,22 @@ function clearAll() {
   }
   itemTotal = 0;
   origText = [];
+}
+
+function applyTheme() {
+  // set colors
+  fgColor = fColor[Opt2];
+  bgColor = bColor[Opt2];
+  document.body.style.backgroundColor = bgColor;
+  document.body.style.color = fgColor;
+  document.getElementById('clock').style.color = fgColor;
+}
+
+function previewTheme(pNum) {
+  // temporarily apply theme for preview
+  document.body.style.backgroundColor = bColor[pNum];
+  document.body.style.color = fColor[pNum];
+  document.getElementById('clock').style.color = fColor[pNum];
 }
 
 function showNotes(cNote) {
@@ -862,11 +828,12 @@ function expand(num) {
 
 function expandAll() {
 	// expand all options settings
+	var thisId, thisNum, thisSection;
 	for (var i = 0; i < document.getElementsByTagName('label').length; i++) {
-		var thisId = document.getElementsByTagName('label')[i].id;
+		thisId = document.getElementsByTagName('label')[i].id;
 		if (thisId.slice(0, 6) === "header") {
-			var thisNum = thisId.slice(thisId.length - 2, thisId.length);
-			var thisSection = "section" + thisNum;
+			thisNum = thisId.slice(thisId.length - 2, thisId.length);
+			thisSection = "section" + thisNum;
 			if (document.getElementById(thisSection).style.display == "none") { expand(thisNum); }
 		}
 	}
@@ -876,11 +843,12 @@ function expandAll() {
 
 function collapseAll() {
 	// collapse all options settings
+	var thisId, thisNum, thisSection;
 	for (var i = 0; i < document.getElementsByTagName('label').length; i++) {
-		var thisId = document.getElementsByTagName('label')[i].id;
+		thisId = document.getElementsByTagName('label')[i].id;
 		if (thisId.slice(0, 6) === "header") {
-			var thisNum = thisId.slice(thisId.length - 2, thisId.length);
-			var thisSection = "section" + thisNum;
+			thisNum = thisId.slice(thisId.length - 2, thisId.length);
+			thisSection = "section" + thisNum;
 			if (document.getElementById(thisSection).style.display !== "none") { collapse(thisNum); }
 		}
 	}
@@ -1019,8 +987,8 @@ function format(text, char, len, tag1, tag2) {
 
 // option button handlers
 inputs = document.getElementsByTagName('input');
-for (i=0; i<inputs.length; i++) {
-  if (inputs[i].value.slice(0,2).toLowerCase() == 'uf') {
+for (i = 0; i < inputs.length; i++) {
+  if (inputs[i].value.slice(0, 2).toLowerCase() == 'uf') {		// if a font option
     switch (inputs[i].value.slice(2)) {
       case "0":
         inputs[i].attachEvent('onclick', function() { checkLocal(0); });
@@ -1041,7 +1009,7 @@ for (i=0; i<inputs.length; i++) {
   }
 }
 
-for (i=0;i<localFontBox.length;i++) {
+for (i = 0; i < localFontBox.length; i++) {
   switch (i) {
     case 0:
       localFontBox[i].attachEvent('onkeyup', function() { checkLocalFontInput(0); });
@@ -1060,20 +1028,33 @@ for (i=0;i<localFontBox.length;i++) {
 
 for (var i = 0; i < document.getElementsByTagName('label').length; i++) {
 	// add click handlers to option headings for expanding/collapsing
-	var thisId = document.getElementsByTagName('label')[i].id;
-	if (thisId.slice(0, 6) === "header") {
+	if (document.getElementsByTagName('label')[i].id.slice(0, 6) === "header") {
 		sectionsTotal++;
-		document.getElementById(thisId).onclick = function() {
+		document.getElementsByTagName('label')[i].onclick = function() {
 			var thisNum = this.id.slice(this.id.length - 2, this.id.length);
 			var thisSection = "section" + thisNum;
 			if (document.getElementById(thisSection).style.display !== "none") { collapse(thisNum); }
 			else { expand(thisNum); }
 		};
 	}
+	else if (document.getElementsByTagName('label')[i].firstChild.name === "bg") {	// look for theme setting labels
+		// if a theme label, add mouseover listener to preview theme
+		document.getElementsByTagName('label')[i].attachEvent('onmouseenter', function(e) {
+			previewing = true;
+			previewTheme(e.srcElement.firstChild.value);
+		});
+		// add mouseleave listener to reset theme to current setting
+		document.getElementsByTagName('label')[i].attachEvent('onmouseleave', function() {
+			previewing = false;
+			setTimeout(function() {
+				if (!previewing) { applyTheme(); }
+			}, 250);
+		});
+	}
 }
 
 // to get current scroll position:
-noteBody.attachEvent('onscroll', function() { setTimeout(function(){lastScrollPos = noteBody.scrollTop;}, 250); });
+noteBody.attachEvent('onscroll', function() { setTimeout(function() { lastScrollPos = noteBody.scrollTop; }, 250); });
 
 
 // --------- execution -----------------

@@ -30,7 +30,7 @@ Set fs = CreateObject("Scripting.FileSystemObject")
 const NotesDir = ".\notes\"
 Const NotesDirWOBSlash = "\notes"
 Const Default1 = "hide"
-Const Default2 = "gray"
+Const Default2 = 11
 Const Default3 = "p1"
 Const Default4 = "medium"
 Const Default5 = ""
@@ -215,9 +215,14 @@ Sub GetOptions(dummyVar)
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(0) : Exit Sub
     Opt1 = LCase(rofile.Readline)
     if (Opt1 <> "show") and (Opt1 <> "hide") then Opt1 = Default1
-    ' get option 2 - background color
+    ' get option 2 - background color/theme
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(1) : Exit Sub
-    Opt2 = LCase(rofile.Readline)
+    Opt2 = rofile.Readline
+	if IsNumeric(Opt2) then
+		Opt2 = int(Opt2)
+	else
+		Opt2 = GetThemeNumber(Opt2)
+	end if
     ' get option 3 - font name
     if rofile.AtEndOfStream then rofile.close : OptionsCorrupted(2) : Exit Sub
     Opt3 = Lcase(rofile.Readline)
@@ -271,24 +276,34 @@ Sub GetOptions(dummyVar)
   End If
 End Sub
 
-Function GetOption(ThisOption)
-  'return options one at a time to be applied by JS
-  if ThisOption = "1" then GetOption = Opt1
-  if ThisOption = "2" then GetOption = Opt2
-  if ThisOption = "3" then GetOption = Opt3
-  if ThisOption = "4" then GetOption = Opt4
-  if ThisOption = "5" then GetOption = Opt5
-  if ThisOption = "6" then GetOption = Opt6
-  if ThisOption = "7" then GetOption = Opt7
-  if ThisOption = "8" then GetOption = Opt8
-  if ThisOption = "9" then GetOption = Opt9
-  if ThisOption = "10" then GetOption = Opt10
-  if ThisOption = "11" then GetOption = Opt11
-  if ThisOption = "12" then GetOption = Opt12
-  if ThisOption = "13" then GetOption = Opt13
-  if ThisOption = "14" then GetOption = Opt14
-  if ThisOption = "15" then GetOption = Opt15
-  if ThisOption = "16" then GetOption = Opt16
+Function GetThemeNumber(tempOpt2)
+  ' return integer value of option 2 (theme/color) -- for backwards compatibility
+  Select Case lcase(tempOpt2)
+  	Case "yellow"
+		GetThemeNumber = 1
+  	Case "white"
+		GetThemeNumber = 2
+  	Case "pink"
+		GetThemeNumber = 3
+  	Case "green"
+		GetThemeNumber = 4
+  	Case "blue"
+		GetThemeNumber = 5
+  	Case "orange"
+		GetThemeNumber = 6
+  	Case "charcoalgray"
+		GetThemeNumber = 7
+  	Case "forestgreen"
+		GetThemeNumber = 8
+  	Case "navyblue"
+		GetThemeNumber = 9
+  	Case "brown"
+		GetThemeNumber = 10
+  	Case "black"
+		GetThemeNumber = 11
+	Case Else
+		GetThemeNumber = 0
+  End Select
 End Function
 
 Sub OptionsCorrupted(numCorr)

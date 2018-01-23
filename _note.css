@@ -1,4 +1,3 @@
-
 body {
   font-size: 1em;
   font-family: serif;
@@ -221,6 +220,7 @@ button[disabled]:hover {
 }
 #inputDiv {
   margin-left: 10px;
+  display: none;
 }
 #optionsDiv {
   font-family: serif;
@@ -233,6 +233,7 @@ button[disabled]:hover {
   text-align: center;
   padding: 25px;
   overflow: auto;
+  display: none;
 }
 #backupButton {
   margin-top: 1px;
@@ -254,6 +255,7 @@ button[disabled]:hover {
   padding-left: 10px;
   margin-left: 25px;
   overflow: auto;
+  display: none;
 }
 #backupDispDiv {
   display: inline;
@@ -278,7 +280,6 @@ button[disabled]:hover {
   font-size: 0.8em;
   font-family: serif;
 }
-
 #ltgrayL {
   background-color: lightgray;
   color: black;
@@ -352,7 +353,7 @@ button[disabled]:hover {
 
 }
 #about_name {
-  font-size: 2em;
+  font-size: 1.6em;
   font-family: Tahoma, Helvetica, sans-serif;
   font-weight: 700;
 }
