@@ -12,7 +12,8 @@ Note saves all notes/tasks in a `notes` subfolder.  It uses a `config.txt` file 
 
 ### Installation:
 On a Windows computer with Internet Explorer or Edge installed:
-  - Download the [latest release](https://github.com/freginold/Note/releases/latest) / [current version](https://github.com/freginold/Note/archive/master.zip) of Note as either a tarball or zip file
+
+  - Download either the latest release ([zip](https://github.com/freginold/Note/archive/v3.4.zip) | [tarball](https://github.com/freginold/Note/archive/v3.4.tar.gz)) or the current version ([zip](https://github.com/freginold/Note/archive/master.zip)) of Note
   - Unzip the files into the folder of your choice
   - Double-click the `note.hta` file to run the program
 
