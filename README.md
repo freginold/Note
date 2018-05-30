@@ -56,6 +56,8 @@ which will render as:
 
 Note now allows the use of horizontal divider lines between items.  To insert or append a divider line, type `---` as the text for that line.
 
+Although every effort has been taken to avoid the chance of note files becoming corrupted or erroneously deleted, regular backups should be performed (from the Settings menu) to ensure notes and settings are preserved.
+
 As of v3.0.3, Note is versioned using [Semantic Versioning](http://semver.org/).
 
 ### Tested on:
@@ -67,6 +69,7 @@ Note has been tested and runs well on:
 
 ### Limitations:
 - Note files must be kept in the `notes` subfolder, with a `.txt` file extension, to be recognized.  When a new note is created, it is automatically saved there.
+- If the system is shut down with Note open and the program tries to reopen when the computer restarts, it will launch from the Windows system folder, rather than the folder where Note resides, resulting in default options and no notes appearing. Closing and reopening Note will resolve the issue.
 - Note may not run correctly on Windows Vista PCs.  (Seems to be an issue with something in the VBScript code.)
 
 ### Troubleshooting:
