@@ -66,7 +66,7 @@ var delItem = {
   text: '',
   num: '',
   note: '',
-  scroll: 0 }
+  scroll: 0 };
 var xElBeg = "<button class='x smallFont moveButtons' onclick='DelLine(this)' id='X";
 var xElEnd = "'>X</button>";
 var renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'><span class='btnIcon'>&#9998;</span>Rename</button>";
@@ -223,7 +223,7 @@ function savePos() {
   else { Opt9 = 'mm'; }
   Opt10 = currentX - offsetX;
   Opt11 = currentY - offsetY;
-  WriteOptions()
+  WriteOptions();
   if (optionsDiv.style.display != 'none') { showOptions(); }
 }
 
@@ -286,7 +286,7 @@ function clearAll() {
   // clear all text/fields
   firstCall = false;
   setTimeout(function() { firstCall = true; } , 250);
-  GetFileList()
+  GetFileList();
   if (Opt16 != Default16) { pinBox.style.display = "none"; pinBox.firstChild.className = "noteButton"; pin(Opt16); }
   newNoteDiv.style.display = 'none';
   optionsDiv.style.display = 'none';
@@ -402,7 +402,7 @@ function getLines(thisNote) {
 
 function onSubmitted(tempVar) {
   event.returnValue = false;
-  AddNote(tempVar)
+  AddNote(tempVar);
   noteBody.scrollTop = noteBody.scrollHeight;
 }
 
@@ -703,7 +703,7 @@ function getTime() {
 function checkOverflow(thisLine) {
   // check to see if just-added line causes horizontal scroll
   if (noteBody.scrollWidth >= (noteBody.offsetWidth * 0.98)) {
-	// loop through line, if not a group of 10 or more chars w/o a space or hyphen, don't add overflowClass
+	// loop through line, if not a group of 19 or more chars w/o a space or hyphen, don't add overflowClass
 	var strLength = 0;
 	var thisLineText = document.getElementById(thisLine).innerText;
 	for (var aa = 6; aa < thisLineText.length; aa++) {
@@ -711,7 +711,7 @@ function checkOverflow(thisLine) {
 			strLength = 0;
 		}
 		else { strLength++; }
-		if (strLength > 19) { 
+		if (strLength > 19) {
 			document.getElementById(thisLine).className = document.getElementById(thisLine).className + " overflowClass";
 			break;
 		}
@@ -1055,6 +1055,20 @@ for (var i = 0; i < document.getElementsByTagName('label').length; i++) {
 
 // to get current scroll position:
 noteBody.attachEvent('onscroll', function() { setTimeout(function() { lastScrollPos = noteBody.scrollTop; }, 250); });
+
+document.attachEvent('onkeyup', function(e) {
+	// check if Home key pressed
+	if (String.fromCharCode(e.keyCode) == "$") {
+		// if Home key pressed, call screen pos reset function
+		if (document.activeElement.tagName.toLowerCase() == "input") {
+			if(document.activeElement.type.toLowerCase() == "text") {
+				return;		// don't fire if focus is on a text box
+			}
+		}
+		resetPos();
+		return false;
+	}
+});
 
 
 // --------- execution -----------------

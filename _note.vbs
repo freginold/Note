@@ -30,7 +30,7 @@ Set fs = CreateObject("Scripting.FileSystemObject")
 const NotesDir = ".\notes\"
 Const NotesDirWOBSlash = "\notes"
 Const Default1 = "hide"
-Const Default2 = 11
+Const Default2 = 0
 Const Default3 = "p1"
 Const Default4 = "medium"
 Const Default5 = ""
@@ -115,19 +115,24 @@ Function CheckForOptionsFile
 End Function
 
 Function HideStamp(line)
+  ' check if has time stamp: contains " AM >" or " PM >"
   ' if set to hide time stamp, get line starting after 1st >
   Dim segments, x, i, tempLine
-  line = Replace(line, ">       ", ">", 1, 1)
-  segments = Split(line, ">")
-  i = 0
-  tempLine = ""
-  for each x in segments
-    i = i + 1
-    if i > 2 then x = ">" + x
-    if i > 1 then tempLine = tempLine + x
-  next
-  if i = 1 then tempLine = line
-  HideStamp = tempLine
+  if InStr(4, line, " AM >") OR Instr(4, line, " PM >") then
+    line = Replace(line, ">       ", ">", 1, 1)
+    segments = Split(line, ">")
+    i = 0
+    tempLine = ""
+    for each x in segments
+      i = i + 1
+      if i > 2 then x = ">" + x
+      if i > 1 then tempLine = tempLine + x
+    next
+    if i = 1 then tempLine = line
+    HideStamp = tempLine
+  else
+    HideStamp = line
+  end if
 End Function
 
 Sub OpenRFile(FileName)
@@ -171,16 +176,11 @@ Sub AddNote(TempText)
   Dim Filename
   FileName = NotesDir + currentNote + ".txt"
   Set afile = fs.openTextFile(FileName, 8, true)
-  afile.WriteLine(GetTimeStampedLine(TempText))
+  afile.WriteLine(TempText)
   afile.close
   showNotes(currentNote)
   showStatus(AbbrevText(TempText) & " added to bottom")
 End Sub
-
-Function GetTimeStampedLine(LineText)
-  ' add time stamp to line
-  GetTimeStampedLine = VbLf & date & ", " & time & " >       " & LineText
-End Function
 
 Function CreateNewFile(FileName)
   Dim c, c2, BadChar
@@ -388,10 +388,10 @@ Sub WriteModifiedFile(Swap1, Swap2)
       Select Case count
         Case Swap1
           if Swap1 = Swap2 then
-            tfile.WriteLine(GetTimeStampedLine(EditedString))
+            tfile.WriteLine(EditedString)
           else
             if Swap2 = -1 then
-              tfile.WriteLine(GetTimeStampedLine(EditedString))
+              tfile.WriteLine(EditedString)
               tfile.WriteLine(line)
               Undeleted = true
             else

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8" />
+<HTA:Application
+  ApplicationName = Note
+  ID = Note
+  Border = Thick
+  SingleInstance = yes
+  Scroll = no
+  Icon = "note_icon.ico"
+  navigable = no
+  version = "3.4.2"
+>
+<title>Note</title>
+<link href='_note.css' rel='stylesheet' type='text/css'>
+</head>
+<body>
+
+<div id='upperRightBox'> 
+  <button id='newButton' class='upperRightButton' onclick='showNewNoteBox();'><span class='btnIcon'>&#128220</span>&nbsp;New</button>
+  <button id='optionsButton' class='upperRightButton' onclick='showOptions();'><span class='btnIcon'>&#9874</span>&nbsp;Settings</button>
+  <button id='aboutButton' class='upperRightButton' onclick='displayAbout();'><span class='btnIcon'>&#8505</span>&nbsp;&nbsp;About</button>
+</div>
+
+<div id='pinBox'></div>
+
+<div id='noteList'></div>
+
+<hr>
+<h2 id='noteTitle'></h2>
+<div id='noteBody'></div>
+
+<div id='newNoteDiv'>
+  <form id='newNoteForm' name='newNoteForm' onsubmit='createNewNote(newNoteInputBox.value);' action='#' >
+    <input type='text' size=20 id='newNoteInputBox' />
+    <input type='submit' value='Create' />
+  </form>
+</div>
+
+<div id='inputDiv'>
+  <br /><br />
+  <form name='inputForm' onsubmit='onSubmitted(inputBox.value, currentNote);' action='#' >
+    <table><tr>
+      <td>
+        <input type='text' size=100 id='inputBox' />
+      </td><td>
+        <input type='submit' class='smallFont bottomButton' value='&#8659;&nbsp;&nbsp;Add to Bottom' /><br />
+      </td></tr><tr><td></td><td>
+        <input type='button' class='smallFont bottomButton' value='&#8662;&nbsp;&nbsp;Insert Above ...' onclick='insertItem();' />
+      </td>
+    </tr></table>
+  </form>
+</div>
+
+<div id='optionsDiv'>
+  <br />
+  <table><tr>
+  <td class='optionsColumn'>
+  <label id='header01'><h3><span id='symbol01'>&#9662;</span> <span class='uline'>Background Color</span></h3></label>
+  <div id='section01' class='optionSections'>
+  <label id='ltgrayL'><input type='radio' name='bg' class='optionInput' value=0 /> Light Gray &nbsp;<span class='goItalic'>(default)</span> </label><br />
+  <label id='yellowL'><input type='radio' name='bg' class='optionInput' value=1 /> Yellow </label><br />
+  <label id='whiteL'><input type='radio' name='bg' class='optionInput' value=2 /> White </label><br />
+  <label id='pinkL'><input type='radio' name='bg' class='optionInput' value=3 /> Pink </label><br />
+  <label id='ltgreenL'><input type='radio' name='bg' class='optionInput' value=4 /> Light Green </label><br />
+  <label id='ltblueL'><input type='radio' name='bg' class='optionInput' value=5 /> Light Blue </label><br />
+  <label id='orangeL'><input type='radio' name='bg' class='optionInput' value=6 /> Orange </label><br />
+  <label id='charcoalL'><input type='radio' name='bg' class='optionInput' value=7 /> Charcoal Gray </label><br />
+  <label id='fgreenL'><input type='radio' name='bg' class='optionInput' value=8 /> Forest Green </label><br />
+  <label id='nblueL'><input type='radio' name='bg' class='optionInput' value=9 /> Navy Blue </label><br />
+  <label id='brownL'><input type='radio' name='bg' class='optionInput' value=10 /> Brown </label><br />
+  <label id='blackL'><input type='radio' name='bg' class='optionInput' value=11 /> Black </label></div>
+  </td>
+  <td class='optionsColumn'>
+  <label id='header02'><h3><span id='symbol02'>&#9662;</span> <span class='uline'>Note Font</span></h3></label>
+  <div id='section02' class='optionSections'>
+  <label><input type='radio' name='font' id='localFontCheckBox0' class='optionInput' value='uf0' />
+    <div id='localFontDiv0' class='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
+    <form name='localFontForm0' class='localFontForm' id='localFontForm0' onsubmit='setLocalFont(0);' action='#' >
+      <input type='text' size=10 id='localFontBox0' class='localFontBox' />
+      <input id='localFontSetButton0' disabled=true class='optionChangeButton' type='submit' value='Set' />
+    </form>
+    </div>
+    <div id='localFontShow0' class='localFontShow'>
+      <p id='localFontShowP0' class='localFontShowP'></p><button id='changeLocalFontButton0' class='optionChangeButton' onclick='getLocalFont(0);'>Change</button><br />
+    </div>
+  </label>
+  <label><input type='radio' name='font' id='localFontCheckBox1' class='optionInput' value='uf1' />
+    <div id='localFontDiv1' class='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
+    <form name='localFontForm1' class='localFontForm' id='localFontForm1' onsubmit='setLocalFont(1);' action='#' >
+      <input type='text' size=10 id='localFontBox1' class='localFontBox' />
+      <input id='localFontSetButton1' disabled=true class='optionChangeButton' type='submit' value='Set' />
+    </form>
+    </div>
+    <div id='localFontShow1' class='localFontShow'>
+      <p id='localFontShowP1' class='localFontShowP'></p><button id='changeLocalFontButton1' class='optionChangeButton' onclick='getLocalFont(1);'>Change</button><br />
+    </div>
+  </label>
+  <label><input type='radio' name='font' id='localFontCheckBox2' class='optionInput' value='uf2' />
+    <div id='localFontDiv2' class='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
+    <form name='localFontForm2' class='localFontForm' id='localFontForm2' onsubmit='setLocalFont(2);' action='#' >
+      <input type='text' size=10 id='localFontBox2' class='localFontBox' />
+      <input id='localFontSetButton2' disabled=true class='optionChangeButton' type='submit' value='Set' />
+    </form>
+    </div>
+    <div id='localFontShow2' class='localFontShow'>
+      <p id='localFontShowP2' class='localFontShowP'></p><button id='changeLocalFontButton2' class='optionChangeButton' onclick='getLocalFont(2);'>Change</button><br />
+    </div>
+  </label>
+  <label><input type='radio' name='font' id='localFontCheckBox3' class='optionInput' value='uf3' />
+    <div id='localFontDiv3' class='localFontDiv'> <span class='smallFont'>Choose any local font:</span>
+    <form name='localFontForm3' class='localFontForm' id='localFontForm3' onsubmit='setLocalFont(3);' action='#' >
+      <input type='text' size=10 id='localFontBox3' class='localFontBox' />
+      <input id='localFontSetButton3' disabled=true class='optionChangeButton' type='submit' value='Set' />
+    </form>
+    </div>
+    <div id='localFontShow3' class='localFontShow'>
+      <p id='localFontShowP3' class='localFontShowP'></p><button id='changeLocalFontButton3' class='optionChangeButton' onclick='getLocalFont(3);'>Change</button><br />
+    </div>
+  </label>
+  <label class='sans'><input type='radio' name='font' class='optionInput' id='sansRadio' value='p1' /> sans serif</label><br />
+  <label class='serif'><input type='radio' name='font' class='optionInput' value='p2' /> serif &nbsp;<span class='goItalic'>(default)</span></label>
+  </div>
+  <br /><br /><br />
+  <label id='header03'><h3><span id='symbol03'>&#9662;</span> <span class='uline'>Note Font Size</span></h3></label>
+  <div id='section03' class='optionSections'>
+  <label class='smallFont'><input type='radio' name='textSize' class='optionInput' value='small'> Small</label><br />
+  <label class='mediumFont'><input type='radio' name='textSize' class='optionInput' value='medium'> Medium &nbsp;<span class='goItalic'>(default)</span></label><br />
+  <label class='largeFont'><input type='radio' name='textSize' class='optionInput' value='large'> Large</label>
+  </div>
+  </td>
+  <td class='optionsColumn'>
+  <label id='header04'><h3><span id='symbol04'>&#9662;</span> <span class='uline'>Size & Position</span></h3></label>
+  <div id='section04' class='optionSections'>
+  <input type='radio' name='screenPos' class='optionInput' value='mm'>
+  <input type='radio' name='screenPos' class='optionInput' value='cc'>
+  <button class='optButton' id='screenPosResetButton' onclick='resetPos();'>Reset Window Position</button><br />
+  <button class='optButton' id='screenSizeResetButton' onclick='resetSize();'>Reset Window Size</button>
+  </div>
+  <br /><br /><br />
+  <label id='header05'><h3><span id='symbol05'>&#9662;</span> <span class='uline'>Backup / Restore</span></h3></label>
+  <div id='section05' class='optionSections'>
+  <button class='optButton' id='undeleteButton' onclick='Undelete()' disabled=true>Restore Last Deleted Item</button><br />
+  <button class='optButton' id='backupButton' onclick='dispBackupDiv();'>Backup...</button><br />
+  <button class='optButton' id='defaultButton' onclick='resetDefault();'>Restore Default Settings</button>
+  </div>
+  <br /><br /><br />
+  <label id='header06'><h3><span id='symbol06'>&#9662;</span> <span class='uline'>Status Bar</span></h3></label>
+  <div id='section06' class='optionSections'>
+  <label><input type='radio' name='statusOption' class='optionInput' value='Hide' /> Hide</label><br />
+  <label><input type='radio' name='statusOption' class='optionInput' value='Show' /> Show &nbsp;<span class='goItalic'>(default)</span></label><br />
+  </div>
+  </td>
+  </tr></table>
+</div>
+
+<div id='aboutDiv'>
+  <br /><br />
+  <p id='about_name'></p>
+  <p id='about_version'></p>
+  <p id='about_license'></p>
+</div>
+
+<div id='backupDiv'>
+  <br /><br />
+  <span id='backupText'>Location of backup folder:</span><br /><br />
+  <div id='backupDispDiv'></div><button onclick='ChangeBackup()'>Change...</button>
+  <br /><br /><br />
+  <button onclick='Backup()' style='font-size: 1.15em;'>Backup</button><br />
+</div>
+
+<div id='statusBar'><hr><div id='statusBarText'> </div><div id='clock'></div></div>
+
+<script language='vbscript' src='_note.vbs'></script>
+<script language='javascript' src='_note.js'></script>
+
+</body>
+</html>

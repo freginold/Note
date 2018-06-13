@@ -72,11 +72,11 @@ button[disabled]:hover {
   word-break: break-word;
 }
 .optionsColumn {
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-left: 4px;
+  margin-right: 1px;
   vertical-align: top;
   text-align: left;
-  padding-right: 25px;
+  padding-right: 4px;
   padding-left: 25px;
 }
 .smallFont {
@@ -356,4 +356,7 @@ button[disabled]:hover {
   font-size: 1.6em;
   font-family: Tahoma, Helvetica, sans-serif;
   font-weight: 700;
+}
+#itemTable {
+  border-collapse: collapse;
 }
