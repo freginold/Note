@@ -56,6 +56,8 @@ which will render as:
 
 Note now allows the use of horizontal divider lines between items.  To insert or append a divider line, type `---` as the text for that line.
 
+Note supports the <kbd>Home</kbd> key as a shortcut to reposition Note in the center of the screen.  (This method won't work if focus is currently on an input box -- i.e. if you can see the cursor. Click somewhere outside of the input box and press the <kbd>Home</kbd> key again.)
+
 Although every effort has been taken to avoid the chance of note files becoming corrupted or erroneously deleted, regular backups should be performed (from the Settings menu) to ensure notes and settings are preserved.
 
 As of v3.0.3, Note is versioned using [Semantic Versioning](http://semver.org/).
@@ -74,5 +76,7 @@ Note has been tested and runs well on:
 
 ### Troubleshooting:
 If Note gets corrupted, or if a weird setting persists and won't change, delete the `config.txt` file and relaunch Note.  All settings will be reset.
+
+If you open Note and the icon/name appear in the taskbar, but you don't see the Note window, it could be positioned off-screen.  (Windows seems to cause this sometimes.)  Press the <kbd>Home</kbd> key to recenter Note.
 
 *Side note:* HTA files run as "trusted" programs in Windows.  They are good for sysadmin work and local scripting, but be aware of the security concerns before making use of an HTA file, especially one downloaded from an unfamiliar source.
