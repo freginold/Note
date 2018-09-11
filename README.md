@@ -46,17 +46,11 @@ Note supports some (very) basic markup formatting:
 - **Underline**  
   \_test\_ will be displayed underlined (Markdown doesn't support underline so can't show an example here)
 
-One formatting symbol by itself won't trigger a formatting change; only a pair will change the formatting. To use multiple `` ` `` or `*` without causing a change in formatting, escape the characters by preceeding them with a backslash (` \ `) like so:
-
->This is \\\*a\\\* test
-
-which will render as:
-
->This is \*a\* test
+One formatting symbol by itself won't trigger a formatting change; only a pair will change the formatting.
 
 Note now allows the use of horizontal divider lines between items.  To insert or append a divider line, type `---` as the text for that line.
 
-Note supports the <kbd>Home</kbd> key as a shortcut to reposition Note in the center of the screen.  (This method won't work if focus is currently on an input box -- i.e. if you can see the cursor. Click somewhere outside of the input box and press the <kbd>Home</kbd> key again.)
+Note supports the <kbd>Home</kbd> key as a shortcut to reposition Note in the center of the screen.  This method won't work if focus is currently on an input box -- i.e. if you can see the cursor. Click somewhere outside of the input box and press the <kbd>Home</kbd> key again, or press <kbd>Tab</kbd> and then <kbd>Home</kbd>.
 
 Although every effort has been taken to avoid the chance of note files becoming corrupted or erroneously deleted, regular backups should be performed (from the Settings menu) to ensure notes and settings are preserved.
 
