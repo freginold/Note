@@ -595,7 +595,7 @@ Sub SubmitEdit(NewStr)
 End Sub
 
 Sub Undelete
-  ' subroutine to restore last deleted note item (not saved on exit)
+  ' restore last deleted note item (not saved on exit)
   ' need to save item text, currentNote, line #
   ' on restore, add item to line where it was or at bottom, then show that note
   EditedString = delItem.text
