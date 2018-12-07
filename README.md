@@ -32,7 +32,7 @@ Note allows up to four user-defined local fonts to be specified.  Any font inst
 
 To move or resize Note, simply drag it around the screen or drag the corners and edges to position it how you want it.  Any changes will be saved and remembered the next time you launch Note.  You can change the background color, font, and text size on the Options screen (accessed by clicking the <b>Options</b> button in the upper right corner).
 
-If there are more notes than will fit across the list bar at the top, you can scroll side to side between notes.  You can "pin" one note, so that its button will always be displayed in the upper left corner and you won't have to scroll to find it.  To pin a note, select that note and click the <b>Pin</b> button to the left of the note's title.  Click <b>Unpin</b> to unpin the note, or you can replace it with another note by selecting a different note and clicking the <b>Pin</b> option for that note.
+If there are more notes than will fit across the list bar at the top, you can scroll side to side between notes.  You can "pin" one note, so that its button will always be displayed in the upper left corner and you won't have to scroll to find it.  To pin a note, select that note and click the <b>Pin</b> button to the left of the note's title.  Click <b>Unpin</b> to unpin the note, or you can replace it with another note by selecting a different note and clicking the <b>Pin</b> option for that note. If there is a pinned note, Note will load it on launch; otherwise it will default to the About screen.
 
 Note supports some (very) basic markup formatting:
 - **Code formatting**  
