@@ -30,7 +30,7 @@ button[disabled]:hover {
   float: left;
   margin-left: 5px;
   text-align: left;
-  width: 74%;
+  width: 78%;
 }
 .btnIcon {
   padding: 0px 4px 0px 4px;
@@ -178,10 +178,6 @@ button[disabled]:hover {
   float: right;
   width: 170px;
   padding-bottom: 4px;
-}
-.overlayIcon {
-  z-index: 25;
-  position: absolute;
 }
 #noteList {
   display: block;

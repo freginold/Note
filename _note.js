@@ -1,105 +1,105 @@
 
 // ------- declare variables ----------
 
-var noteBody = document.getElementById('noteBody');
-var inputDiv = document.getElementById('inputDiv');
-var inputBox = document.getElementById('inputBox');
-var newNoteDiv = document.getElementById('newNoteDiv');
-var newNoteForm = document.getElementById('newNoteForm');
-var noteTitle = document.getElementById('noteTitle');
-var optionsDiv = document.getElementById('optionsDiv');
-var aboutDiv = document.getElementById('aboutDiv');
-var backupDiv = document.getElementById('backupDiv');
-var backupDispDiv = document.getElementById('backupDispDiv');
-var newNoteInputBox = document.getElementById('newNoteInputBox');
-var coords = document.getElementById('coords');
-var undeleteButton = document.getElementById('undeleteButton');
-var statusBar = document.getElementById('statusBar');
-var statusBarText = document.getElementById('statusBarText');
-var pinBox = document.getElementById('pinBox');
-var localFontDiv = [
-  document.getElementById('localFontDiv0'),
-  document.getElementById('localFontDiv1'),
-  document.getElementById('localFontDiv2'),
-  document.getElementById('localFontDiv3')
-];
-var localFontCheckBox = [
-  document.getElementById('localFontCheckBox0'),
-  document.getElementById('localFontCheckBox1'),
-  document.getElementById('localFontCheckBox2'),
-  document.getElementById('localFontCheckBox3')
-];
-var localFontForm = [
-  document.getElementById('localFontForm0'),
-  document.getElementById('localFontForm1'),
-  document.getElementById('localFontForm2'),
-  document.getElementById('localFontForm3')
-];
-var localFontBox = [
-  document.getElementById('localFontBox0'),
-  document.getElementById('localFontBox1'),
-  document.getElementById('localFontBox2'),
-  document.getElementById('localFontBox3')
-];
-var localFontShow = [
-  document.getElementById('localFontShow0'),
-  document.getElementById('localFontShow1'),
-  document.getElementById('localFontShow2'),
-  document.getElementById('localFontShow3')
-];
-var localFontShowP = [
-  document.getElementById('localFontShowP0'),
-  document.getElementById('localFontShowP1'),
-  document.getElementById('localFontShowP2'),
-  document.getElementById('localFontShowP3')
-];
-var localFontSetButton = [
-  document.getElementById('localFontSetButton0'),
-  document.getElementById('localFontSetButton1'),
-  document.getElementById('localFontSetButton2'),
-  document.getElementById('localFontSetButton3'),
-];
-var inputs = [];
-var items = [];
-var uFont = ['', '', '', ''];
-var delItem = {
-  text: '',
-  num: '',
-  note: '',
-  scroll: 0 };
-var xElBeg = "<button class='x smallFont moveButtons' onclick='DelLine(this)' id='X";
-var xElEnd = "'>X</button>";
-var renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'><span class='btnIcon'>&#9998;</span>Rename</button>";
-var delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'><span class='btnIcon'>&#10799;</span> Delete</button>";
-var pinButtonHTML = "<button class='upperLeftButton' onclick='pinBox.innerHTML = \"\"; pin();'><span class='btnIcon'>&#8888;</span> Pin</button>";
-var unpinButtonHTML = "<button class='upperLeftButton' onclick='unpin();'><span class='btnIcon overlayIcon'>&#10672;</span><span class='btnIcon'>&#8888;</span>Unpin</button>";
-var moveButtonsHTMLBeg = "<button class='moveButtons smallFont uBut' id='u";
-var moveButtonsHTMLMid = "' onclick='MoveItem(this, true)'>&uarr;</button> <button class='moveButtons smallFont dBut' id='d";
-var moveButtonsHTMLEnd = "' onclick='MoveItem(this, false)'>&darr;</button>";
-var lineStartHTML = "<span class='serif'>&sdot; </span>";
-var statusBarHTML = "&nbsp;";
-var expandAllButtonHTML = "<button class='upperRightButton' id='expandAllButton' onclick='expandAll()'>&#9196; Expand All</button>";
-var collapseAllButtonHTML = "<button class='upperRightButton' id='collapseAllButton' onclick='collapseAll();'>&#9195; Collapse All</button>";
-var noteFont = 'serif';
-var fgColor = 'black';		// default foreground color
-var bgColor = "lightgray";	// default background color
-var firstCoordCheck = true;
-var selectedFlag = [false, false, false, false];
-var uneditedString = '';
-var license = 'Public Domain';
-var timer = 0;
-var lastScrollPos = 0;
-var firstCall = true;
-var small = 0.8;
-var medium = 1;
-var large = 1.3;
-var aboutInterval = false;
-var flip = false;
-var defTextSize = 1;
-var sectionsCollapsed = 0;
-var sectionsTotal = 0;
-var origText = [];			// array to store unformatted text strings for user editing
-var fColor = [
+var noteBody = document.getElementById('noteBody'),
+  inputDiv = document.getElementById('inputDiv'),
+  inputBox = document.getElementById('inputBox'),
+  newNoteDiv = document.getElementById('newNoteDiv'),
+  newNoteForm = document.getElementById('newNoteForm'),
+  noteTitle = document.getElementById('noteTitle'),
+  optionsDiv = document.getElementById('optionsDiv'),
+  aboutDiv = document.getElementById('aboutDiv'),
+  backupDiv = document.getElementById('backupDiv'),
+  backupDispDiv = document.getElementById('backupDispDiv'),
+  newNoteInputBox = document.getElementById('newNoteInputBox'),
+  coords = document.getElementById('coords'),
+  undeleteButton = document.getElementById('undeleteButton'),
+  statusBar = document.getElementById('statusBar'),
+  statusBarText = document.getElementById('statusBarText'),
+  pinBox = document.getElementById('pinBox'),
+  localFontDiv = [
+    document.getElementById('localFontDiv0'),
+    document.getElementById('localFontDiv1'),
+    document.getElementById('localFontDiv2'),
+    document.getElementById('localFontDiv3')
+],
+  localFontCheckBox = [
+    document.getElementById('localFontCheckBox0'),
+    document.getElementById('localFontCheckBox1'),
+    document.getElementById('localFontCheckBox2'),
+    document.getElementById('localFontCheckBox3')
+],
+  localFontForm = [
+    document.getElementById('localFontForm0'),
+    document.getElementById('localFontForm1'),
+    document.getElementById('localFontForm2'),
+    document.getElementById('localFontForm3')
+],
+  localFontBox = [
+    document.getElementById('localFontBox0'),
+    document.getElementById('localFontBox1'),
+    document.getElementById('localFontBox2'),
+    document.getElementById('localFontBox3')
+],
+  localFontShow = [
+    document.getElementById('localFontShow0'),
+    document.getElementById('localFontShow1'),
+    document.getElementById('localFontShow2'),
+    document.getElementById('localFontShow3')
+],
+  localFontShowP = [
+    document.getElementById('localFontShowP0'),
+    document.getElementById('localFontShowP1'),
+    document.getElementById('localFontShowP2'),
+    document.getElementById('localFontShowP3')
+],
+  localFontSetButton = [
+    document.getElementById('localFontSetButton0'),
+    document.getElementById('localFontSetButton1'),
+    document.getElementById('localFontSetButton2'),
+    document.getElementById('localFontSetButton3'),
+],
+  inputs = [],
+  items = [],
+  uFont = ['', '', '', ''],
+  delItem = {
+    text: '',
+    num: '',
+    note: '',
+    scroll: 0 },
+  xElBeg = "<button class='x smallFont moveButtons' onclick='DelLine(this)' id='X",
+  xElEnd = "'>X</button>",
+  renButtonHTML = "<button class='upperRightButton' onclick='RenameThisNote()'><span class='btnIcon'>&#9998;</span>Rename</button>",
+  delButtonHTML = "<button class='upperRightButton' onclick='deleteNote();'><span class='btnIcon'>&#10799;</span> Delete</button>",
+  pinButtonHTML = "<button class='upperLeftButton' onclick='pinBox.innerHTML = \"\"; pin();'><span class='btnIcon'>&#128204;</span> Pin</button>",
+  unpinButtonHTML = "<button class='upperLeftButton' onclick='unpin();'><span class='btnIcon'>&#127811;</span>Unpin</button>",
+  moveButtonsHTMLBeg = "<button class='moveButtons smallFont uBut' id='u",
+  moveButtonsHTMLMid = "' onclick='MoveItem(this, true)'>&uarr;</button> <button class='moveButtons smallFont dBut' id='d",
+  moveButtonsHTMLEnd = "' onclick='MoveItem(this, false)'>&darr;</button>",
+  lineStartHTML = "<span class='serif'>&sdot; </span>",
+  statusBarHTML = "&nbsp;",
+  expandAllButtonHTML = "<button class='upperRightButton' id='expandAllButton' onclick='expandAll()'>&#9196; Expand All</button>",
+  collapseAllButtonHTML = "<button class='upperRightButton' id='collapseAllButton' onclick='collapseAll();'>&#9195; Collapse All</button>",
+  noteFont = 'serif',
+  fgColor = 'black',		// default foreground color
+  bgColor = "lightgray",	// default background color
+  firstCoordCheck = true,
+  selectedFlag = [false, false, false, false],
+  uneditedString = '',
+  license = 'Public Domain',
+  timer = 0,
+  lastScrollPos = 0,
+  firstCall = true,
+  small = 0.8,
+  medium = 1,
+  large = 1.3,
+  aboutInterval = false,
+  flip = false,
+  defTextSize = 1,
+  sectionsCollapsed = 0,
+  sectionsTotal = 0,
+  origText = [],			// array to store unformatted text strings for user editing
+  fColor = [
 	"black",	// black text for lightgray; default
 	"black",	// black text for yellow
 	"black",	// black text for white
@@ -113,7 +113,7 @@ var fColor = [
 	"#ffffff",	// white text for brown
 	"#eeeeee"	// duller white text for black
 	],
-bColor = [
+  bColor = [
 	"lightgray",// lightgray; default
 	"#f0f0b3",	// yellow
 	"#fefefe",	// white
@@ -126,8 +126,8 @@ bColor = [
 	"#000060",	// navyblue
 	"#a88042",	// brown
 	"#222222"	// black
-];
-var currentNote, dummyVar, i, currentX, currentY, oldX, oldY, offsetX, offsetY, lastLine,
+],
+currentNote, dummyVar, i, currentX, currentY, oldX, oldY, offsetX, offsetY, lastLine,
 	itemToEdit, itemTotal, statusTimer, prevNote, aboutCounter, pinned, pinOrUnpinHTML;
 
 
@@ -344,8 +344,8 @@ function showNotes(cNote) {
     noteBody.scrollTop = lastScrollPos;
   }
   else { noteBody.scrollTop = 0; }
-  var firstBut = document.getElementById('u0');
-  var lastBut = window['d' + (lastLine - 1)];
+  var firstBut = document.getElementById('u0'),
+    lastBut = window['d' + (lastLine - 1)];
   // disable & darken 1st 'move up' button & last 'move down' button
   if (firstBut != null) {
     document.getElementById('u0').disabled = true;
@@ -364,14 +364,14 @@ function showNotes(cNote) {
 function getLines(thisNote) {
   // loop through file, get each line from note and add X and arrow buttons to it, wrap it in a <tr> and add it to the HTML
   noteBody.innerHTML = noteBody.innerHTML + "<div><table id='itemTable'>";
-  var currentLine;
-  var noteNum = 0;
+  var currentLine,
+    noteNum = 0,
+    FileEnd = false,
+    localFontHTML = " style='font-family: &#34;" + noteFont + "&#34;, serif;'",
+    currentClasses = 'item ' + Opt4 + 'Font',
+    lineVar, lineStartVar, processedLine;
   lastLine = 0;
-  var FileEnd = false;
-  var localFontHTML = " style='font-family: &#34;" + noteFont + "&#34;, serif;'";
-  var currentClasses = 'item ' + Opt4 + 'Font';
-  var lineVar, lineStartVar, processedLine;
-  OpenRFile(thisNote)
+  OpenRFile(thisNote);
   while (!FileEnd) {
     currentLine = GetLine(dummyVar)
     if (currentLine == EOFConst) {
@@ -421,7 +421,7 @@ function createNewNote(newNoteName) {
   newNoteName = checkForTrailingSpaces(newNoteName);
   if (newNoteName == '') { showNewNoteBox(); showStatus("No text entered"); return; }
   if (checkFor1stCharNum(newNoteName.slice(0, 1))) { return; }  // if 1st char is a number
-  var fileCreated = CreateNewFile(newNoteName)
+  var fileCreated = CreateNewFile(newNoteName);
   if (!!fileCreated) { showNotes(newNoteName); showStatus("New note, " + AbbrevText(newNoteName) + " created"); }
   else { newNoteInputBox.value = ''; }
 }
@@ -516,7 +516,8 @@ function checkCoords() {
   // check current coordinates, also check window size to adjust element sizes
   // check current app height to adjust div heights
   if ((screen.availHeight > 650) && (document.documentElement.clientHeight > 380)) {
-    noteBody.style.height = document.documentElement.clientHeight - 350;
+    noteBody.style.height = document.documentElement.clientHeight - 360;
+      // changed from 350 to 360 b/c Win10 pushing statusBar up against inputDiv
     optionsDiv.style.height = document.documentElement.clientHeight - 300;
     noteList.style.display = 'block';
     if (Opt12 == 'show') { statusBar.style.display = 'inline-block'; }
@@ -585,8 +586,8 @@ function getCoords() {
 
 function getOffset() {
   // determine x & y offset amt at start
-  var nowX = window.screenLeft;
-  var nowY = window.screenTop;
+  var nowX = window.screenLeft,
+    nowY = window.screenTop;
   window.moveTo(nowX, nowY);
   offsetX = window.screenLeft - nowX;
   offsetY = window.screenTop - nowY;
@@ -694,9 +695,9 @@ function abbrevBackup(rawText) {
 
 function getTime() {
   // get current time & display it
-  var nowDate = new Date();
-  var nowTime = nowDate.toLocaleTimeString();
-  var timeSections = nowTime.split(":");
+  var nowDate = new Date(),
+    nowTime = nowDate.toLocaleTimeString(),
+    timeSections = nowTime.split(":");
   document.getElementById('clock').innerHTML = timeSections[0] + ":" + timeSections[1] + " " + "<span id='clockText'>" + timeSections[2].slice(-2) + "</span>";
 }
 
@@ -732,8 +733,8 @@ function checkSize() {
   // get current window size
   if (!firstCall) { return; }
   firstCall = false;
-  var oldW = Opt14;
-  var oldH = Opt15;
+  var oldW = Opt14,
+    oldH = Opt15;
   getCurrentSize();
   if ((oldW != Opt14) || (oldH != Opt15)) {
     // size has changed
@@ -751,8 +752,8 @@ function getDefaultSize() {
   var tempRect = document.documentElement.getBoundingClientRect();
 //  NoteWidth = NoteWidth + (tempRect.right - tempRect.left - NoteWidth);
 //  NoteHeight = NoteHeight + (tempRect.bottom - tempRect.top - NoteHeight);
-  var percentW = (NoteWidth / (tempRect.right - tempRect.left));
-  var percentH = (NoteHeight / (tempRect.bottom - tempRect.top));  
+  var percentW = (NoteWidth / (tempRect.right - tempRect.left)),
+    percentH = (NoteHeight / (tempRect.bottom - tempRect.top));  
   newOpt14 = Math.floor(NoteWidth * percentW);
   newOpt15 = Math.floor(NoteHeight * percentH);
 }
@@ -771,9 +772,9 @@ function resetSize() {
 
 function correctSize() {
   // to correct for getBoundingClientRect() and resizeTo() not matching up exactly
-  var tempRect = document.documentElement.getBoundingClientRect();
-  var percentW = (Opt14 / (tempRect.right - tempRect.left));
-  var percentH = (Opt15 / (tempRect.bottom - tempRect.top));  
+  var tempRect = document.documentElement.getBoundingClientRect(),
+    percentW = (Opt14 / (tempRect.right - tempRect.left)),
+    percentH = (Opt15 / (tempRect.bottom - tempRect.top));  
   newOpt14 = Math.floor(Opt14 * percentW);
   newOpt15 = Math.floor(Opt15 * percentH);
   window.resizeTo(newOpt14, newOpt15);		// set initial size
@@ -867,9 +868,9 @@ function checkCollapseExpandButtons() {
 function pin() {
 	// pin current active note (if another note pinned, unpin it first)
 	if (pinned) { pinBox.style.display = "none"; }
-	var activeNote;
-	var cond = 'active';
-	var Opt16lc = Opt16.toLowerCase();
+	var activeNote,
+	  cond = 'active',
+	  Opt16lc = Opt16.toLowerCase();
 	if (!!arguments[0]) { cond = 'init'; }
 	var buttons = document.getElementsByTagName('button');
 	for (var i = 0; i < buttons.length; i++) {
@@ -928,7 +929,9 @@ function showPinButton() {
 function onStart() {
 	// load whatever will be displayed on launch: pinned note, splash screen, etc.
 	// displayAbout calls clearAll internally; if showing something else, may need to call it here first
-	displayAbout();
+	// if a pinned note, load it on start; else load about screen (for now)
+	if (Opt16 != Default16) { clearAll(); showNotes(Opt16); }
+	else { displayAbout(); }
 	
 }
 
@@ -1061,7 +1064,7 @@ document.attachEvent('onkeyup', function(e) {
 	if (String.fromCharCode(e.keyCode) == "$") {
 		// if Home key pressed, call screen pos reset function
 		if (document.activeElement.tagName.toLowerCase() == "input") {
-			if(document.activeElement.type.toLowerCase() == "text") {
+			if (document.activeElement.type.toLowerCase() == "text") {
 				return;		// don't fire if focus is on a text box
 			}
 		}
