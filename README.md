@@ -62,11 +62,12 @@ Note has been tested and runs well on:
 - Windows 7 64-bit / IE 11
 - Windows 10 64-bit / EdgeHTML 14
 - Windows 10 64-bit / EdgeHTML 15
+- Windows 10 64-bit / Edge 97
 
 ### Limitations:
 - Note files must be kept in the `notes` subfolder, with a `.txt` file extension, to be recognized.  When a new note is created, it is automatically saved there.
 - If the system is shut down with Note open and the program tries to reopen when the computer restarts, it will launch from the Windows system folder, rather than the folder where Note resides, resulting in default options and no notes appearing. Closing and reopening Note will resolve the issue.
-- Note may not run correctly on Windows Vista PCs.  (Seems to be an issue with something in the VBScript code.)
+- Note may not run correctly on Windows Vista.  (Seems to be an issue with something in the VBScript code.)
 
 ### Troubleshooting:
 If Note gets corrupted, or if a weird setting persists and won't change, delete the `config.txt` file and relaunch Note.  All settings will be reset.
