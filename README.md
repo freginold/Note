@@ -4,6 +4,8 @@
 
 Note is a very basic Windows GUI note/task app.  It is free, open source, and in the public domain.  It uses VBScript and JavaScript/JScript with an .HTA interface.
 
+_**Update:** Microsoft has [announced plans](https://techcommunity.microsoft.com/blog/windows-itpro-blog/vbscript-deprecation-timelines-and-next-steps/4148301) to gradually deprecate VBScript in Windows. There is no exact sunset date yet, but without VBScript, Note will not function properly. You're welcome to fork Note and replace the VBScript functionality with a Windows-supported language such as Node.js or PowerShell._
+
 You can create new notes -- each one saved as a separate text file -- and add individual note items to each note/file.  New note items can be added at the bottom of the list, or inserted anywhere in an existing note list.  Each note item can be deleted individually (i.e. for a to-do list).  Individual note items can be moved up or down on the list.  They can also be edited in-line.  Note files can be renamed or deleted.
 
 Note saves all notes/tasks in a `notes` subfolder.  It uses a `config.txt` file to store configuration settings; background color, text font, text size, window position, window size, status bar display, backup folder location, and pinned note name. If either the `notes` subfolder or the `config.txt` file are not present, Note will create one on launch.
